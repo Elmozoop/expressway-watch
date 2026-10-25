@@ -140,8 +140,8 @@ It writes three files: `docs/index.html` (for hosting: links the satellite image
 
 **Netlify.** Log in at [netlify.com](https://www.netlify.com) with GitHub, choose **Add new site → Import an existing project**, pick `Elmozoop/expressway-watch`, and deploy. Leave the build settings empty: [`netlify.toml`](netlify.toml) already has them.
 
-- It builds from `docs/` (`base = "docs"`), so Netlify doesn't try to pip-install the pipeline's `requirements.txt` at the repo root.
-- The one build step, [`tools/netlify_build.sh`](tools/netlify_build.sh), turns the link-preview image into a full URL, so a link shared on WhatsApp, LinkedIn or Slack shows [`docs/og.jpg`](docs/og.jpg).
+- It runs from the repository root and publishes the pre-generated site in `docs/`.
+- The configured command checks that `docs/index.html` exists and is nonempty. No shell build script or satellite-processing dependencies are needed to deploy the committed HTML.
 - Every push to `main` redeploys.
 
 **GitHub Pages.** *Settings → Pages → Source: deploy from a branch → `main` / `/docs`.* Link previews won't have an image there, because the image path stays relative.

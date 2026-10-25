@@ -1,0 +1,4 @@
+[build]
+  base = "."
+  command = "test -s docs/index.html"
+  publish = "docs"
