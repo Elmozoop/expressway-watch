@@ -1,0 +1,74 @@
+# Changelog: how the method changed after checking it on real data
+
+## v4.2: a re-run that picks up new imagery
+- **Fix: re-runs never fetched new imagery.** The list of satellite scenes was searched once and kept for good, and a saved quarter was never rebuilt. So a re-run could not add a quarter, and the July–September 2026 quarter, saved on 23–24 September, would have stayed without its last week of images, usually the clearest days after the monsoon. Now the notebook searches again if the saved list was made before `END` (plus five days for new images to reach the catalogues), and rebuilds a saved quarter if it was made before the quarter ended, or if clearer days have been found for it since. Everything else is reused. If both catalogues are down, it carries on with the saved list and says so. The results in this repository still use July–September 2026 as it stood on 23–24 September; the next run completes it.
+- **Fix: "paved before it opened" counted one quarter too many.** The Ganga Expressway opened on 29 April 2026, inside 2026 Q2, so a piece first seen paved in Q2 might have been paved after the opening. The count now stops at 2026 Q1. It is still 66 of 70, and the dashboard now says "66 of 70 pieces paved by 2026 Q1, before it opened", as the summary and README already did. The home page's "Can you trust it?" card says the same; the browser test now reads that sentence.
+- **Checks.** 21 unit tests, up from 15: the new ones cover when a saved scene list or quarter is reused and when it is fetched again. The 359 browser checks are unchanged.
+
+## v4.1: the road, taken apart
+- **New opening scene.** Before the time-lapse, a 3D slice of expressway comes apart as you scroll: the asphalt surface, binder course, base, sub-base and embankment lift off the fields one at a time, each labelled with what it is and the stage the satellite reads while it is the top layer. The slice is then rebuilt the way the satellite sees it (not started, clearing, earthwork, paved) and the camera swings overhead to the view from 786 km up. The layers are drawn much thicker than they are, and the page says so. It is drawn with three.js (r149, vendored in `tools/vendor/` and copied to `docs/vendor/`), with textures painted in code, so it adds no image files.
+- **Laid out for every screen.** The labels stand in a column beside the model, joined to their layers by lines. The camera backs off and slides until the whole model sits clear of that column, and of the words at the bottom of the screen, on desktops, squarish windows, tablets, phones and phones held sideways. Every change of framing is eased, so the model never jumps.
+- **Light on the page.** `index.html` fetches three.js only when the scene is about to be drawn, so a highway page opened from a link never loads it. The specks of grit in the textures are drawn in a dozen batches instead of tens of thousands of separate fills. Where WebGL is drawn in software (no graphics card), each frame holds the whole page up while it is drawn, so there the scene waits for the first scroll, then runs on its plainest setting: plainer shading, no shadows, parked cars, fewer pixels, and a redraw only when the scroll moves. Elsewhere, frames that keep coming too slowly step the quality down, and it stops drawing when it is off screen. Lighthouse, whose browser has no graphics card: performance 95 on a throttled phone (96 before the scene), 94 for a highway page opened from a link, 100 on desktop; accessibility 100.
+- **Fallbacks.** With reduced motion it is a still picture, with the layers and the stages listed underneath; without WebGL, or if three.js does not load, just the lists; without JavaScript and in print it is left out. "Skip to the tracker" jumps past it.
+- **Fix.** The site's name at the top is now written into the page, so it shows without JavaScript too; the links to sections that need JavaScript are hidden there.
+- **Checks.** 359 in the browser test, up from 267: the opening scene at every step on a desktop, phones, phones held sideways and five other screen sizes (labels clear of the model, of each other and of the words; the model clear of the words), a scan of 501 points through the scene that fails if the model jumps, and the reduced-motion, no-WebGL, no-JavaScript, print and single-file versions.
+
+## v4: a dashboard that explains what you are looking at
+- **New home page.** It opens on a satellite time-lapse of km 0–2 of the Ganga Expressway, 2020 to 2026, with the stage the tool decided for each image and a line telling you what to look for (the straight road is an older highway; the expressway's junction appears beside it). A scroll-driven explainer then takes that piece through six years, one quarter at a time: the photo, the two readings (green cover against nearby fields, short-wave infrared brightness) drawn against their thresholds, and the row of stage squares they add up to. The whole-road story follows, with its numbers tied to the quarter on the map, then the checks against what actually happened.
+- **New highway pages.** Stalled stretches are bars on a 2020–2026 time axis, from when they got stuck to today, against the reported start of work. An "along the route" strip places every tracked piece at its real distance, with kilometre stones and towns, above one tile per stretch. Finished roads get "Did it get it right?": reported dates next to what the satellite saw, in plain words.
+- **Clearer numbers.** "4 of 5 pieces" when a stalled group has another piece inside it; tool misses counted per place ("3 in km 12–20, 1 at km 92–94, 6 in km 154–170"); stretch figures described as the typical piece, with "48 mo so far" where there is no asphalt yet; pieces that read as earthwork before the reported start are named and explained; a photo standing in for a quarter's stage is labelled "same stage".
+- **Phones.** The time-lapse comes straight after the headline. Phones held sideways get side-by-side layouts, and the pinned explainer and story shrink to fit a very short screen instead of being cut off. Maps and charts are drawn at their on-screen size, so their labels stay readable, and map signs and town names keep off the road and each other.
+- **Fixes.** A shared link opens its highway without the home page flashing up first. Nothing below the fold waits at low opacity any more, so print, link previews and a page that is never scrolled show everything; charts print complete even before they have animated. Without JavaScript, the parts it would draw are hidden instead of shown empty. The Overpass font draws "·" with no width, so running text no longer uses it as a separator.
+- **Checks.** The browser test covers two phones, two phones held sideways, four other screen sizes, dark mode, reduced motion, no JavaScript, print and the single-file download: 267 checks, including that pinned scenes fit the screen and that nothing overflows or overlaps. It serves the real font from `tools/vendor/fonts/`, so it runs offline. Lighthouse: accessibility 100 on the home and highway pages; performance 96 on a throttled phone for both (a highway page opened from a shared link was 86 before the changes above) and 100 on desktop.
+
+## v3.5: a dashboard for the people who build the road
+- **New: where work has stalled.** Live projects now open with a list worked out from the data: pieces still in earthwork after 3 years or more, and pieces with no earthwork at all, grouped along the chainage (Delhi–Katra: km 230–240, 240–250, 300–320, 380–394, 398–400). Each group is checked against OpenStreetMap; pieces that read as stuck where OSM maps an open road (10 near Delhi and at km 150–170) are set apart as likely misses by the tool.
+- **New: finished vs stalled, from space.** The Delhi–Katra page compares Sentinel-2 images of km 80–82 (Haryana, finished) and km 300–302 (Punjab, still bare earth), with the tool's stage for that exact piece in every quarter drawn underneath, so the images and the classification can be checked against each other.
+- **New:** CSV download of every piece and quarter; a share button (native share sheet on phones, copy-link elsewhere); page titles per highway; a link-preview image (`docs/og.jpg`); an author credit, data-freshness line and footer on every page; print styles.
+- **Fix:** the text said 7 pieces around km 240–250 were untouched farmland. The data says 4 there (plus one piece of early clearing) and 6 more between km 380 and 394. The one-page PDF's "0 / 30 paved beyond km 230" is really 1 / 30 (km 232–234). Both corrected in the README and the PDF; the dashboard now computes these lists instead of stating them.
+- **Fix:** the "likely a miss" note appeared under every stretch with unpaved pieces, including the stalled ones in Punjab, contradicting the stalled list. It now appears only where OSM maps the road as open; stalled stretches say OSM also has them under construction.
+- **Accessibility:** stage colours re-chosen with a colour-blindness simulation (Machado 2009): the closest pair of stages is now at least 25 ΔE apart under protan, deutan and tritan vision (it was as low as 12). Small grey text darkened to pass WCAG AA (at least 4.6:1, was 3.7:1). Touch targets of 24 px or more, content kept clear of phone notches.
+- **Speed:** GSAP is inlined instead of loaded from a CDN (the page also works on networks that block script CDNs), the web font no longer blocks rendering, and the hosted page links the satellite images instead of embedding them. Lighthouse mobile performance 87 → 99, first paint 2.6 s → 1.1 s (same server, Lighthouse's slow-4G profile; the old page was even given its GSAP from the same server). The hero now animates in from its first frame instead of appearing and then being hidden for the animation, checked on throttled 3G.
+
+## v3.4: the dashboard on a phone, and hosting
+- **Bug:** the dashboard had no `<!doctype>` and no viewport meta tag, so a phone laid it out at 980 px and zoomed out. Browser tests at 390 px had passed because the emulator was showing a scaled-down desktop layout. Added a proper document shell; the mobile layout rules now actually apply.
+- **Fix:** the stretch-by-stretch grid ran off the side of the card on a phone. It now scales to the card width, with larger labels so they survive the shrink, and redraws if the window crosses the breakpoint.
+- **Fix:** the stage legend under the story was hidden on short phones, leaving an unlabelled coloured bar. It is now shown in a smaller size instead.
+- **New:** `netlify.toml` plus `docs/index.html`, so `docs/` can be served as a site with no build step.
+
+## v3.3: a live project, and two fixes it exposed
+- **New:** the Delhi–Amritsar–Katra Expressway (NHAI, still under construction), six 20 km stretches.
+- **Bug:** a paving call three months after earthwork began (DAK km 18–20) came from a two-quarter dip that later climbed back. Paving now also requires the drop to **last**: if SWIR returns halfway to the earthwork peak in two or more later quarters, it does not count.
+- **Bug:** a single unconfirmed "paved" quarter was being demoted to *earthwork*, and the monotone rule then locked the segment into earthwork for years — km 230–250 read as "earthwork since 2020 Q2", two years before the project began. An unconfirmed paving quarter now falls back to what the other evidence says for that quarter, which puts the start at 2022 Q3.
+- Checked on all 13 stretches from both expressways: the two fixes changed only the affected segments.
+
+## v3.2: seven stretches, earthwork confirmation
+- **Coverage:** added km 100–120, 200–220, 350–370, 450–470 and 550–570. That's 70 segments across 7 construction packages.
+- **Problem:** a single-quarter crop-harvest dip was locking some segments into "earthwork" before construction began (km 212–214 in 2021 Q4).
+- **Fix:** earthwork now has to show up again within the next 4 valid quarters. A shorter window wrongly rejected real sites, because in the April–June harvest the fields are bare too and the construction contrast disappears.
+- **Result:** 66 of 70 segments are detected as paved before the April 2026 inauguration. The 4 misses are visibly finished in the 2026 imagery, but their SWIR drop is too small to pass the test. That's a known weakness, still open.
+
+## v3.1: dry-season confirmation, second stretch
+- **Problem:** on km 250–270, several segments were marked paved from a Q3+Q4 dip in SWIR that bounced back in the next dry season. At km 250–252, the 2024 Q3 image still shows a bright earth strip where the model said "paved". Monsoon and post-monsoon moisture darkens SWIR too.
+- **Fix:** a paving drop now counts only if one of the 2 confirming quarters is in the dry season (Q1 or Q2).
+- **Result:** both stretches are fully paved by 2025 Q4, before the April 2026 inauguration. Paving dates moved 0–5 quarters later.
+- **New:** km 250–270 added as a second validation stretch.
+
+## v3: relative paving test
+- **Problem:** on the real Ganga Expressway data, the fixed SWIR < 0.20 rule found almost no paved pixels. Finished road measured SWIR 0.20–0.25, because each 10 m pixel also takes in the grassy median and verges.
+- **Fix:** each segment is compared with its own earthwork peak. A drop of at least 0.12, held for 2 quarters (not both in the monsoon), counts as paving.
+- **Result:** km 0–20 is paved between 2024 Q3 and 2025 Q4, before the reported inauguration (29 Apr 2026).
+
+## v2: realistic stage logic, caching, validation
+- **Bug:** asphalt has a positive bare-soil index, so v1 counted the finished road as earthwork. v2 added NIR/SWIR darkness on a narrow carriageway strip.
+- **Bug:** crop harvests showed up as "clearing". Stages now rely on corridor-minus-control-ring NDVI (d_ndvi).
+- **Change:** progress is monotone, so greening verges no longer reset a segment to "not started".
+- **Bug:** the route was chained up one carriageway and back down the other (1,188 km). Now 594 km, with km 0 at the Meerut end.
+- **Speed:** imagery is cached per quarter and downloads resume after interruption. Thresholds can be re-tuned in seconds.
+- **Reliability:** retries plus an Earth Search fallback when Planetary Computer rate-limits; a saved OSM alignment for when Overpass times out.
+- **Offset correction:** read from each item's processing baseline instead of guessed from its date.
+- **New outputs:** milestone lines on charts, stalled-segment list, calibration scatter plot.
+
+## v1: first end-to-end run
+- OSM alignment, 2 km segments, quarterly Sentinel-2 composites, rule-based classes, stage heatmap, progress curve, map.
+- It detected the start of construction correctly (2022–23) but never detected paving.

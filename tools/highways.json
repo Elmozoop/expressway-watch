@@ -1,0 +1,279 @@
+[
+  {
+    "id": "ganga-expressway",
+    "name": "Ganga Expressway",
+    "from": "Meerut",
+    "to": "Prayagraj",
+    "length": 594,
+    "states": "Uttar Pradesh",
+    "authority": "UPEIDA",
+    "status": "Opened April 2026",
+    "results": "results/ganga_km*",
+    "route_file": "data/ganga_expressway_osm.geojson",
+    "route_start": [
+      77.74,
+      28.87
+    ],
+    "packages": {
+      "km0-20": 1,
+      "km100-120": 3,
+      "km200-220": 5,
+      "km250-270": 6,
+      "km350-370": 8,
+      "km450-470": 10,
+      "km550-570": 12
+    },
+    "facts": [
+      [
+        "Late 2022",
+        "construction started along the whole route"
+      ],
+      [
+        "2024–2025",
+        "asphalt laid, middle of the route first"
+      ],
+      [
+        "Apr 2026",
+        "opened to traffic (reported)"
+      ]
+    ],
+    "milestones": [
+      [
+        "2022Q2",
+        "Work began (reported)"
+      ],
+      [
+        "2026Q2",
+        "Opened (reported)"
+      ]
+    ],
+    "missText": "Four 2 km pieces (km 450–452, 556–558, 564–566 and 566–568) still read as earthwork, but the 2026 satellite images clearly show a finished road there. The paving signal was too weak for the tool to pick up. These are misses by the tool, not unfinished road.",
+    "about": "<p><b>What was measured.</b> Seven 20 km stretches, one in each of seven construction packages: 140 of the 594 km. Each stretch is split into 2 km pieces, and each piece is checked every three months from 2020 to 2026.</p><p><b>How the stages are decided.</b> Clearing and earthwork show up as the road corridor losing its greenery compared with the farmland next to it. Paving shows up as the road surface turning dark in infrared, because asphalt is much darker than soil and gravel.</p><p><b>How it was checked.</b> Construction appears after the reported start of work (April 2022), and 66 of the 70 pieces show paving before the reported opening (April 2026).</p><p><b>Map labels.</b> District names sit at the approximate boundaries between construction packages.</p><p><b>Limits.</b> The satellite sees 10 m details, so single lanes, bridges and structures aren't visible. Paving dates are good to about ±6 months. These are estimates, not official progress figures.</p><p>Code and data: <a href=\"https://github.com/Elmozoop/expressway-watch\">github.com/Elmozoop/expressway-watch</a>. Imagery: Copernicus Sentinel-2 (ESA). Route: © OpenStreetMap contributors. Reported dates: <a href=\"https://en.wikipedia.org/wiki/Ganga_Expressway\">Wikipedia</a>.</p>",
+    "towns_km": [
+      [
+        "Budaun",
+        129.6
+      ],
+      [
+        "Shahjahanpur",
+        228.4
+      ],
+      [
+        "Hardoi",
+        281.3
+      ],
+      [
+        "Unnao",
+        383.9
+      ],
+      [
+        "Raebareli",
+        488.8
+      ],
+      [
+        "Pratapgarh",
+        540.8
+      ]
+    ],
+    "story": [
+      {
+        "from": "2020Q1",
+        "title": "Farmland",
+        "text": "In 2020 the route is just a line through fields. The satellite sees crops being sown and harvested, and nothing else."
+      },
+      {
+        "from": "2022Q1",
+        "title": "Work begins",
+        "text": "The foundation stone was laid in December 2021 and physical work began in April 2022. Clearing starts to show up along the route."
+      },
+      {
+        "from": "2022Q4",
+        "title": "Earthwork everywhere",
+        "text": "Within months, almost the whole route turns into a strip of bare earth: the raised road bed being built. In {q}, {p3}% of the tracked road is earthwork."
+      },
+      {
+        "from": "2023Q4",
+        "title": "Asphalt arrives",
+        "text": "The first asphalt appears in late 2023, and the middle of the route (km 200–270) finishes first. In {q}, {p4}% of the tracked road is paved."
+      },
+      {
+        "from": "2025Q4",
+        "title": "Open to traffic",
+        "text": "In {q}, {p4}% of the tracked road is paved. The expressway opened on 29 April 2026."
+      }
+    ],
+    "segnote": "Some pieces still read as earthwork, although the 2026 images show a finished road. The paving signal there was too weak for the tool.",
+    "partial": "Seven 20 km stretches (140 of the 594 km) are tracked, each in a different construction package, from the Meerut end to near Prayagraj. The whole road is open: the few pieces not shown as paved had too weak a signal to pass the test.",
+    "validation": [
+      "2026Q1",
+      "of Ganga pieces seen paved before it opened"
+    ],
+    "places": [
+      {
+        "id": "ganga_km0-2",
+        "label": "km 0–2, near Meerut",
+        "tag": "Paved",
+        "stage": 4,
+        "before": "2020Q1",
+        "after": "2026Q3",
+        "hero": true,
+        "hero_after": "2026Q3",
+        "text": "The straight road running top to bottom is an older highway; the expressway starts here, with a junction onto it. In <b>2020</b> the land beside it was farmland. By <b>2024</b> the bare earth of the junction's loops and the new road bed show up as pale strips. In <b>2026</b> the grey asphalt of the finished junction is clear.",
+        "hint": "The straight road is an older highway. Watch the expressway's junction appear beside it."
+      }
+    ],
+    "explainer": {
+      "results": "results/ganga_km0-20",
+      "piece": "km 0–2",
+      "place": "ganga_km0-2",
+      "where": "near Meerut",
+      "steps": {
+        "intro": [
+          "One piece of road, six years",
+          "This is km 0–2 of the Ganga Expressway, near Meerut, where it starts from an older highway (the straight road). Every three months the tool looks at it in a fresh satellite image and takes two readings."
+        ],
+        "1": [
+          "Farmland",
+          "The strip where the road will run is as green as the fields beside it, so reading 1 stays near zero. Harvests don't move it: the fields next door are harvested too."
+        ],
+        "2": [
+          "Clearing",
+          "The strip starts losing its green compared with the fields around it. When reading 1 drops below −0.08, the tool marks clearing."
+        ],
+        "3": [
+          "Earthwork",
+          "The raised road bed is bare soil: far less green than its neighbours and bright in infrared. Once earthwork starts, a piece never goes back to an earlier stage."
+        ],
+        "4": [
+          "Paved",
+          "Asphalt is dark in infrared. Reading 2 fell at least 0.12 below its earthwork peak and stayed down for two quarters, one of them in the dry season. Short dips that bounce back, like wet monsoon soil, don't count."
+        ],
+        "outro": [
+          "One square per quarter",
+          "That row of squares is the whole history of this piece. Every grid on this site is built from rows like it, one for each 2 km of road."
+        ]
+      }
+    },
+    "checks": [
+      {
+        "label": "Physical work began",
+        "reported": "April 2022",
+        "quarter": "2022Q2",
+        "measure": "earthwork_median"
+      },
+      {
+        "label": "Opened to traffic",
+        "reported": "29 April 2026",
+        "quarter": "2026Q1",
+        "measure": "paved_by",
+        "before_opening": true
+      }
+    ]
+  },
+  {
+    "id": "delhi-amritsar-katra",
+    "name": "Delhi–Amritsar–Katra Expressway",
+    "from": "Delhi",
+    "to": "Katra",
+    "length": 670,
+    "states": "Haryana, Punjab, J&K",
+    "authority": "NHAI",
+    "status": "Under construction",
+    "results": "results/dak_km*",
+    "route_file": "data/dak_expressway_osm.geojson",
+    "route_start": [
+      76.85,
+      28.75
+    ],
+    "max_gap_km": 25,
+    "towns_km": [
+      [
+        "Sangrur",
+        190
+      ],
+      [
+        "Ludhiana",
+        255
+      ],
+      [
+        "Jalandhar",
+        330
+      ]
+    ],
+    "partial": "Six 20 km stretches (120 km) are tracked, spread from the Delhi end to km 400. OpenStreetMap maps this expressway as one line from Delhi to near Pathankot, about 400 km of the 670 km route.",
+    "facts": [
+      [
+        "2022",
+        "foundation stone laid (reported)"
+      ],
+      [
+        "Delhi end",
+        "paved: km 0–100 is largely finished"
+      ],
+      [
+        "Punjab",
+        "still earthwork or untouched farmland, 4 years on"
+      ]
+    ],
+    "milestones": [
+      [
+        "2022Q1",
+        "Foundation stone (reported)"
+      ]
+    ],
+    "about": "<p><b>What was measured.</b> Six 20 km stretches, 60 pieces of 2 km, spread along the mapped route from Delhi towards Katra, checked every three months from 2020 to 2026.</p><p><b>Why this road.</b> It is under construction now, so the tool is used the way it would actually be useful: to see where work is moving and where it isn't.</p><p><b>How it was checked.</b> OpenStreetMap tags the road as under construction from about km 210 onward and as an open motorway before that. The satellite timeline agrees: paving stops between km 150 and km 230. Reports describe land acquisition in Punjab holding the project up, with completion now put at March 2028.</p><p><b>Limits.</b> The satellite sees 10 m details. Paving dates are good to about ±6 months, and near Delhi a few pieces read as earthwork although the road there is open. These are estimates, not official progress figures.</p><p>Code and data: <a href=\"https://github.com/Elmozoop/expressway-watch\">github.com/Elmozoop/expressway-watch</a>. Imagery: Copernicus Sentinel-2 (ESA). Route: © OpenStreetMap contributors. Reported dates: <a href=\"https://en.wikipedia.org/wiki/Delhi%E2%80%93Amritsar%E2%80%93Katra_Expressway\">Wikipedia</a>.</p>",
+    "segnote": "The pieces here that read as earthwork are most likely misses by the tool: OpenStreetMap maps this stretch as an open motorway.",
+    "from_label": "Delhi",
+    "to_label": "towards Katra",
+    "story": [
+      {
+        "from": "2020Q1",
+        "title": "Farmland, from Delhi to Punjab",
+        "text": "In 2020 the whole route is fields. The foundation stone is laid in January 2022."
+      },
+      {
+        "from": "2022Q3",
+        "title": "Work starts near Delhi",
+        "text": "Earthwork appears along the Haryana stretches within months of the start. By {q:2023Q1}, {p3:2023Q1}% of the tracked road is earthwork."
+      },
+      {
+        "from": "2024Q4",
+        "title": "The Delhi end gets its asphalt",
+        "text": "By {q:2025Q1}, {p4:2025Q1}% of the tracked road is paved — nearly all of it at the Delhi end, km 0–100."
+      },
+      {
+        "from": "2025Q4",
+        "title": "Punjab is still waiting",
+        "text": "In {q:2026Q3}, {p3:2026Q3}% of the tracked road is still earthwork and {p1:2026Q3}% has not been touched at all. Reports blame land acquisition in Punjab; completion is now put at March 2028."
+      }
+    ],
+    "live": true,
+    "osm_check": "results/dak_osm_crosscheck.csv",
+    "intro": "Progress falls away along the route: the Delhi end is largely paved, while from about km 230 onwards almost nothing is.",
+    "context": "Reports blame land acquisition in Punjab, with completion now put at March 2028.",
+    "places": [
+      {
+        "id": "dak_km80-82",
+        "label": "km 80–82, Haryana",
+        "tag": "Paved",
+        "stage": 4,
+        "before": "2020Q1",
+        "after": "2026Q3",
+        "text": "Fields in <b>2020</b>. By <b>2022</b> the raised road bed is a bright strip of bare earth. In <b>2026</b> it is a dark, finished carriageway."
+      },
+      {
+        "id": "dak_km300-302",
+        "label": "km 300–302, Punjab",
+        "tag": "Still earthwork",
+        "stage": 3,
+        "before": "2020Q1",
+        "after": "2026Q3",
+        "text": "Fields in <b>2020</b> and <b>2022</b>. By <b>2024</b> the road bed has been built, but in <b>2026</b> it is still pale bare earth, with no asphalt on it."
+      }
+    ],
+    "trust": [
+      "km 210",
+      "OpenStreetMap, mapped by volunteers, shows the Delhi–Katra road as open up to about km 210 and under construction after it. The satellite sees paving stop between km 150 and km 230."
+    ]
+  }
+]
