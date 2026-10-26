@@ -1105,9 +1105,6 @@ function makeIntro3D(T, canvas, opt = {}){
   renderer.debug.checkShaderErrors = false;           // don't stall the page waiting on the GPU to report
   const maxAniso = renderer.capabilities.getMaxAnisotropy();
   const scene = new T.Scene(), camera = new T.PerspectiveCamera(30, 1, 1, 1000);
-  // --- enhanced: atmospheric fog for depth and mood ---
-  const fogColor = new T.Color("#06090e");
-  scene.fog = new T.FogExp2(fogColor, 0.008);
 
   // ---------- textures, drawn on canvases (a seeded random, so every visit draws the same fields) ----------
   const rng = seed => () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
@@ -1126,16 +1123,6 @@ function makeIntro3D(T, canvas, opt = {}){
     g.save(); [["#fff", a], ["#000", a * 1.3]].forEach(([c, m], j) => { g.fillStyle = c; P[j].forEach((path, k) => { g.globalAlpha = m * (k + .5) / B; g.fill(path); }); }); g.restore();
   };
   const solid = (hex, seed, n = 2600, a = .16, s = 2.2, rx = 1, ry = 1) => tex(256, 256, (g, w, h) => { g.fillStyle = hex; g.fillRect(0, 0, w, h); grain(g, w, h, n, seed, a, s); }, rx, ry);
-
-  // --- enhanced: heat shimmer texture for asphalt (procedural noise for distortion effect) ---
-  const heatShimmerTex = tex(256, 256, (g, w, h) => {
-    const r = rng(99);
-    for (let i = 0; i < 4000; i++) {
-      const x = r() * w, y = r() * h, s = 1 + r() * 3;
-      g.fillStyle = `rgba(255,255,255,${0.02 + r() * 0.03})`;
-      g.fillRect(x, y, s, s * (3 + r() * 10));
-    }
-  });
 
   // farmland seen from above: a patchwork of plots, like the satellite images further down the page
   const fields = tex(1024, 576, (g, w, h) => {
@@ -1192,35 +1179,16 @@ function makeIntro3D(T, canvas, opt = {}){
   const std = (map, extra = {}) => {
     if (!opt.soft) {
       const mat = new T.MeshStandardMaterial({map, roughness: .92, metalness: 0, ...extra});
-      // add heat shimmer uniforms for asphalt
-      if (extra.normalMap) {
-        mat.normalMap = extra.normalMap;
-        mat.normalScale = new T.Vector2(0.5, 0.5);
-      }
-      mat.onBeforeCompile = (shader) => {
-        shader.uniforms.uHeatShimmer = { value: 0 };
-        shader.uniforms.uTime = { value: 0 };
-        shader.vertexShader = `
-          uniform float uTime;
-          uniform float uHeatShimmer;
-          varying vec3 vWorldPosition;
-          ${shader.vertexShader}
-        `.replace('#include <begin_vertex>', `
-          #include <begin_vertex>
-          vWorldPosition = (modelMatrix * vec4(transformed, 1.0)).xyz;
-          // heat shimmer distortion on asphalt surface
-          if (uHeatShimmer > 0.5) {
-            float distortion = sin(vWorldPosition.x * 10.0 + uTime * 5.0) * cos(vWorldPosition.z * 8.0 + uTime * 3.0) * 0.002 * uHeatShimmer;
-            transformed.y += distortion;
-          }
-        `);
-      };
+      if (extra.normalMap) mat.normalScale = new T.Vector2(.5, .5);
       return mat;
     }
     const {roughness, metalness, ...rest} = extra; return new T.MeshLambertMaterial({map, ...rest});
   };
   const mesh = (geo, mat, parent) => { const m = new T.Mesh(geo, mat); m.castShadow = m.receiveShadow = true; parent.add(m); return m; };
   const layers = {};
+  // a gold outline round the layer the words are about
+  const outline = (geo, parent) => { const o = new T.LineSegments(new T.EdgesGeometry(geo), new T.LineBasicMaterial({color: 0xe8a838, transparent: true, opacity: 0, depthTest: false}));
+    o.renderOrder = 10; o.visible = false; parent.add(o); parent.userData.edge = o; return o; };
   const layer = (key, y0) => { const g = new T.Group(); g.userData = {key, y0}; scene.add(g); layers[key] = g; return g; };
 
   // the ground: farmland on top, soil on the cut faces
@@ -1235,11 +1203,14 @@ function makeIntro3D(T, canvas, opt = {}){
   const shp = new T.Shape(); shp.moveTo(-19, 0); shp.lineTo(19, 0); shp.lineTo(15, 3.2); shp.lineTo(-15, 3.2); shp.closePath();
   const eg = new T.ExtrudeGeometry(shp, {depth: L, bevelEnabled: false}); eg.translate(0, 0, -HL);
   mesh(eg, [std(embCap), std(embSide)], emb);
+  outline(eg, emb);
 
   // granular sub-base, wet mix macadam, dense bituminous macadam, bituminous concrete (thicknesses exaggerated)
   const slab = (key, w, h, y0, side, top, normalMap) => {
     const g = layer(key, y0), m = std(side), t = top ? std(top, {normalMap: normalMap}) : m;
-    mesh(new T.BoxGeometry(w, h, L), [m, m, t, m, m, m], g).position.y = y0 + h / 2;
+    const box = new T.BoxGeometry(w, h, L);
+    mesh(box, [m, m, t, m, m, m], g).position.y = y0 + h / 2;
+    outline(box, g).position.y = y0 + h / 2;
     g.userData.h = h; g.userData.w = w;
     if (normalMap) g.userData.normalMap = normalMap;
     return g;
@@ -1277,113 +1248,62 @@ function makeIntro3D(T, canvas, opt = {}){
   // ---------- the story, as a function of scroll ----------
   const ORDER = ["bc", "dbm", "wmm", "gsb", "emb"];           // taken off top first
   const LIFT = {bc: 16.5, dbm: 13.2, wmm: 10, gsb: 6.9, emb: 3.6};
-  const DROP = {emb: [.60, .04], gsb: [.64, .03], wmm: [.67, .03], dbm: [.70, .03], bc: [.73, .03]};
+  const DROP = {emb: [.64, .035], gsb: [.675, .025], wmm: [.70, .025], dbm: [.73, .03], bc: [.765, .03]};
   const clamp = v => Math.max(0, Math.min(1, v)), ease = v => v < .5 ? 4 * v * v * v : 1 - Math.pow(-2 * v + 2, 3) / 2;
-  const E0 = .06, ESTEP = .055, EDUR = .1, R0 = .56, B0 = .86;
+  const E0 = .06, ESTEP = .1, EDUR = .07, R0 = .56, B0 = .60;          // each layer comes off as the words turn to it
   const explodeOf = (k, p) => clamp((p - (E0 + k * ESTEP)) / EDUR);
   const mats = key => { const out = []; layers[key].traverse(o => { if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => { if (!out.includes(m)) out.push(m); }); }); return out; };
   const LM = {}; ORDER.forEach(k => { LM[k] = mats(k); LM[k].forEach(m => { m.transparent = true; }); });
   const setOpacity = (key, a) => { layers[key].visible = a > .004; LM[key].forEach(m => { m.opacity = a; m.depthWrite = a > .98; }); };
 
+  // each layer's own colours, so it can be dimmed while another is being described and lit while it is
+  ORDER.forEach(k => LM[k].forEach(m => { m.userData.c0 = m.color.clone(); }));
+  const GOLD = new T.Color(0xe8a838), BLACK = new T.Color(0);
+  const bounce = v => { const n = 7.5625, d = 2.75;               // lands, then settles with two small bounces
+    return v < 1 / d ? n * v * v : v < 2 / d ? n * (v -= 1.5 / d) * v + .75 : v < 2.5 / d ? n * (v -= 2.25 / d) * v + .9375 : n * (v -= 2.625 / d) * v + .984375; };
+  // how much the words are about layer k at p: in as its turn starts, out as the next one's does
+  const focusOf = (k, p) => p >= R0 ? 0 : clamp((p - (E0 + k * ESTEP)) / .02) * (k === 4 ? 1 - clamp((p - R0 + .03) / .03) : 1 - clamp((p - (E0 + (k + 1) * ESTEP)) / .02));
+  const explaining = p => clamp((p - E0) / .03) * (1 - clamp((p - R0 + .03) / .03));
+
   function pose(p){
     // layer lifts, opacities and growth
+    const ex = explaining(p);
     ORDER.forEach((key, k) => {
-      const g = layers[key]; let lift = 0, a = 1, sy = 1, w = 1;
-      if (p < R0) lift = LIFT[key] * ease(explodeOf(k, p));
+      const g = layers[key], f = focusOf(k, p); let lift = 0, a = 1, sy = 1, w = 1;
+      if (p < R0) lift = LIFT[key] * ease(explodeOf(k, p)) + 1.4 * ease(f);                  // the one being described rises a little more
       else if (p < B0){ const r = ease((p - R0) / (B0 - R0)); lift = LIFT[key] + 22 * r; a = w = 1 - r; }
       else { const [s, d] = DROP[key], r = clamp((p - s) / d), b = ease(r);
-        // the embankment grows up out of the ground; each layer on it fades in high up, then drops into place solid
-        if (key === "emb"){ sy = Math.max(.001, b); a = b > 0 ? 1 : 0; } else { lift = 7 * (1 - b); a = Math.min(1, r * 4); w = b; } }
+        // the embankment grows up out of the ground; each layer on it fades in high up, then drops into place and settles
+        if (key === "emb"){ sy = Math.max(.001, b); a = b > 0 ? 1 : 0; } else { lift = 7 * (1 - bounce(r)); a = Math.min(1, r * 4); w = b; } }
       g.position.y = lift; g.scale.y = sy; g.userData.pw = w; setOpacity(key, a);   // pw: how much it counts towards the model's height
+      // the layer being described is lit and outlined; the others step back
+      const dim = 1 - .32 * ex * (1 - f);
+      LM[key].forEach(m => { if (!m.userData.c0) return; m.color.copy(m.userData.c0).lerp(BLACK, 1 - dim); if (m.emissive) m.emissive.copy(GOLD).multiplyScalar(.12 * f); });
+      const e = g.userData.edge; e.visible = f > .01 && a > .5; e.material.opacity = .95 * f;
     });
-    clearMat.opacity = p < B0 ? 0 : ease(clamp((p - .612) / .045));
+    clearMat.opacity = p < B0 ? 0 : ease(clamp((p - .605) / .035));
     clr.visible = clearMat.opacity > .004;
-
-    // --- enhanced: atmospheric effects during phases ---
-    // dust particles during earthwork explosion phase (p ~ 0.06-0.40)
-    if (typeof window.i3DustParticles === 'undefined') {
-      window.i3DustParticles = createDustParticles(T, scene);
-    }
-    const dustVisible = p > 0.06 && p < 0.45;
-    if (window.i3DustParticles) {
-      window.i3DustParticles.visible = dustVisible && !opt.soft;
-      if (dustVisible) {
-        window.i3DustParticles.material.uniforms.uProgress.value = Math.min(1, (p - 0.06) / 0.15);
-        window.i3DustParticles.material.uniforms.uTime.value = Date.now() * 0.001;
-      }
-    }
-
-    // heat shimmer on asphalt when it's the visible top layer (p > 0.86)
-    const bcMesh = layers.bc.children[0];
-    if (bcMesh && bcMesh.material) {
-      const isTopLayer = p > 0.86;
-      if (bcMesh.material.uniforms) {
-        bcMesh.material.uniforms.uHeatShimmer.value = isTopLayer ? 1.0 : 0.0;
-        bcMesh.material.uniforms.uTime.value = Date.now() * 0.001;
-      }
+    // dust: while the earth layers (sub-base, embankment) come off, and while earthwork goes back on
+    if (dust){
+      const d = Math.max(Math.sin(Math.PI * clamp((p - (E0 + 3 * ESTEP)) / (2 * ESTEP + .04))), Math.sin(Math.PI * clamp((p - .64) / .085)));
+      dust.visible = d > .02; dust.material.uniforms.uProgress.value = d;
     }
   }
-
-  // --- enhanced: create dust particle system for earthwork phase ---
-  function createDustParticles(T, scene) {
-    const count = opt.soft ? 0 : 500;
-    if (count === 0) return { visible: false };
-    const geometry = new T.BufferGeometry();
-    const positions = new Float32Array(count * 3);
-    const sizes = new Float32Array(count);
-    const alphas = new Float32Array(count);
-    const rng2 = rng(42);
-    for (let i = 0; i < count; i++) {
-      positions[i * 3 + 0] = (rng2() - 0.5) * 40;
-      positions[i * 3 + 1] = -2 + rng2() * 6;
-      positions[i * 3 + 2] = (rng2() - 0.5) * 36;
-      sizes[i] = 0.1 + rng2() * 0.3;
-      alphas[i] = rng2() * 0.5;
-    }
-    geometry.setAttribute('position', new T.BufferAttribute(positions, 3));
-    geometry.setAttribute('aSize', new T.BufferAttribute(sizes, 1));
-    geometry.setAttribute('aAlpha', new T.BufferAttribute(alphas, 1));
-    const material = new T.ShaderMaterial({
-      transparent: true,
-      depthWrite: false,
-      blending: T.AdditiveBlending,
-      uniforms: {
-        uTime: { value: 0 },
-        uProgress: { value: 0 },
-        uColor: { value: new T.Color("#a86a3e") }
-      },
-      vertexShader: `
-        attribute float aSize;
-        attribute float aAlpha;
-        uniform float uTime;
-        uniform float uProgress;
-        varying float vAlpha;
-        void main() {
-          vec3 pos = position;
-          // dust rises and disperses
-          pos.y += sin(uTime * 0.5 + position.x * 0.1 + position.z * 0.1) * 0.3 * uProgress;
-          pos.x += sin(uTime * 0.3 + position.z * 0.05) * 0.5 * uProgress;
-          pos.z += cos(uTime * 0.4 + position.x * 0.05) * 0.5 * uProgress;
-          vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
-          gl_PointSize = aSize * (300.0 / -mvPosition.z) * uProgress;
-          vAlpha = aAlpha * uProgress;
-          gl_Position = projectionMatrix * mvPosition;
-        }
-      `,
-      fragmentShader: `
-        uniform vec3 uColor;
-        varying float vAlpha;
-        void main() {
-          float dist = length(gl_PointCoord - vec2(0.5));
-          float alpha = smoothstep(0.5, 0.0, dist) * vAlpha;
-          gl_FragColor = vec4(uColor, alpha);
-        }
-      `
-    });
-    const particles = new T.Points(geometry, material);
-    scene.add(particles);
-    return particles;
-  }
+  // dust thrown up by the earthwork: a few hundred soft specks that drift around the embankment
+  const dust = opt.soft ? null : (() => {
+    const n = opt.small ? 220 : 420, r = rng(42), pos = new Float32Array(n * 3), size = new Float32Array(n), alpha = new Float32Array(n);
+    for (let i = 0; i < n; i++){ pos[i * 3] = (r() - .5) * 46; pos[i * 3 + 1] = r() * 9; pos[i * 3 + 2] = (r() - .5) * L; size[i] = .25 + r() * .55; alpha[i] = .25 + r() * .45; }
+    const geo = new T.BufferGeometry();
+    geo.setAttribute("position", new T.BufferAttribute(pos, 3)); geo.setAttribute("aSize", new T.BufferAttribute(size, 1)); geo.setAttribute("aAlpha", new T.BufferAttribute(alpha, 1));
+    const mat = new T.ShaderMaterial({transparent: true, depthWrite: false,
+      uniforms: {uTime: {value: 0}, uProgress: {value: 0}, uColor: {value: new T.Color("#c99a6a")}},
+      vertexShader: `attribute float aSize; attribute float aAlpha; uniform float uTime; uniform float uProgress; varying float vA;
+        void main(){ vec3 q = position; q.y += mod(uTime * .6 + position.x * .37, 9.0) * .35;
+          q.x += sin(uTime * .4 + position.z * .2) * .8; q.z += cos(uTime * .3 + position.x * .15) * .8;
+          vec4 mv = modelViewMatrix * vec4(q, 1.0); gl_PointSize = aSize * (520.0 / -mv.z); vA = aAlpha * uProgress; gl_Position = projectionMatrix * mv; }`,
+      fragmentShader: `uniform vec3 uColor; varying float vA; void main(){ float d = length(gl_PointCoord - .5); gl_FragColor = vec4(uColor, smoothstep(.5, .1, d) * vA); }`});
+    const pts = new T.Points(geo, mat); pts.visible = false; pts.renderOrder = 5; scene.add(pts); return pts;
+  })();
 
   // camera: assembled, exploded, rebuilt, then straight down like the satellite
   // --- enhanced: cinematic camera choreography with 5 phases ---
@@ -1509,6 +1429,7 @@ function makeIntro3D(T, canvas, opt = {}){
 
   function frame(p, t){
     pose(p);
+    if (dust) dust.material.uniforms.uTime.value = t;
     cars.forEach(c => { const {dir, z0, v} = c.userData, span = L + 10; c.position.z = dir * ((((z0 + v * t) % span) + span) % span - span / 2); c.rotation.y = dir > 0 ? 0 : Math.PI; });
     place(p, t);
     renderer.render(scene, camera);
@@ -1540,11 +1461,11 @@ function makeIntro3D(T, canvas, opt = {}){
 }
 // the layers, top to bottom, and the stage the tool reads while each one is the top layer
 const LAYERS = [
-  {key: "bc", name: "Asphalt surface", short: "Asphalt", stage: 4, what: "Bituminous concrete: the smooth, dark top coat that traffic drives on.", space: "From space it is dark in infrared, so the tool reads the piece as paved."},
-  {key: "dbm", name: "Binder course", short: "Binder", stage: 4, what: "Dense bituminous macadam: a thicker coat of asphalt and stone that carries the load.", space: "Asphalt too, so it is dark from space as well: paved."},
-  {key: "wmm", name: "Base", short: "Base", stage: 3, what: "Wet mix macadam: crushed stone mixed with water, spread and rolled flat.", space: "While it is the top layer it looks like bare stone from space: still earthwork."},
-  {key: "gsb", name: "Sub-base", short: "Sub-base", stage: 3, what: "Granular sub-base: gravel and sand that spread the load and let water drain away.", space: "Bright from space, like bare earth: earthwork."},
-  {key: "emb", name: "Embankment", short: "Embankment", stage: 3, what: "Soil piled up and compacted, layer by layer, to lift the road above the land around it.", space: "Bare soil is far less green than the fields and bright in infrared: earthwork."},
+  {key: "bc", thick: "typically 40–50 mm", name: "Asphalt surface", short: "Asphalt", stage: 4, what: "Bituminous concrete: the smooth, dark top coat that traffic drives on.", space: "From space it is dark in infrared, so the tool reads the piece as paved."},
+  {key: "dbm", thick: "typically 100–130 mm", name: "Binder course", short: "Binder", stage: 4, what: "Dense bituminous macadam: a thicker coat of asphalt and stone that carries the load.", space: "Asphalt too, so it is dark from space as well: paved."},
+  {key: "wmm", thick: "typically 250 mm", name: "Base", short: "Base", stage: 3, what: "Wet mix macadam: crushed stone mixed with water, spread and rolled flat.", space: "While it is the top layer it looks like bare stone from space: still earthwork."},
+  {key: "gsb", thick: "typically 200–300 mm", name: "Sub-base", short: "Sub-base", stage: 3, what: "Granular sub-base: gravel and sand that spread the load and let water drain away.", space: "Bright from space, like bare earth: earthwork."},
+  {key: "emb", thick: "often 2–3 m high", name: "Embankment", short: "Embankment", stage: 3, what: "Soil piled up and compacted, layer by layer, to lift the road above the land around it.", space: "Bare soil is far less green than the fields and bright in infrared: earthwork."},
   {key: "gnd", name: "Farmland", short: "Farmland", stage: 1, what: "The fields the road is built across.", space: "As green as the fields next door: not started. Once the strip is cleared of crops it turns less green: clearing."}
 ];
 // the rebuild, as the satellite sees it: [from scroll progress, stage, title, words]
@@ -1566,7 +1487,7 @@ const i3Gap = () => I3.cmp ? 16 : 36;                                           
 function i3Caption(p){
   if (p < .06) return ["", "", "", 0];
   if (p < .56){ const k = Math.min(5, Math.floor((p - .06) / .10)), l = LAYERS[k];
-    return [k < 5 ? `Layer ${k + 1} of 5, from the top` : "Underneath", l.name, `${l.what} ${l.space}`, l.stage]; }
+    return [k < 5 ? `Layer ${k + 1} of 5 · ${l.thick}` : "Underneath", l.name, `${l.what} ${l.space}`, l.stage]; }
   // p >= 0.56: use BUILD array for rebuild phase
   let b = BUILD[0]; BUILD.forEach(x => { if (p >= x[0]) b = x; });
   const i = BUILD.indexOf(b);
