@@ -1031,7 +1031,7 @@ function drawRoute(svg, h, opt){
     const towns = (opt.towns || []).map(([name, pt]) => {
       const [x, y] = proj(pt), g = el("g", {}, labels);
       el("circle", {cx: x, cy: y, r: 2.4, fill: "#a9b3c2"}, g);
-      const t = el("text", {x: x - 8, y: y + 4, "font-size": 11.5, fill: "#a9b3c2", "text-anchor": "end", stroke: "#0e131b", "stroke-width": 3, "stroke-linejoin": "round", "paint-order": "stroke"}, g); t.textContent = name;
+      const t = el("text", {x: x - 8, y: y + 4, "font-size": 11.5, fill: "#a9b3c2", "text-anchor": "end", stroke: "#06090e", "stroke-width": 3, "stroke-linejoin": "round", "paint-order": "stroke"}, g); t.textContent = name;
       return {g, t, x};
     });
     towns.forEach(o => { const b = o.t.getBBox(); o.b = {x: b.x, y: b.y, width: b.width, height: b.height}; });
