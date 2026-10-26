@@ -2812,7 +2812,7 @@ function drawDistChart(boxId, h) {
   const legend = el("g", {}, svg);
   [4,3,2,1].forEach((s, k) => {
     el("rect", {x: L, y: T + k * 22, width: 14, height: 14, rx: 3, fill: STAGES[s].c}, legend);
-    el("text", {x: L + 20, y: T + k * 22 + 11, class: "ar-lab", fill: var("--ink")}, legend).textContent = STAGES[s].name;
+    el("text", {x: L + 20, y: T + k * 22 + 11, class: "ar-lab", fill: "var(--ink)"}, legend).textContent = STAGES[s].name;
   });
 }
 
