@@ -1,0 +1,15 @@
+# Netlify configuration for Expressway Watch
+# Builds from docs/ folder (static site)
+
+[build]
+  base = "docs"
+  publish = "."
+  command = "bash ../tools/netlify_build.sh"
+
+[functions]
+  directory = "netlify/functions"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
