@@ -25,7 +25,8 @@
    font without holding up the page. */
 (function(){
   var d = document.documentElement, ids = ["ganga-expressway", "delhi-amritsar-katra"];
-  if (ids.indexOf(location.hash.slice(1)) >= 0) d.classList.add("deep");
+  var h = location.hash.slice(1);
+  if (ids.indexOf(h) >= 0 || /^compare[\/-]/.test(h)) d.classList.add("deep");
   var l = document.createElement("link"); l.rel = "stylesheet";
   l.href = "https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap";
   document.head.appendChild(l);
@@ -33,8 +34,6 @@
 </script>
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap">
 <style>.scope,.ctas,#pick,#learn,#story,#trust,#foot1,.i3-stage,.i3-static,.nav a[href^="#"]{display:none!important}.intro3d{height:auto!important}</style></noscript>
-<!-- JSZip for time-lapse export -->
-<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js" crossorigin="anonymous"></script>
 <script>
 /*!
  * GSAP 3.12.5
@@ -105,6 +104,7 @@
   --night:var(--void); --night-2:var(--void-elevated); --night-3:var(--void-border);
   --night-line:var(--void-border); --on-night:#eef2f7; --on-night-2:#aab4c3; --on-night-3:#8792a3;
   --mark:var(--chainage); --sign:var(--safety-green);
+  --cmp-a:#b7791f; --cmp-b:#1f6fb8;            /* the two roads in a comparison */
   --s0:var(--stage-0); --s1:var(--stage-1); --s2:var(--stage-2); --s3:var(--stage-3); --s4:var(--stage-4);
   --font:var(--font-ui); --mono:var(--font-mono);
   --shadow:0 1px 2px rgba(6,9,14,.06),0 12px 32px rgba(6,9,14,.08);
@@ -115,6 +115,7 @@
     --bg:var(--void); --surface:var(--void-elevated); --surface-2:var(--void-border);
     --ink:#eef2f7; --ink-2:#aab4c3; --muted:#8792a3; --line:var(--void-border);
     --focus:var(--chainage); --accent:var(--chainage-pale); --accent-ink:var(--void); --soft:var(--chainage-pale);
+    --cmp-a:var(--chainage); --cmp-b:#6cb2f0;
     --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 32px rgba(0,0,0,.35);
   }
 }
@@ -123,6 +124,7 @@
   --bg:var(--void); --surface:var(--void-elevated); --surface-2:var(--void-border);
   --ink:#eef2f7; --ink-2:#aab4c3; --muted:#8792a3; --line:var(--void-border);
   --focus:var(--chainage); --accent:var(--chainage-pale); --accent-ink:var(--void); --soft:var(--chainage-pale);
+    --cmp-a:var(--chainage); --cmp-b:#6cb2f0;
   --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 32px rgba(0,0,0,.35);
 }
 
@@ -237,7 +239,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .i3-lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
 .i3-lines path{fill:none;stroke:rgba(214,224,240,.42);stroke-width:1}
 .i3-labels{position:absolute;inset:0;pointer-events:none}
-.i3-lab{position:absolute;left:0;top:0;display:grid;gap:3px;white-space:nowrap;will-change:transform,opacity;transition:opacity .25s;text-shadow:0 1px 2px rgba(6,9,14,.9),0 0 10px rgba(6,9,14,.75)}
+.i3-lab{position:absolute;left:0;top:0;opacity:0;display:grid;gap:3px;white-space:nowrap;will-change:transform,opacity;transition:opacity .25s;text-shadow:0 1px 2px rgba(6,9,14,.9),0 0 10px rgba(6,9,14,.75)}
 .i3-lab b{font-size:15px;font-weight:800;color:var(--on-night)}
 .i3-lab .i3-sp{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;color:var(--on-night-2)}
 .i3-lab .i3-sp i{width:9px;height:9px;border-radius:2px}
@@ -333,6 +335,41 @@ button.hw:hover .go span{transform:translateX(4px)}
 .compare-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
 .compare-option{display:block;text-align:left;padding:12px 16px;border:1px solid var(--line);background:var(--surface-2);border-radius:8px;font-size:14px;color:var(--ink);cursor:pointer;transition:all .2s}
 .compare-option:hover{background:var(--chainage-pale);border-color:var(--chainage);color:var(--void)}
+/* comparison page */
+.cmphead{display:grid;gap:14px;padding-block:12px 64px}
+.cmphead .eyebrow{color:var(--mark)}
+.cmphead h1{font-size:clamp(32px,4.6vw,56px);max-width:22ch}
+.cmphead h1 .vs{color:var(--mark);font-family:var(--mono);font-weight:600;font-size:.42em;letter-spacing:.1em;text-transform:uppercase;vertical-align:.3em;margin-inline:.15em}
+.cmpkey,.cmp-legend{display:flex;flex-wrap:wrap;gap:6px 20px;font-size:15px}
+.cmpkey{color:var(--on-night)}
+.cmp-legend{color:var(--ink-2);margin:4px 0 10px}
+.cmpkey i,.cmp-legend i{display:inline-block;width:22px;height:4px;border-radius:2px;vertical-align:middle;margin-right:8px}
+.cmpnote{color:var(--on-night-3);font-size:14.5px;max-width:60ch}
+.cmpjump{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
+@media (max-width:520px){ .cmpjump .btn{padding:10px 14px;font-size:14px} }
+.cmpgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px;margin-top:6px}
+@media (max-width:760px){ .cmpgrid{grid-template-columns:1fr;gap:28px} }
+.cmpcol{display:grid;gap:12px;align-content:start;border-top:4px solid var(--c);padding-top:14px;min-width:0}
+.cmpcol h3{font-size:21px}
+.cmpcol .eyebrow{color:var(--muted)}
+.cmpcol .route{color:var(--ink-2);font-size:15px}
+.cmpcol .big{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.cmpcol .big b{font-size:clamp(48px,6vw,72px);font-weight:900;line-height:.9;font-variant-numeric:tabular-nums;color:var(--ink)}
+.cmpcol .big>span{color:var(--ink-2);font-size:15px}
+.cmp-stack{height:26px}
+.cmp-facts{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:14px;color:var(--ink-2)}
+.cmp-facts span{display:inline-flex;align-items:center;gap:6px}
+.cmp-facts i{width:10px;height:10px;border-radius:3px}
+.cmp-facts b{font-family:var(--mono);font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+.cmp-stages{color:var(--ink-2);margin-top:4px}
+.cmp-stages b{color:var(--ink)}
+.cmp-line{fill:none;stroke:var(--c);stroke-width:3;stroke-linejoin:round;stroke-linecap:round}
+.cmp-pt{fill:var(--c);stroke:var(--surface);stroke-width:2}
+.cmp-pt.open{fill:var(--surface);stroke:var(--c);stroke-width:2.5}
+.cmp-axis{stroke:var(--line);stroke-width:2}
+.cmp-mid{stroke:var(--c);stroke-width:3;stroke-linecap:round}
+.cmp-rowlab{fill:var(--ink);font-weight:800;font-size:14px}
+#cmpBuild svg{cursor:default}
 .empty{color:var(--ink-2);padding-top:16px}
 .empty a{font-weight:700}
 
@@ -743,20 +780,6 @@ details .body a{color:var(--accent)}
   .tile{scroll-snap-align:start;flex-shrink:0}
   .overview{scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
   .gridbox{scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
-}
-
-/* Pull-to-refresh indicator */
-@media (pointer:coarse) {
-  body.pull-to-refresh::before{
-    content:"↓ Pull to refresh";
-    position:fixed;top:0;left:0;right:0;height:60px;
-    background:var(--chainage);color:var(--void);
-    display:flex;align-items:center;justify-content:center;
-    font-weight:700;font-size:14px;z-index:1000;
-    transform:translateY(-100%);
-    transition:transform .3s ease;
-  }
-  body.pull-to-refresh.active::before{transform:translateY(0)}
 }
 
 /* Swipe indicator for horizontal scroll areas */
@@ -1778,15 +1801,14 @@ function buildScope(){
 
   // --- enhanced: keyboard navigation for time-lapse ---
   function tlKeyHandler(e) {
-    if (!TL.playing && !TL.visible) return;
+    if (!TL.visible || home.hidden || e.altKey || e.ctrlKey || e.metaKey || e.target.closest("input,textarea,select,button,a,[contenteditable]")) return;
     if (e.key === "ArrowLeft" || e.key === "ArrowRight" || e.key === " ") {
       e.preventDefault();
+      if (e.key === " ") return tlSetPlaying(!TL.playing);
       tlSetPlaying(false);
       if (TL.busy) return;
-      if (e.key === " ") return;
       const dir = e.key === "ArrowRight" ? 1 : -1;
-      const next = (TL.i + dir + snaps.length) % snaps.length;
-      tlShow(next);
+      tlShow((TL.i + dir + snaps.length) % snaps.length);
     }
   }
   document.addEventListener("keydown", tlKeyHandler);
@@ -1832,16 +1854,7 @@ function renderPicker(filter = ""){
       compareBtn.className = "compare-btn";
       compareBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 10h4v4h-4zM14 14h4v4h-4zM10 14h4v4h-4zM14 10h4v4h-4z"/></svg> Compare`;
       compareBtn.title = "Compare this highway with another";
-      compareBtn.addEventListener("click", e => {
-        e.stopPropagation();
-        const otherHws = HIGHWAYS.filter(hw => hw.id !== h.id && hw.segs);
-        if (otherHws.length === 1) {
-          openComparison(h.id, otherHws[0].id);
-        } else {
-          // Show a modal to pick
-          showComparePicker(h.id, otherHws);
-        }
-      });
+      compareBtn.addEventListener("click", e => { e.stopPropagation(); compareFrom(h.id); });
       b.querySelector(".body").appendChild(compareBtn);
     }
     // --- enhanced: press/tap for x-ray preview, drag to scrub ---
@@ -2108,7 +2121,7 @@ let H = null, qi = 0, timer = null, routeLines = [], areaX = null, areaW = 0, ov
 function killViewTriggers(){ viewTriggers.forEach(t => t.kill()); viewTriggers = []; }
 function openHw(id, push = true){
   const h = HIGHWAYS.find(x => x.id === id && x.segs); if (!h){ goHome(false); return; }
-  H = h; qi = h.periods.length - 1; stop();
+  H = h; qi = h.periods.length - 1; stop(); closeComparison();
   document.title = `${h.name} · Expressway Watch`;
   TL.visible = false; tlStop();
   const show = () => { home.hidden = true; view.hidden = false; if (push) history.replaceState(null, "", "#" + id); scrollTo({top: 0, behavior: "instant"}); renderHw(); };
@@ -2116,12 +2129,11 @@ function openHw(id, push = true){
   else show();
 }
 function goHome(push = true){
-  stop(); killViewTriggers();
+  stop(); closeComparison(); killViewTriggers();
   document.title = "Expressway Watch";
   const show = () => { view.hidden = true; view.innerHTML = ""; H = null; home.hidden = false; if (push) history.replaceState(null, "", location.pathname + location.search); scrollTo({top: 0, behavior: "instant"}); storyQ = -1; storyCh = -1;
     if (I3.pending) (I3.mode ? i3Build : startIntro)(); else if (I3.sc){ i3Size(); i3Draw(I3.mode === "still" ? 0 : I3.p, I3.t); }
     exDraw(); refreshStory(); onScrollAll(); TL.visible = true; tlSchedule(); if (G_) ScrollTrigger.refresh();
-    setupSwipeScroll();  // enhanced: re-setup swipe gestures on home
     if (anim()) G_.from(home, {opacity: 0, y: 20, duration: .45, ease: "power3.out", clearProps: "all"}); };
   if (anim() && !view.hidden) G_.to(view, {opacity: 0, y: 20, duration: .25, ease: "power2.in", onComplete: () => { G_.set(view, {clearProps: "all"}); show(); }});
   else show();
@@ -2232,7 +2244,7 @@ function placesHTML(h){
     <p class="hint">${many ? `Real satellite images of ${PL.length} places on this road. Pick one, then drag the handle.` : `Real satellite images of ${esc(PL[0].label)}. Drag the handle.`}</p></div>
     ${many ? `<div class="places" role="group" aria-label="Choose a place">${PL.map((p, i) => `<button class="place" data-i="${i}" aria-pressed="false"><i style="background:${STAGES[p.stage].c}"></i><span><b>${esc(p.label)}</b><small>${esc(p.tag)}</small></span></button>`).join("")}</div>` : ""}
     <div class="two${PL.some(p => p.h > p.w) ? " portrait" : ""}"><div><div class="cmp" id="hwCmp"></div><div class="cmpbar" id="hwYears"></div>
-      <div class="cmp-actions"><button class="btn ghost" id="exportTimelapseBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Export Time-lapse</button></div></div>
+      ${VIDEO_TYPE ? `<div class="cmp-actions"><button class="btn line" id="exportTimelapseBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Save time-lapse video</button></div>` : ""}</div>
       <div class="placetext"><div id="placeText"></div><p class="hint">Each pixel is 10 × 10 m. That's enough to see the road take shape, but not individual lanes.</p></div></div></section>`;
 }
 function pieceStrip(seg, P, before){
@@ -2252,7 +2264,7 @@ function showPlace(i, fade){
   // Add export time-lapse button handler
   const exportBtn = $("#exportTimelapseBtn");
   if (exportBtn) {
-    exportBtn.onclick = () => exportTimelapse(H.id, p.id);
+    exportBtn.onclick = () => exportTimelapse(H.id, p.id, exportBtn);
   }
 
   if (fade && anim()) G_.from(["#hwCmp", "#placeText"], {opacity: 0, y: 10, duration: .4, stagger: .06, ease: "power2.out"});
@@ -2312,8 +2324,6 @@ function renderHw(){
   const cards = h.stalls ? [stallHTML(h), alongHTML(h), placesHTML(h)] : [checksHTML(h), alongHTML(h), placesHTML(h)];
   cards.push(`<section class="card" data-reveal><div class="card-head"><h2>Progress over time</h2><p class="hint">Share of the tracked road in each stage, every quarter. Click or drag on the chart to move through time.</p></div><div class="chartbox" id="area"></div>${earlyNote(h)}</section>`);
   if (h.missText && !h.stalls) cards.push(`<section class="card" data-reveal><div class="card-head"><h2>Worth a second look</h2></div><p>${nb(esc(h.missText))}</p></section>`);
-  // enhanced: setup swipe gestures for horizontal scrolling on highway page
-  setTimeout(setupSwipeScroll, 0);
   const at = i => `calc(8px + (100% - 16px) * ${(i / (P.length - 1)).toFixed(4)})`;
   const ms = (h.milestones || []).map(([q, name]) => { const i = P.indexOf(q); return i < 0 ? "" : `<i style="left:${at(i)}" title="${esc(name)}"></i><span class="${i > P.length / 2 ? "r" : ""}" style="left:${at(i)}">${esc(name.replace(/\s*\(reported\)/i, ""))}</span>`; }).join("");
   const yrs = [...new Set(P.map(q => q.slice(0,4)))].map((y, k) => `<span${k % 2 ? ' class="odd"' : ""} style="left:${at(P.indexOf(y + "Q1"))}">${y}</span>`).join("");
@@ -2347,16 +2357,7 @@ function renderHw(){
   $("#back").addEventListener("click", () => goHome());
   $("#brand2").addEventListener("click", e => { e.preventDefault(); goHome(); });
   if ($("#share")) $("#share").addEventListener("click", () => sharePage(h));
-  if ($("#compareHw")) {
-    $("#compareHw").addEventListener("click", () => {
-      const otherHws = HIGHWAYS.filter(hw => hw.id !== h.id && hw.segs);
-      if (otherHws.length === 1) {
-        openComparison(h.id, otherHws[0].id);
-      } else {
-        showComparePicker(h.id, otherHws);
-      }
-    });
-  }
+  if ($("#compareHw")) $("#compareHw").addEventListener("click", () => compareFrom(h.id));
   $("#csv").addEventListener("click", () => downloadCSV(h));
   const r = drawRmap();
   drawArea();
@@ -2563,6 +2564,286 @@ function initMotion(){
   m.addEventListener("pointerleave", () => G_.to(m, {x: 0, y: 0, duration: .6, ease: "elastic.out(1,.5)"}));
 }
 
+/* ================= comparison view ================= */
+// two highways on one timeline, linked as #compare/<id>/<id>
+const CMPC = ["var(--cmp-a)", "var(--cmp-b)"];
+let CMP = null;                                     // the open comparison: {hs, P, qi, timer, curs, dots, w}
+const compareHash = (a, b) => `compare/${a}/${b}`;
+function parseCompare(hash){
+  // "compare/a/b"; older links used "compare-a-b", where ids with hyphens leave the split to be found
+  const m = /^compare[\/-](.+)$/.exec(hash); if (!m) return null;
+  const ids = READY.map(h => h.id);
+  for (const sep of ["/", ",", "-"]){
+    const parts = m[1].split(sep);
+    for (let k = 1; k < parts.length; k++){
+      const a = parts.slice(0, k).join(sep), b = parts.slice(k).join(sep);
+      if (a !== b && ids.includes(a) && ids.includes(b)) return [a, b];
+    }
+  }
+  return null;
+}
+function compareFrom(id){
+  const others = READY.filter(h => h.id !== id);
+  if (others.length === 1) openComparison(id, others[0].id); else if (others.length) showComparePicker(id, others);
+}
+function showComparePicker(baseId, otherHws){
+  const baseHw = HIGHWAYS.find(h => h.id === baseId);
+  if (!baseHw) return;
+  const back = document.activeElement, modal = document.createElement("div");
+  modal.className = "modal";
+  modal.innerHTML = `<div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="cmpPickT">
+      <h3 id="cmpPickT">Compare ${esc(baseHw.name)} with…</h3>
+      <div class="compare-list">${otherHws.map(hw => `<button class="compare-option" data-id="${hw.id}">${esc(hw.name)} (${hw.length} km)</button>`).join("")}</div>
+      <button class="btn line" id="cancelCompare">Cancel</button></div>`;
+  document.body.appendChild(modal);
+  const close = () => { modal.remove(); document.removeEventListener("keydown", onKey); if (back) back.focus(); };
+  const onKey = e => { if (e.key === "Escape") close(); };
+  document.addEventListener("keydown", onKey);
+  $("#cancelCompare").addEventListener("click", close);
+  modal.querySelectorAll(".compare-option").forEach(btn => btn.addEventListener("click", () => { close(); openComparison(baseId, btn.dataset.id); }));
+  modal.addEventListener("click", e => { if (e.target === modal) close(); });
+  modal.querySelector(".compare-option").focus();
+}
+function cmpStop(){
+  if (CMP && CMP.timer){ clearInterval(CMP.timer); CMP.timer = null; }
+  const b = $("#playComp"); if (b){ b.innerHTML = playIconB; b.setAttribute("aria-label", "Play the timeline"); }
+}
+function cmpPlay(){
+  const b = $("#playComp"); if (!b || !CMP) return;
+  if (CMP.qi >= CMP.P.length - 1) cmpSetQ(0);
+  b.innerHTML = pauseIconB; b.setAttribute("aria-label", "Pause the timeline");
+  CMP.timer = setInterval(() => { if (CMP.qi >= CMP.P.length - 1) return cmpStop(); cmpSetQ(CMP.qi + 1); }, 320);
+}
+function cmpSetQ(i){ CMP.qi = i; cmpPaint(); }
+function closeComparison(){ if (CMP) killViewTriggers(); cmpStop(); CMP = null; }
+function openComparison(id1, id2, push = true){
+  const h1 = READY.find(h => h.id === id1), h2 = READY.find(h => h.id === id2);
+  if (!h1 || !h2 || h1 === h2){ goHome(false); return; }
+  stop(); closeComparison(); killViewTriggers(); H = null;
+  document.title = `${h1.name} vs ${h2.name} · Expressway Watch`;
+  TL.visible = false; tlStop();
+  const show = () => { home.hidden = true; view.hidden = false; if (push) history.replaceState(null, "", "#" + compareHash(id1, id2)); scrollTo({top: 0, behavior: "instant"}); renderComparison(h1, h2); };
+  if (anim() && !home.hidden) G_.to(home, {opacity: 0, y: -20, duration: .3, ease: "power2.in", onComplete: () => { G_.set(home, {clearProps: "all"}); show(); }});
+  else show();
+}
+function renderComparison(h1, h2){
+  const hs = [h1, h2], P = h1.periods;               // every highway is read over the same quarters
+  CMP = {hs, P, qi: P.length - 1, timer: null, curs: [], dots: [], w: 0};
+  const at = i => `calc(8px + (100% - 16px) * ${(i / (P.length - 1)).toFixed(4)})`;
+  const yrs = [...new Set(P.map(q => q.slice(0,4)))].map((y, k) => `<span${k % 2 ? ' class="odd"' : ""} style="left:${at(P.indexOf(y + "Q1"))}">${y}</span>`).join("");
+  const key = (h, k) => `<span><i style="background:${CMPC[k]}"></i>${esc(h.name)}</span>`;
+  const col = (h, k) => `<div class="cmpcol" style="--c:${CMPC[k]}">
+      <p class="eyebrow">${esc(h.authority)} · ${esc(h.status)}</p><h3>${esc(h.name)}</h3>
+      <p class="route">${esc(h.from)} → ${esc(h.to)}, ${h.length} km. ${h.segs.length * 2} km tracked in ${h.stretches.length} stretches.</p>
+      <div class="big"><b data-k="${k}">–</b><span>paved by <span class="qref"></span></span></div>
+      <div class="rb-track cmp-stack" data-k="${k}" role="img">${[4,3,2,1,0].map(s => `<div class="rb s${s}"${s ? "" : ` style="background:${STAGES[0].c}"`}></div>`).join("")}</div>
+      <div class="cmp-facts" data-k="${k}"></div></div>`;
+  view.innerHTML = `
+  <header class="band edge hwhead"><div class="lanes" aria-hidden="true"></div><div class="glow" aria-hidden="true"></div><div class="inner">
+    <div class="topbar"><a class="brand" href="#" id="brandComp" aria-label="Expressway Watch, all highways">${brandHTML}</a>
+      <div class="hwnav"><button class="back" id="backComp">← All highways</button>${VIEWER ? "" : `<button class="share" id="shareComp">${shareIcon}Share</button>`}</div></div>
+    <div class="cmphead">
+      <p class="eyebrow">Side by side · same images, same method</p>
+      <h1>${esc(h1.name)} <span class="vs">vs</span> ${esc(h2.name)}</h1>
+      <p class="cmpkey">${hs.map(key).join("")}</p>
+      <p class="cmpnote">Both roads are cut into 2 km pieces and read from the same Sentinel-2 images every quarter. Shares are of the tracked km, not the whole road.</p>
+      <div class="cmpjump">${hs.map(h => `<button class="btn ghost" data-open="${h.id}">Open ${esc(h.name)} →</button>`).join("")}</div>
+    </div>
+  </div></header>
+  <div class="scrub"><div class="inner">
+    <button class="play" id="playComp" aria-label="Play the timeline">${playIconB}</button>
+    <div class="qlab" id="qlabComp"></div>
+    <div class="track"><input type="range" id="qrComp" min="0" max="${P.length - 1}" value="${P.length - 1}" aria-label="Quarter"><div class="yrs" aria-hidden="true">${yrs}</div></div>
+  </div></div>
+  <main class="inner cards">
+    <section class="card" data-reveal><div class="card-head"><h2>Where each road stands</h2><p class="hint">The tracked road laid end to end, coloured by stage, in <span class="qref"></span>. Move the timeline to go back in time.</p></div>
+      <div class="cmpgrid">${hs.map(col).join("")}</div></section>
+    <section class="card" data-reveal><div class="card-head"><h2>Paved, quarter by quarter</h2><p class="hint">Share of the tracked road that reads as paved. Click or drag on the chart to move through time.</p></div>
+      <p class="cmp-legend">${hs.map(key).join("")}</p><div class="chartbox" id="cmpLine"></div></section>
+    <section class="card" data-reveal><div class="card-head"><h2>Every stage, over time</h2><p class="hint">Share of each road's tracked km in each stage.</p></div>
+      <div class="rb-legend cmp-stages">${[4,3,2,1].map(s => `<span><i style="background:${STAGES[s].c}"></i>${STAGES[s].name}</span>`).join("")}</div>
+      <div class="cmpgrid">${hs.map((h, k) => `<div class="cmpcol" style="--c:${CMPC[k]}"><h3>${esc(h.name)}</h3><div class="chartbox" id="cmpArea${k}"></div></div>`).join("")}</div></section>
+    <section class="card" data-reveal><div class="card-head"><h2>From earthwork to asphalt</h2><p class="hint">Each dot is one 20 km stretch: the typical months its pieces took from first earthwork to paving. Hollow dots aren't paved yet and show the months so far. The tick marks the middle value of each road's paved stretches.</p></div>
+      <div class="chartbox" id="cmpBuild"></div></section>
+  </main>
+  <footer class="inner foot">${footHTML()}</footer>`;
+  $("#backComp").addEventListener("click", () => goHome());
+  $("#brandComp").addEventListener("click", e => { e.preventDefault(); goHome(); });
+  if ($("#shareComp")) $("#shareComp").addEventListener("click", () => shareLink(`${h1.name} vs ${h2.name}`, `How far along are the ${h1.name} and the ${h2.name}? Satellite estimates, quarter by quarter.`));
+  view.querySelectorAll("[data-open]").forEach(b => b.addEventListener("click", () => openHw(b.dataset.open)));
+  $("#playComp").addEventListener("click", () => CMP.timer ? cmpStop() : cmpPlay());
+  $("#qrComp").addEventListener("input", e => { cmpStop(); cmpSetQ(+e.target.value); });
+  cmpDraw(true);
+  if (anim()) setupReveals(view);
+}
+function cmpDraw(first = false){
+  CMP.curs = []; CMP.dots = [];
+  CMP.w = Math.round(widthOf($("#cmpLine")));
+  CMP.hs.forEach((h, k) => cmpArea($("#cmpArea" + k), h, k, first));
+  cmpLine($("#cmpLine"), first);
+  cmpBuild($("#cmpBuild"));
+  cmpPaint();
+}
+function cmpHit(svg, W, L, T, iw, ih, tipHTML){
+  // click or drag anywhere on a chart to move the timeline; hover for the numbers
+  const P = CMP.P, hit = el("rect", {x: L, y: T, width: iw, height: ih, fill: "transparent"}, svg);
+  const qAt = e => { const r = svg.getBoundingClientRect(); return Math.max(0, Math.min(P.length - 1, Math.round(((e.clientX - r.left) * W / r.width - L) / iw * (P.length - 1)))); };
+  let down = false;
+  hit.addEventListener("pointerdown", e => { down = true; cmpStop(); cmpSetQ(qAt(e)); hit.setPointerCapture(e.pointerId); });
+  hit.addEventListener("pointerup", () => down = false);
+  hit.addEventListener("pointermove", e => { const i = qAt(e); if (down) cmpSetQ(i); showTip(e, tipHTML(i)); });
+  hit.addEventListener("pointerleave", hideTip);
+}
+function cmpYears(svg, P, x, HH, narrow){
+  P.forEach((q, i) => { const yr = +q.slice(0,4); if (q.endsWith("Q1") && (!narrow || yr % 2 === 0)){ const t = el("text", {x: x(i), y: HH - 8, "text-anchor": "middle", class: "ar-lab"}, svg); t.textContent = yr; } });
+}
+function cmpArea(box, h, k, first){
+  const P = CMP.P, N = h.segs.length, W = Math.max(280, Math.round(widthOf(box)) || 520), narrow = W < 480;
+  const HH = narrow ? 220 : 260, L = 42, R = 12, T = 12, B = 30, iw = W - L - R, ih = HH - T - B, id = "cmpWipe" + k;
+  const svg = el("svg", {viewBox: `0 0 ${W} ${HH}`, role: "img", "aria-label": `Share of the ${h.name}'s tracked road in each stage over time`});
+  box.innerHTML = ""; box.appendChild(svg);
+  const x = i => L + iw * i / (P.length - 1), y = v => T + ih * (1 - v);
+  el("rect", {x: L - 2, y: 0, width: iw + 4, height: HH}, el("clipPath", {id}, el("defs", {}, svg)));
+  [0, .5, 1].forEach(v => { el("line", {x1: L, x2: W - R, y1: y(v), y2: y(v), class: "ar-grid"}, svg); el("text", {x: L - 8, y: y(v) + 4, "text-anchor": "end", class: "ar-lab"}, svg).textContent = (v * 100) + "%"; });
+  const areas = el("g", {"clip-path": `url(#${id})`}, svg);
+  let base = P.map(() => 0);
+  [4,3,2,1,0].forEach(s => {
+    const top = base.map((b, i) => b + h.share[i][s] / N);
+    if (top.every((t, i) => t === base[i])) return;
+    el("path", {d: "M" + P.map((_, i) => `${x(i)},${y(top[i])}`).join("L") + "L" + P.map((_, i) => `${x(P.length - 1 - i)},${y(base[P.length - 1 - i])}`).join("L") + "Z", fill: STAGES[s].c, class: "ar-area"}, areas);
+    base = top;
+  });
+  cmpYears(svg, P, x, HH, narrow);
+  const cur = el("g", {}, svg);
+  el("line", {y1: T, y2: T + ih, class: "ar-cur"}, cur);
+  el("circle", {cy: T + ih + 1, r: 5, class: "ar-dot"}, cur);
+  CMP.curs.push([cur, x]);
+  cmpHit(svg, W, L, T, iw, ih, i => `<b>${esc(h.name)}, ${pretty(P[i])}</b>` + [4,3,2,1].map(s => `<div class="row"><i style="background:${STAGES[s].c}"></i>${STAGES[s].name}: ${pct(h.share[i][s], N)}%</div>`).join(""));
+  if (first && anim()) growIn(box, () => G_.set(`#${id} rect`, {attr: {width: 0}}), () => G_.to(`#${id} rect`, {attr: {width: iw + 4}, duration: 1.6, ease: "power2.inOut"}));
+}
+function cmpLine(box, first){
+  const {hs, P} = CMP, W = Math.max(300, Math.round(widthOf(box)) || 780), narrow = W < 560;
+  const HH = narrow ? 240 : 300, L = 42, R = 14, T = 14, B = 30, iw = W - L - R, ih = HH - T - B;
+  const svg = el("svg", {viewBox: `0 0 ${W} ${HH}`, role: "img", "aria-label": "Share of each road's tracked km that reads as paved, every quarter"});
+  box.innerHTML = ""; box.appendChild(svg);
+  const x = i => L + iw * i / (P.length - 1), y = v => T + ih * (1 - v);
+  [0, .25, .5, .75, 1].forEach(v => { el("line", {x1: L, x2: W - R, y1: y(v), y2: y(v), class: "ar-grid"}, svg); el("text", {x: L - 8, y: y(v) + 4, "text-anchor": "end", class: "ar-lab"}, svg).textContent = (v * 100) + "%"; });
+  cmpYears(svg, P, x, HH, narrow);
+  const paved = h => P.map((_, i) => h.share[i][4] / h.segs.length);
+  hs.forEach((h, k) => {
+    const p = el("path", {d: "M" + paved(h).map((v, i) => `${x(i)},${y(v)}`).join("L"), class: "cmp-line", style: `--c:${CMPC[k]}`}, svg);
+    if (first && anim()){ const n = p.getTotalLength(); growIn(box, () => G_.set(p, {attr: {"stroke-dasharray": n, "stroke-dashoffset": n}}), () => G_.to(p, {attr: {"stroke-dashoffset": 0}, duration: 1.6, ease: "power2.inOut", onComplete: () => p.removeAttribute("stroke-dasharray")})); }
+  });
+  const cur = el("g", {}, svg);
+  el("line", {y1: T, y2: T + ih, class: "ar-cur"}, cur);
+  CMP.curs.push([cur, x]);
+  hs.forEach((h, k) => { const v = paved(h); CMP.dots.push([el("circle", {r: 5.5, class: "cmp-pt", style: `--c:${CMPC[k]}`}, svg), i => x(i), i => y(v[i])]); });
+  cmpHit(svg, W, L, T, iw, ih, i => `<b>${pretty(P[i])}</b>` + hs.map((h, k) => `<div class="row"><i style="background:${CMPC[k]}"></i>${esc(h.name)}: ${pct(h.share[i][4], h.segs.length)}% paved</div>`).join(""));
+}
+function cmpBuild(box){
+  const {hs, P} = CMP, now = P[P.length - 1], W = Math.max(300, Math.round(widthOf(box)) || 780);
+  const rows = hs.map(h => h.stretches.map(st => st.months != null ? {st, m: st.months, done: true} : st.ew ? {st, m: 3 * (qn(now) - qn(st.ew)), done: false} : null).filter(Boolean));
+  const max = Math.max(24, ...rows.flat().map(d => d.m)), top = Math.ceil(max / 12) * 12;
+  const L = 16, R = 16, T = 8, RH = 74, B = 30, HH = T + RH * hs.length + B, iw = W - L - R;
+  const svg = el("svg", {viewBox: `0 0 ${W} ${HH}`, role: "img", "aria-label": "Months from first earthwork to paving, for each 20 km stretch of both roads"});
+  box.innerHTML = ""; box.appendChild(svg);
+  const x = m => L + iw * m / top;
+  for (let m = 0; m <= top; m += 12){
+    el("line", {x1: x(m), x2: x(m), y1: T, y2: T + RH * hs.length, class: "ar-grid"}, svg);
+    el("text", {x: x(m), y: HH - 8, "text-anchor": m ? "middle" : "start", class: "ar-lab"}, svg).textContent = m ? (m / 12) + (m === 12 ? " year" : " years") : "0";
+  }
+  hs.forEach((h, k) => {
+    const y0 = T + RH * k, cy = y0 + 46;
+    const done = rows[k].filter(d => d.done).map(d => d.m).sort((a, b) => a - b);
+    const mid = !done.length ? null : done.length % 2 ? done[(done.length - 1) / 2] : (done[done.length / 2 - 1] + done[done.length / 2]) / 2;
+    const name = el("text", {x: L, y: y0 + 18, class: "cmp-rowlab"}, svg);
+    name.textContent = h.name;
+    if (mid != null) el("tspan", {class: "ar-lab", dx: 10}, name).textContent = `middle: ${Math.round(mid)} months`;
+    el("line", {x1: L, x2: W - R, y1: cy, y2: cy, class: "cmp-axis"}, svg);
+    if (mid != null) el("line", {x1: x(mid), x2: x(mid), y1: cy - 18, y2: cy + 18, class: "cmp-mid", style: `--c:${CMPC[k]}`}, svg);
+    const seen = {};
+    rows[k].forEach(d => {
+      const n = seen[Math.round(d.m / 2)] = (seen[Math.round(d.m / 2)] || 0) + 1, dy = n === 1 ? 0 : (n % 2 ? 1 : -1) * Math.ceil((n - 1) / 2) * 9;   // stack dots that would sit on each other
+      const c = el("circle", {cx: x(d.m), cy: cy + dy, r: 6.5, class: "cmp-pt" + (d.done ? "" : " open"), style: `--c:${CMPC[k]}`}, svg);
+      const html = `<b>${esc(h.name)}, ${esc(d.st.label)}</b><div class="row">${d.done ? `${Math.round(d.m)} months from earthwork to asphalt` : `In earthwork for ${d.m} months so far`}</div><div class="row">Earthwork from ${pretty(d.st.ew)}${d.st.pv ? `, paved ${pretty(d.st.pv)}` : ""}</div>`;
+      c.addEventListener("pointermove", e => showTip(e, html)); c.addEventListener("pointerleave", hideTip);
+    });
+  });
+}
+function cmpPaint(){
+  if (!CMP || !$("#qrComp")) return;
+  const {hs, P, qi} = CMP, q = pretty(P[qi]);
+  $("#qlabComp").textContent = q; $("#qrComp").value = qi;
+  view.querySelectorAll(".qref").forEach(e => e.textContent = q);
+  hs.forEach((h, k) => {
+    const s = h.share[qi], N = h.segs.length, km = n => `<b>${n * 2}</b> km`;
+    view.querySelector(`.big b[data-k="${k}"]`).textContent = pct(s[4], N) + "%";
+    const bar = view.querySelector(`.cmp-stack[data-k="${k}"]`);
+    [4,3,2,1,0].forEach((st, j) => bar.children[j].style.flexBasis = (100 * s[st] / N) + "%");
+    bar.setAttribute("aria-label", `${h.name} in ${q}: ` + [4,3,2,1].filter(st => s[st]).map(st => `${pct(s[st], N)}% ${STAGES[st].name.toLowerCase()}`).join(", "));
+    view.querySelector(`.cmp-facts[data-k="${k}"]`).innerHTML = [4,3,2,1].map(st => `<span><i style="background:${STAGES[st].c}"></i>${km(s[st])} ${STAGES[st].name.toLowerCase()}</span>`).join("");
+  });
+  CMP.curs.forEach(([g, x]) => g.setAttribute("transform", `translate(${x(qi)},0)`));
+  CMP.dots.forEach(([c, x, y]) => { c.setAttribute("cx", x(qi)); c.setAttribute("cy", y(qi)); });
+}
+async function shareLink(title, text){
+  const url = location.href;
+  if (navigator.share) try { await navigator.share({title, text, url}); return; } catch (e){ if (e.name === "AbortError") return; }
+  try { await navigator.clipboard.writeText(url); toast("Link copied"); } catch { toast(url); }
+}
+
+/* ================= time-lapse video ================= */
+// records one place's satellite chips, one quarter at a time, into a short video the browser saves
+const VIDEO_TYPE = window.MediaRecorder && HTMLCanvasElement.prototype.captureStream
+  ? ["video/mp4;codecs=avc1", "video/webm;codecs=vp9", "video/webm", "video/mp4"].find(t => MediaRecorder.isTypeSupported(t)) : null;
+async function exportTimelapse(hwId, placeId, btn){
+  const h = HIGHWAYS.find(x => x.id === hwId), place = (IMAGES[hwId] || []).find(p => p.id === placeId);
+  if (!h || !place || !VIDEO_TYPE || btn.disabled) return;
+  const label = btn.innerHTML, seg = h.segs.find(s => s.label === place.label.split(",")[0]);
+  btn.disabled = true;
+  const load = src => new Promise((ok, no) => { const im = new Image(); im.onload = () => ok(im); im.onerror = no; im.src = src; });
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+  try {
+    btn.textContent = "Loading images…";
+    const frames = await Promise.all(Object.keys(place.imgs).sort().filter(q => !(place.cloudy || []).includes(q)).map(async q => [q, await load(place.imgs[q])]));
+    const im0 = frames[0][1], sc = 960 / Math.max(im0.naturalWidth, im0.naturalHeight), even = v => 2 * Math.round(v / 2);
+    const cw = even(im0.naturalWidth * sc), ih = even(im0.naturalHeight * sc), band = 64;
+    const cv = document.createElement("canvas"); cv.width = cw; cv.height = ih + band;
+    const g = cv.getContext("2d");
+    const draw = (q, im) => {
+      g.imageSmoothingEnabled = false;                // keep the 10 m pixels honest
+      g.drawImage(im, 0, 0, cw, ih);
+      g.fillStyle = "#06090e"; g.fillRect(0, ih, cw, band);
+      g.fillStyle = "#e8a838"; g.fillRect(0, ih, cw, 4);
+      g.font = "600 26px 'IBM Plex Mono', ui-monospace, monospace"; g.textBaseline = "middle"; g.fillStyle = "#eef2f7";
+      g.fillText(pretty(q), 20, ih + band / 2 + 2);
+      const i = h.periods.indexOf(q), st = seg && i >= 0 ? STAGES[seg.row[i][0]] : null;
+      if (st){ g.fillStyle = st.c; g.fillRect(170, ih + band / 2 - 9, 18, 18); g.fillStyle = "#aab4c3"; g.font = "500 20px 'IBM Plex Sans', system-ui, sans-serif"; g.fillText(st.name, 198, ih + band / 2 + 1); }
+      g.textAlign = "right"; g.fillStyle = "#8792a3"; g.font = "500 16px 'IBM Plex Sans', system-ui, sans-serif";
+      g.fillText(`${h.name}, ${place.label} · Sentinel-2 · Expressway Watch`, cw - 20, ih + band / 2 + 1); g.textAlign = "left";
+    };
+    draw(...frames[0]);
+    const rec = new MediaRecorder(cv.captureStream(30), {mimeType: VIDEO_TYPE, videoBitsPerSecond: 6e6}), parts = [];
+    rec.ondataavailable = e => { if (e.data.size) parts.push(e.data); };
+    const done = new Promise(r => rec.onstop = r);
+    rec.start();
+    for (let k = 0; k < frames.length; k++){
+      btn.textContent = `Recording ${k + 1} of ${frames.length}…`;
+      const hold = k === frames.length - 1 ? 2000 : 700;
+      for (let t = 0; t < hold; t += 100){ draw(...frames[k]); await wait(100); }     // repaint so every frame reaches the stream
+    }
+    rec.stop(); await done;
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob(parts, {type: VIDEO_TYPE.split(";")[0]}));
+    a.download = `${placeId}_timelapse.${VIDEO_TYPE.startsWith("video/mp4") ? "mp4" : "webm"}`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    toast("Time-lapse video saved");
+  } catch (e){
+    toast("Couldn't make the video in this browser");
+  } finally { btn.disabled = false; btn.innerHTML = label; }
+}
+
 /* ================= start ================= */
 renderPicker();
 renderStory(0);
@@ -2576,41 +2857,23 @@ addEventListener("resize", debounce(() => refreshStory(), 150));
 function boot(){
   initMotion();
   if (!anim()){ TL.playing = false; $("#tplay").hidden = true; if (HERO) tlReadout(TL.i); }   // without motion the time-lapse is stepped with the year buttons
-  setupSwipeScroll();  // enhanced: setup swipe gestures for horizontal scrolling
   const start = location.hash.slice(1);
-  if (start.startsWith("compare-")) {
-    const parts = start.slice(8).split("-");
-    if (parts.length >= 2) {
-      const id1 = parts.slice(0, -1).join("-");
-      const id2 = parts.slice(-1)[0];
-      if (HIGHWAYS.some(h => h.id === id1) && HIGHWAYS.some(h => h.id === id2)) {
-        openComparison(id1, id2);
-        return;
-      }
-    }
-  }
+  const cmp = parseCompare(start);
+  if (cmp){ openComparison(cmp[0], cmp[1], false); return; }
   if (start && HIGHWAYS.some(h => h.id === start)) openHw(start, false);
 }
 boot();     // GSAP is inlined in <head> by build_dashboard.py, so there is nothing to wait for
 addEventListener("hashchange", () => {
   const hash = location.hash.slice(1);
-  if (hash.startsWith("compare-")) {
-    const parts = hash.slice(8).split("-");
-    if (parts.length >= 2) {
-      const id1 = parts.slice(0, -1).join("-");
-      const id2 = parts.slice(-1)[0];
-      if (HIGHWAYS.some(h => h.id === id1) && HIGHWAYS.some(h => h.id === id2)) {
-        openComparison(id1, id2);
-        return;
-      }
-    }
-  }
+  const cmp = parseCompare(hash);
+  if (cmp){ openComparison(cmp[0], cmp[1], false); return; }
   const id = hash;
   if (HIGHWAYS.some(h => h.id === id)) openHw(id, false); else if (!id) goHome(false);
 });
 // drawings sized to the page are redrawn when the window changes size
 let wasNarrow = innerWidth < 700;
 addEventListener("resize", debounce(() => {
+  if (CMP && !view.hidden && Math.abs(widthOf($("#cmpLine")) - CMP.w) > 1){ cmpDraw(); return; }
   if (!H || view.hidden) return;
   // phones fire resize as the address bar slides away; only a change of width needs a redraw
   if (Math.abs(widthOf($("#ovsvg")) - ovW) > 1) drawOverview();
@@ -2619,407 +2882,7 @@ addEventListener("resize", debounce(() => {
   const now = innerWidth < 700; if (now !== wasNarrow){ wasNarrow = now; if (selSt) selectStretch(selSt, true); }
   paint();
 }, 150));
-// --- enhanced: pull-to-refresh for mobile ---
-let pullStartY = 0, pullCurrentY = 0, pullActive = false;
-document.addEventListener("touchstart", e => {
-  if (scrollY === 0 && e.touches.length === 1) {
-    pullStartY = e.touches[0].clientY;
-    pullActive = true;
-  }
-}, {passive: true});
-document.addEventListener("touchmove", e => {
-  if (!pullActive) return;
-  pullCurrentY = e.touches[0].clientY;
-  const pullDistance = pullCurrentY - pullStartY;
-  if (pullDistance > 0 && pullDistance < 100) {
-    document.body.classList.add("pull-to-refresh");
-    document.body.style.setProperty("--pull-progress", Math.min(1, pullDistance / 80));
-  } else if (pullDistance >= 80) {
-    document.body.classList.add("active");
-  }
-}, {passive: true});
-document.addEventListener("touchend", () => {
-  if (pullActive && document.body.classList.contains("active")) {
-    // Trigger refresh
-    if (H && !view.hidden) {
-      // On highway page, reload the data
-      location.reload();
-    } else {
-      // On home page, just scroll to top
-      scrollTo({top: 0, behavior: "smooth"});
-    }
-  }
-  pullActive = false;
-  document.body.classList.remove("pull-to-refresh", "active");
-}, {passive: true});
-
-/* ================= enhanced: swipe gestures for horizontal scrolling ================= */
-function setupSwipeScroll() {
-  const scrollContainers = document.querySelectorAll(".tiles, .overview, .gridbox");
-  scrollContainers.forEach(container => {
-    let startX = 0, startScroll = 0;
-    container.addEventListener("touchstart", e => {
-      startX = e.touches[0].clientX;
-      startScroll = container.scrollLeft;
-    }, {passive: true});
-    container.addEventListener("touchmove", e => {
-      const dx = e.touches[0].clientX - startX;
-      container.scrollLeft = startScroll - dx;
-    }, {passive: true});
-  });
-}
-
-/* ================= enhanced: comparison view ================= */
-function showComparePicker(baseId, otherHws) {
-  const baseHw = HIGHWAYS.find(h => h.id === baseId);
-  if (!baseHw) return;
-  const modal = document.createElement("div");
-  modal.className = "modal";
-  modal.innerHTML = `
-    <div class="modal-content">
-      <h3>Compare ${esc(baseHw.name)} with...</h3>
-      <div class="compare-list">
-        ${otherHws.map(hw => `<button class="compare-option" data-id="${hw.id}">${esc(hw.name)} (${hw.length} km)</button>`).join("")}
-      </div>
-      <button class="btn ghost" id="cancelCompare">Cancel</button>
-    </div>
-  `;
-  document.body.appendChild(modal);
-  $("#cancelCompare").addEventListener("click", () => modal.remove());
-  modal.querySelectorAll(".compare-option").forEach(btn => {
-    btn.addEventListener("click", () => { modal.remove(); openComparison(baseId, btn.dataset.id); });
-  });
-  // Close on outside click
-  modal.addEventListener("click", e => { if (e.target === modal) modal.remove(); });
-}
-
-function openComparison(hwId1, hwId2) {
-  const h1 = HIGHWAYS.find(h => h.id === hwId1 && h.segs);
-  const h2 = HIGHWAYS.find(h => h.id === hwId2 && h.segs);
-  if (!h1 || !h2) return;
-
-  const P1 = h1.periods, P2 = h2.periods;
-  const maxLen = Math.max(P1.length, P2.length);
-
-  view.innerHTML = `
-  <header class="band edge hwhead"><div class="inner">
-    <div class="topbar"><a class="brand" href="#" id="brandComp" aria-label="Back to all highways">${brandHTML}</a>
-      <div class="hwnav"><button class="back" id="backComp">← All highways</button></div></div>
-    <h1>Compare: ${esc(h1.name)} vs ${esc(h2.name)}</h1>
-  </div></header>
-  <div class="scrub"><div class="inner">
-    <button class="play" id="playComp" aria-label="Play timeline"></button>
-    <div class="qlab" id="qlabComp"></div>
-    <div class="track"><input type="range" id="qrComp" min="0" max="${maxLen - 1}" value="${maxLen - 1}" aria-label="Quarter"></div>
-  </div></div>
-  <main class="inner cards">
-    <section class="card" data-reveal>
-      <div class="card-head"><h2>Progress comparison</h2></div>
-      <div class="two"><div class="chartbox" id="areaComp1"></div><div class="chartbox" id="areaComp2"></div></div>
-    </section>
-    <section class="card" data-reveal>
-      <div class="card-head"><h2>Stage distribution</h2></div>
-      <div class="two"><div class="chartbox" id="distComp1"></div><div class="chartbox" id="distComp2"></div></div>
-    </section>
-    <section class="card" data-reveal>
-      <div class="card-head"><h2>Build velocity (km/quarter)</h2></div>
-      <div class="chartbox" id="velComp"></div>
-    </section>
-  </main>`;
-
-  $("#backComp").addEventListener("click", () => goHome());
-  $("#brandComp").addEventListener("click", e => { e.preventDefault(); goHome(); });
-
-  // Draw comparison charts
-  drawComparison(h1, h2, maxLen);
-
-  // Setup comparison timeline
-  let compQi = maxLen - 1, compTimer = null;
-  const playCompBtn = $("#playComp");
-  const playIconB = `<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7 5v14l12-7z"/></svg>`;
-  const pauseIconB = `<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>`;
-
-  function setCompQ(i) { compQi = i; $("#qrComp").value = i; updateCompCharts(i); }
-  function updateCompCharts(i) {
-    const q1 = P1[Math.min(i, P1.length - 1)], q2 = P2[Math.min(i, P2.length - 1)];
-    $("#qlabComp").textContent = `${pretty(q1)} / ${pretty(q2)}`;
-    // Update both area charts
-    updateAreaChart("areaComp1", h1, q1);
-    updateAreaChart("areaComp2", h2, q2);
-    // Update distribution charts
-    updateDistChart("distComp1", h1, q1);
-    updateDistChart("distComp2", h2, q2);
-  }
-  function playComp() { if (compTimer) return; playCompBtn.innerHTML = pauseIconB; compTimer = setInterval(() => { if (compQi >= maxLen - 1) return stopComp(); setCompQ(compQi + 1); }, 500); }
-  function stopComp() { if (compTimer) { clearInterval(compTimer); compTimer = null; } playCompBtn.innerHTML = playIconB; }
-  playCompBtn.addEventListener("click", () => compTimer ? stopComp() : playComp());
-  $("#qrComp").addEventListener("input", e => { stopComp(); setCompQ(+e.target.value); });
-  setCompQ(maxLen - 1);
-  if (anim()) setupReveals(view);
-}
-
-function drawComparison(h1, h2, maxLen) {
-  // Draw area charts for both highways
-  drawAreaChart("areaComp1", h1);
-  drawAreaChart("areaComp2", h2);
-  drawDistChart("distComp1", h1);
-  drawDistChart("distComp2", h2);
-  drawVelChart("velComp", h1, h2);
-}
-
-function drawAreaChart(boxId, h) {
-  const box = document.getElementById(boxId);
-  if (!box) return;
-  const P = h.periods, N = h.segs.length;
-  const W = widthOf(box), narrow = W < 560;
-  const HH = narrow ? 250 : 320, L = 42, R = 14, T = 34, B = 30, iw = W - L - R, ih = HH - T - B;
-  const svg = el("svg", {viewBox: `0 0 ${W} ${HH}`, role: "img"});
-  box.innerHTML = ""; box.appendChild(svg);
-  const x = i => L + iw * i / (P.length - 1), y = v => T + ih * (1 - v);
-  const defs = el("defs", {}, svg), cp = el("clipPath", {id: "wipe-" + boxId}, defs), wipe = el("rect", {x: L - 2, y: 0, width: iw + 4, height: HH}, cp);
-  [0, .25, .5, .75, 1].forEach(v => { el("line", {x1: L, x2: W - R, y1: y(v), y2: y(v), class: "ar-grid"}, svg); const t = el("text", {x: L - 8, y: y(v) + 4, "text-anchor": "end", class: "ar-lab"}, svg); t.textContent = (v * 100) + "%"; });
-  const areas = el("g", {"clip-path": "url(#wipe-" + boxId + ")"}, svg);
-  let base = P.map(() => 0);
-  [4,3,2,1,0].forEach(s => {
-    const top = base.map((b, i) => b + h.share[i][s] / N);
-    if (top.every((t, i) => t === base[i])) return;
-    el("path", {d: "M" + P.map((_, i) => `${x(i)},${y(top[i])}`).join("L") + "L" + P.map((_, i) => `${x(P.length - 1 - i)},${y(base[P.length - 1 - i])}`).join("L") + "Z", fill: STAGES[s].c, class: "ar-area"}, areas);
-    base = top;
-  });
-  const cur = el("g", {id: "acur-" + boxId}, svg);
-  el("line", {y1: T, y2: T + ih, class: "ar-cur"}, cur);
-  el("circle", {cy: T + ih + 1, r: 6, class: "ar-dot"}, cur);
-  if (anim()) growIn(box, () => G_.set("#wipe-" + boxId + " rect", {attr: {width: 0}}), () => G_.to("#wipe-" + boxId + " rect", {attr: {width: iw + 4}, duration: 1.6, ease: "power2.inOut"}));
-}
-
-function drawDistChart(boxId, h) {
-  const box = document.getElementById(boxId);
-  if (!box) return;
-  const P = h.periods, N = h.segs.length;
-  const W = widthOf(box), narrow = W < 560;
-  const HH = narrow ? 200 : 250, L = 42, R = 14, T = 34, B = 30, iw = W - L - R, ih = HH - T - B;
-  const svg = el("svg", {viewBox: `0 0 ${W} ${HH}`, role: "img"});
-  box.innerHTML = ""; box.appendChild(svg);
-  const x = i => L + iw * i / (P.length - 1), y = v => T + ih * (1 - v);
-  let base = P.map(() => 0);
-  [4,3,2,1,0].forEach(s => {
-    const top = base.map((b, i) => b + h.share[i][s] / N);
-    if (top.every((t, i) => t === base[i])) return;
-    el("path", {d: "M" + P.map((_, i) => `${x(i)},${y(top[i])}`).join("L") + "L" + P.map((_, i) => `${x(P.length - 1 - i)},${y(base[P.length - 1 - i])}`).join("L") + "Z", fill: STAGES[s].c, class: "ar-area"}, svg);
-    base = top;
-  });
-  // Add legend
-  const legend = el("g", {}, svg);
-  [4,3,2,1].forEach((s, k) => {
-    el("rect", {x: L, y: T + k * 22, width: 14, height: 14, rx: 3, fill: STAGES[s].c}, legend);
-    el("text", {x: L + 20, y: T + k * 22 + 11, class: "ar-lab", fill: "var(--ink)"}, legend).textContent = STAGES[s].name;
-  });
-}
-
-function drawVelChart(boxId, h1, h2) {
-  const box = document.getElementById(boxId);
-  if (!box) return;
-  const P1 = h1.periods, P2 = h2.periods;
-  const maxLen = Math.max(P1.length, P2.length);
-  const W = widthOf(box), narrow = W < 560;
-  const HH = narrow ? 250 : 320, L = 42, R = 14, T = 34, B = 30, iw = W - L - R, ih = HH - T - B;
-  const svg = el("svg", {viewBox: `0 0 ${W} ${HH}`, role: "img"});
-  box.innerHTML = ""; box.appendChild(svg);
-  const x = i => L + iw * i / (maxLen - 1);
-
-  // Calculate velocity (km paved per quarter)
-  const vel1 = [], vel2 = [];
-  for (let i = 1; i < P1.length; i++) {
-    const kmPaved = (h1.share[i][4] - h1.share[i-1][4]) * 2;
-    vel1.push(kmPaved);
-  }
-  for (let i = 1; i < P2.length; i++) {
-    const kmPaved = (h2.share[i][4] - h2.share[i-1][4]) * 2;
-    vel2.push(kmPaved);
-  }
-  const maxVel = Math.max(...vel1, ...vel2, 10);
-  const y = v => T + ih * (1 - v / maxVel);
-
-  // Grid
-  [0, .25, .5, .75, 1].forEach(v => { el("line", {x1: L, x2: W - R, y1: y(v * maxVel), y2: y(v * maxVel), class: "ar-grid"}, svg); const t = el("text", {x: L - 8, y: y(v * maxVel) + 4, "text-anchor": "end", class: "ar-lab"}, svg); t.textContent = (v * maxVel).toFixed(1) + " km/q"; });
-
-  // Velocity lines
-  [1,2].forEach((hIdx, k) => {
-    const vel = hIdx === 1 ? vel1 : vel2;
-    const h = hIdx === 1 ? h1 : h2;
-    const color = k === 0 ? STAGES[4].c : STAGES[3].c;
-    el("path", {d: "M" + vel.map((v, i) => `${x(i+1)},${y(v)}`).join("L"), fill: "none", stroke: color, "stroke-width": 2.5, "stroke-linecap": "round", "stroke-linejoin": "round"}, svg);
-  });
-
-  // Legend
-  const legend = el("g", {}, svg);
-  el("rect", {x: W - R - 120, y: T, width: 120, height: 50, rx: 6, fill: "var(--surface-2)", stroke: "var(--line)"}, legend);
-  el("text", {x: W - R - 115, y: T + 16, fill: STAGES[4].c, class: "ar-lab"}, legend).textContent = h1.name;
-  el("text", {x: W - R - 115, y: T + 34, fill: STAGES[3].c, class: "ar-lab"}, legend).textContent = h2.name;
-}
-
-/* ================= enhanced: time-lapse export ================= */
-async function exportTimelapse(hwId, placeId) {
-  const h = HIGHWAYS.find(x => x.id === hwId);
-  if (!h) return;
-  const place = (IMAGES[hwId] || []).find(p => p.id === placeId);
-  if (!place) return;
-
-  const snaps = Object.keys(place.imgs).sort();
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
-
-  // Load first image to get dimensions
-  const img = new Image();
-  img.crossOrigin = "anonymous";
-  img.src = place.imgs[snaps[0]];
-  await new Promise(resolve => { img.onload = resolve; });
-
-  canvas.width = img.width;
-  canvas.height = img.height;
-
-  // Create frames
-  const frames = [];
-  for (const snap of snaps) {
-    const frameImg = new Image();
-    frameImg.crossOrigin = "anonymous";
-    frameImg.src = place.imgs[snap];
-    await new Promise(resolve => { frameImg.onload = resolve; });
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(frameImg, 0, 0);
-    // Add quarter label
-    ctx.fillStyle = "rgba(0,0,0,0.7)";
-    ctx.fillRect(10, 10, 200, 40);
-    ctx.fillStyle = "white";
-    ctx.font = "24px monospace";
-    ctx.fillText(pretty(snap), 20, 38);
-    frames.push(canvas.toDataURL("image/png"));
-  }
-
-  // Create GIF using simple approach (or offer download as zip)
-  const zip = new JSZip();
-  frames.forEach((dataUrl, i) => {
-    const byteString = atob(dataUrl.split(",")[1]);
-    const arrayBuffer = new ArrayBuffer(byteString.length);
-    const uint8 = new Uint8Array(arrayBuffer);
-    for (let j = 0; j < byteString.length; j++) uint8[j] = byteString.charCodeAt(j);
-    zip.file(`frame_${i.toString().padStart(3, "0")}_${snaps[i]}.png`, uint8);
-  });
-
-  const content = await zip.generateAsync({type: "blob"});
-  const url = URL.createObjectURL(content);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `${hwId}_${placeId}_timelapse.zip`;
-  a.click();
-  URL.revokeObjectURL(url);
-  toast("Time-lapse frames exported as ZIP");
-}
-
-/* ================= enhanced: enhanced data visualizations ================= */
-function drawSeasonalChart(boxId, h) {
-  const box = document.getElementById(boxId);
-  if (!box) return;
-  const P = h.periods, N = h.segs.length;
-  const W = widthOf(box), narrow = W < 560;
-  const HH = narrow ? 250 : 320, L = 42, R = 14, T = 34, B = 30, iw = W - L - R, ih = HH - T - B;
-  const svg = el("svg", {viewBox: `0 0 ${W} ${HH}`, role: "img"});
-  box.innerHTML = ""; box.appendChild(svg);
-
-  // Group quarters by year and season
-  const years = [...new Set(P.map(q => q.slice(0,4)))];
-  const seasons = ["Q1", "Q2", "Q3", "Q4"];
-  const x = (yrIdx, seasonIdx) => L + iw * (yrIdx * 4 + seasonIdx) / (years.length * 4 - 1);
-
-  // Draw seasonal progress for each year
-  years.forEach((yr, yrIdx) => {
-    seasons.forEach((season, seasonIdx) => {
-      const q = yr + season;
-      if (!P.includes(q)) return;
-      const qi = P.indexOf(q);
-      const pavedPct = h.share[qi][4] / N;
-      const rect = el("rect", {x: x(yrIdx, seasonIdx), y: HH - B - ih * pavedPct, width: iw / (years.length * 4) - 2, height: ih * pavedPct, fill: STAGES[4].c, rx: 2}, svg);
-    });
-  });
-
-  // Grid and labels
-  years.forEach((yr, yrIdx) => {
-    const t = el("text", {x: x(yrIdx, 0) + iw / (years.length * 4) * 2, y: HH - 8, "text-anchor": "middle", class: "ar-lab"}, svg);
-    t.textContent = yr;
-  });
-  [0, .25, .5, .75, 1].forEach(v => { el("line", {x1: L, x2: W - R, y1: T + ih * (1 - v), y2: T + ih * (1 - v), class: "ar-grid"}, svg); });
-}
-
-function drawForecastChart(boxId, h) {
-  const box = document.getElementById(boxId);
-  if (!box) return;
-  const P = h.periods, N = h.segs.length;
-  const W = widthOf(box), narrow = W < 560;
-  const HH = narrow ? 250 : 320, L = 42, R = 14, T = 34, B = 30, iw = W - L - R, ih = HH - T - B;
-  const svg = el("svg", {viewBox: `0 0 ${W} ${HH}`, role: "img"});
-  box.innerHTML = ""; box.appendChild(svg);
-
-  const x = i => L + iw * i / (P.length - 1);
-  const y = v => T + ih * (1 - v / 100);
-
-  // Historical data
-  const pavedPct = P.map((_, i) => (h.share[i][4] / N) * 100);
-  const lastIdx = P.length - 1;
-  const lastPct = pavedPct[lastIdx];
-
-  // Simple linear forecast
-  const recentQuarters = 4;
-  const recentPct = pavedPct.slice(-recentQuarters);
-  const slope = (recentPct[recentPct.length - 1] - recentPct[0]) / (recentPct.length - 1);
-  const forecastQuarters = 8;
-  const forecast = [];
-  for (let i = 1; i <= forecastQuarters; i++) {
-    forecast.push(Math.min(100, lastPct + slope * i));
-  }
-
-  // Draw historical
-  el("path", {d: "M" + P.map((_, i) => `${x(i)},${y(pavedPct[i])}`).join("L"), fill: "none", stroke: STAGES[4].c, "stroke-width": 2.5}, svg);
-
-  // Draw forecast (dashed)
-  el("path", {d: "M" + forecast.map((v, i) => `${x(lastIdx + i)},${y(v)}`).join("L"), fill: "none", stroke: STAGES[4].c, "stroke-width": 2, "stroke-dasharray": "5 5", opacity: 0.7}, svg);
-
-  // Confidence cone
-  const coneUpper = forecast.map((v, i) => Math.min(100, v + 5 * (i + 1)));
-  const coneLower = forecast.map((v, i) => Math.max(0, v - 5 * (i + 1)));
-  el("path", {d: "M" + forecast.map((v, i) => `${x(lastIdx + i)},${y(coneUpper[i])}`).join("L") + "L" + forecast.map((v, i) => `${x(lastIdx + forecastQuarters - 1 - i)},${y(coneLower[forecastQuarters - 1 - i])}`).join("L") + "Z", fill: STAGES[4].c, fillOpacity: 0.1}, svg);
-
-  // Legend
-  const legend = el("g", {}, svg);
-  el("rect", {x: L, y: T, width: 200, height: 50, rx: 6, fill: "var(--surface-2)", stroke: "var(--line)"}, legend);
-  el("text", {x: L + 10, y: T + 16, fill: STAGES[4].c, class: "ar-lab"}, legend).textContent = "Historical (paved %)";
-  el("text", {x: L + 10, y: T + 34, fill: STAGES[4].c, class: "ar-lab", opacity: 0.7}, legend).textContent = "Forecast ± cone";
-}
-
 /* ================= enhanced: performance optimizations ================= */
-
-// --- Service Worker Registration for offline support ---
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch(() => {
-      // SW registration failed, but that's okay
-    });
-  });
-}
-
-// --- Font loading optimization ---
-if (document.fonts) {
-  // Preload critical fonts
-  const fontFaces = [
-    new FontFace('Syne', 'url(https://fonts.gstatic.com/s/syne/v17/KFOlCnqEu92Fr1Mu51xj.ttf)', {weight: '400 800', display: 'swap'}),
-    new FontFace('IBM Plex Sans', 'url(https://fonts.gstatic.com/s/ibmplexsans/v19/zYX7KVElMYYaJe8bpLHnCwDKhdU.ttf)', {weight: '400 700', display: 'swap'}),
-    new FontFace('IBM Plex Mono', 'url(https://fonts.gstatic.com/s/ibmplexmono/v19/-F62fjptAgt5VM-kVn525cB5CK5W1cM.ttf)', {weight: '400 600', display: 'swap'}),
-    new FontFace('Space Mono', 'url(https://fonts.gstatic.com/s/spacemono/v13/i7dNIFZifjKcF5UAWdDRYEF-.ttf)', {weight: '400 700', display: 'swap'})
-  ];
-  fontFaces.forEach(font => {
-    document.fonts.add(font);
-    font.load().catch(() => {});
-  });
-}
 
 // --- Three.js scene performance monitoring ---
 let frameBudget = 16.67; // 60fps target
@@ -3107,7 +2970,6 @@ document.addEventListener('DOMContentLoaded', () => {
   addResourceHints();
 });
 
-/* ================= start ================= */
 </script>
 </body>
 </html>

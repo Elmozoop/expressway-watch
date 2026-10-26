@@ -1,16 +1,24 @@
 # Netlify configuration for Expressway Watch
-# Builds from repo root, publishes docs/
+# Builds from repo root, publishes docs/. Pages are routed by #hash, so there are no rewrites:
+# a missing file answers 404 instead of a copy of index.html.
 
 [build]
   base = "."
   publish = "docs"
   command = "bash tools/netlify_build.sh"
 
-[functions]
-  directory = "netlify/functions"
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
 
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-# Force rebuild Mon Oct 26 17:44:00 IST 2026
+# satellite chips and three.js change only when the dashboard is rebuilt
+[[headers]]
+  for = "/img/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+[[headers]]
+  for = "/vendor/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
