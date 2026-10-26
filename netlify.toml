@@ -1,10 +1,10 @@
 # Netlify configuration for Expressway Watch
-# Builds from docs/ folder (static site)
+# Builds from repo root, publishes docs/
 
 [build]
-  base = "docs"
-  publish = "."
-  command = "bash ../tools/netlify_build.sh"
+  base = "."
+  publish = "docs"
+  command = "bash tools/netlify_build.sh"
 
 [functions]
   directory = "netlify/functions"
@@ -13,4 +13,4 @@
   from = "/*"
   to = "/index.html"
   status = 200
-# Force rebuild Mon Oct 26 13:55:12 IST 2026
+# Force rebuild Mon Oct 26 17:44:00 IST 2026
