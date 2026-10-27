@@ -203,7 +203,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .t-dot[aria-current="true"]{color:var(--on-night)}
 
 /* ============ opening scene: an expressway, taken apart (three.js) ============ */
-.intro3d{position:relative;height:430vh;background:var(--night);color:var(--on-night)}
+.intro3d{position:relative;height:560vh;background:var(--night);color:var(--on-night)}
 .intro3d .i3-top{position:absolute;left:0;right:0;top:0;z-index:6}
 .i3-stage{position:sticky;top:env(safe-area-inset-top,0px);height:100vh;height:calc(100svh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));overflow:hidden;
   background:radial-gradient(115% 85% at 66% 38%,#1b2536 0%,#111823 45%,var(--night) 75%)}
@@ -1254,16 +1254,16 @@ function makeIntro3D(T, canvas, opt = {}){
     const t = clamp((p - (E0 + k * ESTEP)) / EDUR);
     if (t <= 0) return 0;
     if (t >= 1) return 1;
-    // Underdamped spring with a slight overshoot, timed so it settles across the whole window (about a quarter of a
+    // Underdamped spring with a slight overshoot, timed so it settles across the whole window (about 40% of a
     // screen of scrolling per layer): heavier layers swing less
     const omega = Math.sqrt(cfg.stiffness / cfg.mass);
     const zeta = cfg.damping / (2 * Math.sqrt(cfg.stiffness * cfg.mass)), wd = omega * Math.sqrt(1 - zeta * zeta);
-    const s = t * 3.5 / (zeta * omega);
+    const s = t * 2.8 / (zeta * omega);
     const x = 1 - Math.exp(-zeta * omega * s) * (Math.cos(wd * s) + (zeta / Math.sqrt(1 - zeta * zeta)) * Math.sin(wd * s));
     return Math.max(0, x);
   };
 
-  const E0 = .06, ESTEP = .1, EDUR = .09, R0 = .56, B0 = .60;          // each layer comes off as the words turn to it
+  const E0 = .06, ESTEP = .1, EDUR = .1, R0 = .56, B0 = .60;          // each layer comes off as the words turn to it
   const explodeOf = (k, p) => springProgress(k, p);  // use spring-based progress
   const mats = key => { const out = []; layers[key].traverse(o => { if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => { if (!out.includes(m)) out.push(m); }); }); return out; };
   const LM = {}; ORDER.forEach(k => { LM[k] = mats(k); LM[k].forEach(m => { m.transparent = true; }); });
