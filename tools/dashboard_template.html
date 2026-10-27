@@ -1251,17 +1251,19 @@ function makeIntro3D(T, canvas, opt = {}){
   const springProgress = (k, p) => {
     const key = ORDER[k];
     const cfg = SPRING_CONFIG[key];
-    const t = clamp((p - (E0 + k * ESTEP)) / EDUR) * 1.5; // slightly extended for spring
+    const t = clamp((p - (E0 + k * ESTEP)) / EDUR);
     if (t <= 0) return 0;
     if (t >= 1) return 1;
-    // Simplified spring: critically damped with slight overshoot
+    // Underdamped spring with a slight overshoot, timed so it settles across the whole window (about a quarter of a
+    // screen of scrolling per layer): heavier layers swing less
     const omega = Math.sqrt(cfg.stiffness / cfg.mass);
-    const zeta = cfg.damping / (2 * Math.sqrt(cfg.stiffness * cfg.mass));
-    const x = 1 - Math.exp(-zeta * omega * t * 4) * (Math.cos(omega * Math.sqrt(1 - zeta * zeta) * t * 4) + (zeta / Math.sqrt(1 - zeta * zeta)) * Math.sin(omega * Math.sqrt(1 - zeta * zeta) * t * 4));
-    return clamp(x);
+    const zeta = cfg.damping / (2 * Math.sqrt(cfg.stiffness * cfg.mass)), wd = omega * Math.sqrt(1 - zeta * zeta);
+    const s = t * 3.5 / (zeta * omega);
+    const x = 1 - Math.exp(-zeta * omega * s) * (Math.cos(wd * s) + (zeta / Math.sqrt(1 - zeta * zeta)) * Math.sin(wd * s));
+    return Math.max(0, x);
   };
 
-  const E0 = .06, ESTEP = .1, EDUR = .07, R0 = .56, B0 = .60;          // each layer comes off as the words turn to it
+  const E0 = .06, ESTEP = .1, EDUR = .09, R0 = .56, B0 = .60;          // each layer comes off as the words turn to it
   const explodeOf = (k, p) => springProgress(k, p);  // use spring-based progress
   const mats = key => { const out = []; layers[key].traverse(o => { if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => { if (!out.includes(m)) out.push(m); }); }); return out; };
   const LM = {}; ORDER.forEach(k => { LM[k] = mats(k); LM[k].forEach(m => { m.transparent = true; }); });
@@ -1285,7 +1287,7 @@ function makeIntro3D(T, canvas, opt = {}){
       const isExploding = p < R0 && explodeProg > 0;
 
       if (p < R0) {
-        const e = easeSpring(explodeProg);  // use spring easing for explode
+        const e = explodeProg;  // already sprung: easing it again made it snap
         lift = LIFT[key] * e + 1.4 * ease(f);
 
         // Add subtle rotation and horizontal spread during explode for more dynamic feel
