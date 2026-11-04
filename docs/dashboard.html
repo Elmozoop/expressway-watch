@@ -1184,6 +1184,10 @@ button.hw:hover{transform:none}
 .dlayer.compact .dl-card > span{display:none}
 .dlayer.compact .dl-card{padding:6px 10px 7px}
 .dlayer.compact .dl-card em{margin-top:1px}
+
+/* ============ the words on a see-through panel ============ */
+.lead::before{background:rgba(23,18,15,.78);-webkit-backdrop-filter:blur(10px) saturate(.9);backdrop-filter:blur(10px) saturate(.9)}
+.lead::after{background:linear-gradient(to top,rgba(23,18,15,.78),rgba(23,18,15,0))}
 </style>
 </head>
 <body>
@@ -1846,9 +1850,9 @@ function focusPose(k, outP, outA){
   if (FOC.bandK !== k){ FOC.top = top; FOC.bot = bot; FOC.bandK = k; } else { FOC.top += (top - FOC.top) * .08; FOC.bot += (bot - FOC.bot) * .08; }
   top = FOC.top; bot = FOC.bot;
   const band = Math.max(150, bot - top), tanH = Math.tan(camera.fov * Math.PI / 360);
-  const px = Math.max(48, Math.min(band - 150, band * .55));                // the machine's height on screen
-  const d = H * size / (2 * tanH * px), ppu = H / (2 * d * tanH);
-  const vo = W / H < .8 ? .2 : .15, yT = Math.min(bot, H) - 12 - px / 2;      // where its middle should land
+  const px = Math.max(64, Math.min(band - 64, band * (W < 700 ? .5 : .72)));   // the machine's height on screen (beside it, its label; a phone keeps room for it)
+  const d = H * size * camera.zoom / (2 * tanH * px), ppu = H * camera.zoom / (2 * d * tanH);
+  const vo = W / H < .8 ? .2 : .15, yT = top + (Math.min(bot, H) - top) * .56;   // where its middle should land
   const shift = (yT - (VIEW_Y == null ? (.5 - vo) * H : VIEW_Y)) / ppu;                                 // the view moves up this much to put it there
   // on a narrow screen it sits left of centre, so its label (which opens to the right) still fits
   const side = (W / 2 - Math.min(W / 2, W - 250)) / ppu;
@@ -1858,7 +1862,7 @@ function focusPose(k, outP, outA){
 }
 // mode 0: on the tour; 1: flying to / holding a close-up; 2: gliding back. b runs 0..1 through a glide
 const FOC = {k: -1, mode: 0, b: 1, at: 0, fromP: new T.Vector3(), fromA: new T.Vector3(), lastP: new T.Vector3(), lastA: new T.Vector3()};
-let W = 1, H = 1, VIEW_Y = null, VIEW_SET = NaN;                            // where on screen the shot is centred (px)
+let W = 1, H = 1, VIEW_Y = null, VIEW_SET = NaN, VIEW_Z = null;                            // where on screen the shot is centred (px)
 function frame(){
   const a = W / H; camera.aspect = a; camera.fov = a < .8 ? 38 : 32;
   // the words sit along the bottom of the screen, so the action is lifted into the space above them
@@ -1957,7 +1961,9 @@ function fly(t){
   { let bt = 0, bb = H; avoidRects.forEach(r => { if (r[3] < H * .5) bt = Math.max(bt, r[3]); else if (r[1] > H * .25) bb = Math.min(bb, r[1]); });
     const want = bb - bt > 120 ? bt + (bb - bt) * .5 : H * (W / H < .8 ? .3 : .35);
     VIEW_Y = VIEW_Y == null ? want : VIEW_Y + (want - VIEW_Y) * .12;
-    if (!(Math.abs(VIEW_Y - VIEW_SET) < .3)){ VIEW_SET = VIEW_Y; camera.setViewOffset(W, H, 0, H / 2 - VIEW_Y, W, H); camera.updateProjectionMatrix(); } }
+    const zoom = W < 700 ? 1 : Math.min(1.4, Math.max(1, .5 / Math.max(.2, (bb - bt) / H)));   // the band under half the screen: lean in (not on a narrow phone)
+    VIEW_Z = VIEW_Z == null ? zoom : VIEW_Z + (zoom - VIEW_Z) * .12;
+    if (!(Math.abs(VIEW_Y - VIEW_SET) < .3) || Math.abs(camera.zoom - VIEW_Z) > .002){ VIEW_SET = VIEW_Y; camera.zoom = VIEW_Z; camera.setViewOffset(W, H, 0, H / 2 - VIEW_Y, W, H); camera.updateProjectionMatrix(); } }
   camera.position.copy(tmpA); camera.lookAt(tmpB);
   camera.updateMatrixWorld(); placeLabels(t);
 }
