@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Expressway Watch</title>
 <meta name="description" content="Construction progress on Indian expressways, tracked from free Sentinel-2 satellite images every three months, 2 km at a time.">
-<meta name="theme-color" content="#06090e">
+<meta name="theme-color" content="#17120f">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Expressway Watch">
 <meta property="og:title" content="Expressway Watch: India's expressways, tracked from space">
@@ -16,7 +16,7 @@
 <meta property="og:image:alt" content="Expressway Watch: satellite view of an expressway being built, 2020 and 2026 side by side">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="og.jpg">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23e8a838'/%3E%3Cpath d='M11 6h10l3 20h-5l-1-6h-4l-1 6H8z' fill='%2306090e'/%3E%3Crect x='15' y='10' width='2' height='4' fill='%23e8a838'/%3E%3Crect x='15' y='16' width='2' height='4' fill='%23e8a838'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"%3E%3Crect width="64" height="64" rx="14" fill="%23f2b705"/%3E%3Cpath d="M7 52h50l-6-10H13z" fill="%23a8734b"/%3E%3Cpath d="M14 39h36l-2.5-6h-31z" fill="%23bdb4a4"/%3E%3Cpath d="M18 29.5h28l-2.4-7.5H20.4z" fill="%232e2f36"/%3E%3Cpath d="M24 26h4M30 26h4M36 26h4" stroke="%23eef2f7" stroke-width="1.6"/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <script>
@@ -28,11 +28,11 @@
   var h = location.hash.slice(1);
   if (ids.indexOf(h) >= 0 || /^compare[\/-]/.test(h)) d.classList.add("deep");
   var l = document.createElement("link"); l.rel = "stylesheet";
-  l.href = "https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap";
+  l.href = "https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,500;0,8..60,600;1,8..60,600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap";
   document.head.appendChild(l);
 })();
 </script>
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,500;0,8..60,600;1,8..60,600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>.scope,.ctas,#pick,#learn,#story,#trust,#foot1,.i3-stage,.i3-static,.nav a[href^="#"]{display:none!important}.intro3d{height:auto!important}</style></noscript>
 <script>
 /*!
@@ -226,10 +226,11 @@ button{font:inherit;color:inherit;cursor:pointer}
 .t-dot[aria-current="true"]{color:var(--on-night)}
 
 /* ============ opening scene: an expressway, taken apart (three.js) ============ */
-.intro3d{position:relative;height:680vh;background:var(--night);color:var(--on-night)}
+.intro3d{position:relative;height:100vh;height:100svh;min-height:560px;background:var(--night);color:var(--on-night)}
 .intro3d .i3-top{position:absolute;left:0;right:0;top:0;z-index:6}
-.i3-stage{position:sticky;top:env(safe-area-inset-top,0px);height:100vh;height:calc(100svh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));overflow:hidden;
+.i3-stage{position:absolute;inset:0;overflow:hidden;
   background:radial-gradient(115% 85% at 66% 38%,#1b2536 0%,#111823 45%,var(--night) 75%)}
+.intro3d .i3-lines,.intro3d .i3-labels,.intro3d .i3-cap,.intro3d .i3-stages,.intro3d .i3-note,.intro3d .i3-go{display:none!important}
 /* a faint survey grid behind the model */
 .i3-stage::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;
   background-image:linear-gradient(rgba(170,190,220,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(170,190,220,.05) 1px,transparent 1px);background-size:56px 56px;
@@ -813,6 +814,369 @@ details .body a{color:var(--accent)}
   .hero,.hwband{grid-template-columns:1fr;padding-block:0 12px}
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
+
+/* ============ base palette (dusk, further down, sets the final look) ============
+   the colours of the construction site that opens the page; one light look in every viewer theme */
+:root,:root[data-theme="dark"]{
+  color-scheme:light;
+  --chainage:#d97706; --chainage-dim:#b45309; --chainage-pale:#fdecc8; --pencil:#8a6a3f;
+  --bg:#f3ece0; --surface:#fffaf2; --surface-2:#ebe1cf; --ink:#1f1a14; --ink-2:#5a4f42; --muted:#7d705f; --line:#e2d5bf;
+  --focus:#d97706; --accent:#1f1a14; --accent-ink:#f8f1e4; --soft:#fbe7c2;
+  --night:#ece2cf; --night-2:#e4d8c2; --night-3:#d8c9ae; --night-line:#cdbb9c;
+  --on-night:#1f1a14; --on-night-2:#5a4f42; --on-night-3:#7d705f; --mark:#d97706; --sign:#1f7a4d;
+  --shadow:0 1px 2px rgba(31,26,20,.06),0 12px 30px rgba(31,26,20,.08);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  color-scheme:light;
+  --chainage:#d97706; --chainage-dim:#b45309; --chainage-pale:#fdecc8; --pencil:#8a6a3f;
+  --bg:#f3ece0; --surface:#fffaf2; --surface-2:#ebe1cf; --ink:#1f1a14; --ink-2:#5a4f42; --muted:#7d705f; --line:#e2d5bf;
+  --focus:#d97706; --accent:#1f1a14; --accent-ink:#f8f1e4; --soft:#fbe7c2;
+  --night:#ece2cf; --night-2:#e4d8c2; --night-3:#d8c9ae; --night-line:#cdbb9c;
+  --on-night:#1f1a14; --on-night-2:#5a4f42; --on-night-3:#7d705f; --mark:#d97706; --sign:#1f7a4d;
+  --shadow:0 1px 2px rgba(31,26,20,.06),0 12px 30px rgba(31,26,20,.08);
+} }
+.band{background-color:var(--night)}
+.glow{display:none}
+.lanes{opacity:.05}
+.pill.done{background:rgba(31,122,77,.13);color:#17603c}
+.pill.done i{background:#1f7a4d}
+.pill.live{background:rgba(217,119,6,.14);color:#92400e}
+.pill.live i{background:#d97706}
+.card{border:1px solid var(--line)}
+.btn.primary{background:var(--ink);color:var(--accent-ink);box-shadow:0 10px 26px rgba(31,26,20,.18)}
+.btn.ghost{color:var(--ink);border:1.5px solid var(--ink);background:rgba(243,236,224,.75)}
+.btn.ghost:hover{background:var(--surface)}
+
+/* the opening screen: the construction site behind, the words on its left, the numbers along its foot */
+.intro3d{height:100vh;height:100svh;min-height:680px;background:var(--bg)}
+.intro3d .i3-stage{background:transparent}
+.intro3d .i3-stage::before{display:none}
+.intro3d .i3-stage::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(90deg,var(--bg) 0%,rgba(243,236,224,.93) 27%,rgba(243,236,224,0) 52%,rgba(243,236,224,0) 88%,var(--bg) 100%),
+             linear-gradient(0deg,var(--bg) 0%,rgba(243,236,224,0) 16%)}
+.intro3d .i3-skip,.intro3d .i3-cue,.intro3d .sheet{display:none!important}
+.lead{position:absolute;left:0;right:0;top:clamp(96px,15vh,150px);z-index:2}
+.lead > *{max-width:36rem}
+.lead .eyebrow{color:var(--mark)}
+.lead h1{font-size:clamp(42px,5.8vw,78px);line-height:.98;margin-top:16px;letter-spacing:-.03em;max-width:12ch}
+.lead h1 .line{display:block;overflow:hidden;padding-bottom:.06em}
+.lead h1 .line>span{display:inline-block}
+.lead .hl{color:var(--mark)}
+.lead .lede{color:var(--ink-2);font-size:clamp(16px,1.5vw,19px);margin-top:20px;max-width:33rem}
+.lead .ctas{margin-top:28px}
+.lead-stats{position:absolute;left:0;right:0;bottom:26px;z-index:2;display:flex;justify-content:flex-end}
+.intro3d .herostats{display:flex;flex-wrap:wrap;gap:12px 34px;margin:0;width:fit-content;max-width:100%;padding:14px 22px;border-radius:16px;
+  background:rgba(255,250,242,.88);border:1px solid var(--line);box-shadow:var(--shadow);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.intro3d .herostats div{display:grid}
+.intro3d .herostats b{font-size:28px;color:var(--ink)}
+.intro3d .herostats span{color:var(--ink-2);font-size:13.5px;max-width:20ch}
+@media (max-width:760px){
+  .intro3d{height:auto;min-height:960px}
+  .intro3d .i3-stage::after{background:linear-gradient(180deg,var(--bg) 0%,var(--bg) 60%,rgba(243,236,224,0) 74%),linear-gradient(0deg,var(--bg) 0%,rgba(243,236,224,0) 14%)}
+  .lead{top:84px} .lead h1{font-size:clamp(36px,10.5vw,46px)}
+  .lead-stats{bottom:16px;justify-content:flex-start}
+  .intro3d .herostats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:10px 12px;width:100%} .intro3d .herostats b{font-size:19px} .intro3d .herostats span{font-size:11.5px;line-height:1.3}
+}
+
+/* the time-lapse section that follows */
+.hero-band{padding-block:24px 8px}
+.hero .orbit-h{font-size:clamp(30px,3.8vw,48px);line-height:1.04;margin-top:14px;letter-spacing:-.02em}
+.hero .orbit-note{margin-top:18px;color:var(--muted);font-family:var(--mono);font-size:13px;letter-spacing:.02em}
+/* section heads: the heading on the left, its explanation beside it */
+@media (min-width:960px){ .learn-head{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);column-gap:48px;align-items:end}
+  .learn-head .eyebrow{grid-column:1/-1} .learn-head .sub{margin-top:0} }
+@media print{ .intro3d{display:block!important;height:auto!important;min-height:0} .intro3d .i3-stage{position:relative} #i3canvas,.intro3d .i3-stage::after{display:none!important}
+  .lead,.lead-stats{position:relative;top:auto;bottom:auto;padding-top:20px} }
+
+/* ============ rework: report-cover opening, serif heads, ruled sections ============ */
+:root{--serif:"Source Serif 4",Georgia,"Times New Roman",serif}
+h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-.012em}
+.eyebrow{letter-spacing:.14em}
+/* the opening: sky behind the scene; scene and labels above; the words along the bottom */
+.intro3d .i3-stage{background:linear-gradient(180deg,#c9d6e1 0%,#dcdfd9 28%,#e8decb 46%,var(--bg) 72%)}
+.intro3d .i3-stage::after{background:linear-gradient(0deg,var(--bg) 0%,rgba(243,236,224,.96) 34%,rgba(243,236,224,0) 56%),
+  linear-gradient(90deg,rgba(243,236,224,.6) 0%,rgba(243,236,224,0) 9%,rgba(243,236,224,0) 91%,rgba(243,236,224,.6) 100%)}
+.lead{top:auto;bottom:34px;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.8fr);gap:24px 56px;align-items:end}
+.lead > *{max-width:none}
+.lead h1{font-size:clamp(44px,5.3vw,84px);line-height:.96;letter-spacing:-.025em;max-width:17ch;margin-top:14px;font-weight:600}
+.lead .hl{font-style:italic}
+.lead-side{display:grid;gap:18px;padding-bottom:8px}
+.lead .lede{margin:0;font-size:clamp(16px,1.3vw,18px)}
+.lead .ctas{margin:0;gap:10px}
+.intro3d .herostats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;width:100%;padding:14px 0 0;border:0;border-top:1px solid var(--line);border-radius:0;background:none;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+.intro3d .herostats b{font-family:var(--serif);font-size:30px;font-weight:600}
+.intro3d .herostats span{font-size:12.5px}
+.lead-stats{display:none}
+/* the old intro's list of layers describes the old animation: screen readers keep it, the page doesn't show it */
+.intro3d.i3-still .i3-static{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* labels in the scene */
+.dlayer{position:absolute;inset:0;z-index:1;pointer-events:none}
+.dl{position:absolute;left:0;top:0;opacity:0;transition:opacity .35s ease;will-change:transform}
+.dl.on{opacity:1}
+.dl::before{content:"";position:absolute;left:-4px;top:-4px;width:8px;height:8px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px var(--ink)}
+.dl::after{content:"";position:absolute;left:-.5px;bottom:4px;width:1px;height:28px;background:var(--ink);opacity:.7}
+.dl-card{position:absolute;left:-14px;bottom:32px;display:grid;gap:1px;width:max-content;max-width:230px;padding:8px 11px 9px;border-radius:6px;
+  background:rgba(255,251,244,.95);border:1px solid rgba(31,26,20,.14);box-shadow:0 6px 18px rgba(31,26,20,.12);font-size:13px;line-height:1.35;color:var(--ink-2)}
+.dl-card b{color:var(--ink);font-size:13.5px}
+.dl-card em{font-style:normal;font-family:var(--mono);font-size:11px;display:flex;align-items:center;gap:6px;margin-top:3px}
+.dl-card em i{width:8px;height:8px;border-radius:2px;display:inline-block}
+@media (max-width:960px){ .lead{grid-template-columns:1fr} }
+@media (max-width:760px){
+  .intro3d{min-height:1020px}
+  .intro3d .i3-stage::after{background:linear-gradient(0deg,var(--bg) 0%,var(--bg) 52%,rgba(243,236,224,0) 66%)}
+  .lead{bottom:20px;gap:14px} .lead h1{font-size:clamp(38px,11vw,50px)}
+  .intro3d .herostats{gap:8px;padding:12px 0 0} .intro3d .herostats b{font-size:21px} .intro3d .herostats span{font-size:11.5px}
+  .dl-card{max-width:170px;font-size:12px}
+}
+/* sections: a rule above each head, the title large on the left, its explanation beside it */
+.pickhead,.learn-head{border-top:1.5px solid var(--ink);padding-top:20px}
+#trust .inner > .eyebrow{border-top:1.5px solid var(--ink);padding-top:20px}
+.pickhead h2,.learn-head h2,#trust h2{font-size:clamp(34px,4.2vw,56px);line-height:1.02}
+.hero .orbit-h{font-size:clamp(32px,4vw,52px)}
+/* flatter, crisper surfaces */
+.card{border-radius:10px;box-shadow:none}
+.hw{border-radius:12px;box-shadow:none;transition:border-color .2s,transform .2s}
+.hw:hover{border-color:var(--ink)}
+.btn{border-radius:8px;font-weight:600;font-size:15px;padding:12px 18px}
+.btn.ghost{border-width:1.5px}
+/* footer */
+.foot{grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;border-top:1.5px solid var(--ink);margin-top:40px;padding-top:24px;font-size:14px;color:var(--ink-2)}
+.foot .f-col{display:grid;gap:6px;align-content:start}
+.foot .f-name{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:20px;color:var(--ink)}
+.foot .f-k{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.foot a{color:var(--ink)}
+@media (max-width:760px){ .foot{grid-template-columns:1fr} }
+
+/* ============ micro-animations ============ */
+@media (prefers-reduced-motion: no-preference){
+  /* buttons lift a touch on hover, press in on click; their arrow leans forward */
+  .btn{transition:transform .18s cubic-bezier(.2,.8,.2,1),box-shadow .18s,background-color .18s,border-color .18s}
+  .btn:hover{transform:translateY(-2px)}
+  .btn.primary:hover{box-shadow:0 14px 30px rgba(31,26,20,.24)}
+  .btn:active{transform:translateY(0) scale(.97);transition-duration:.06s}
+  .btn .arr{display:inline-block;transition:transform .2s cubic-bezier(.2,.8,.2,1)}
+  .btn:hover .arr{transform:translateX(4px)}
+  .btn#cta2:hover .arr{transform:translateY(3px)}
+  /* nav and footer links: an underline draws in from the left */
+  .nav a,.foot a,.trust .links a{background-image:linear-gradient(currentColor,currentColor);background-size:0 1.5px;background-position:0 100%;background-repeat:no-repeat;transition:background-size .25s cubic-bezier(.2,.8,.2,1),color .2s}
+  .nav a:hover,.foot a:hover,.trust .links a:hover{background-size:100% 1.5px}
+  /* highway cards rise on hover; the stage bar fills from the left as the card arrives */
+  .hw{transition:transform .25s cubic-bezier(.2,.8,.2,1),border-color .2s,box-shadow .25s}
+  button.hw:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(31,26,20,.12)}
+  .minibar div{transform-origin:left center;transition:transform .9s cubic-bezier(.2,.8,.2,1)}
+  .minibar.pending div{transform:scaleX(0)}
+  .minibar div:nth-child(2){transition-delay:.12s} .minibar div:nth-child(3){transition-delay:.24s} .minibar div:nth-child(4){transition-delay:.36s}
+  /* the rule above each section head draws across as it arrives */
+  .pickhead,.learn-head,#trust .inner > .eyebrow{position:relative;border-top-color:transparent!important}
+  .pickhead::before,.learn-head::before,#trust .inner > .eyebrow::before{content:"";position:absolute;left:0;right:0;top:-1.5px;height:1.5px;background:var(--ink);
+    transform-origin:left center;transition:transform 1.1s cubic-bezier(.2,.8,.2,1)}
+  .pending.pickhead::before,.pending.learn-head::before,#trust .inner > .eyebrow.pending::before{transform:scaleX(0)}
+  /* scene labels ease up into place, and their dot gives one soft pulse */
+  .dl .dl-card{transform:translateY(6px) scale(.97);transform-origin:12px 100%;transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+  .dl.on .dl-card{transform:none}
+  .dl.on::before{animation:dlpulse 2.4s ease-out infinite}
+  @keyframes dlpulse{0%{box-shadow:0 0 0 2px var(--ink),0 0 0 0 rgba(31,26,20,.35)}70%{box-shadow:0 0 0 2px var(--ink),0 0 0 10px rgba(31,26,20,0)}100%{box-shadow:0 0 0 2px var(--ink),0 0 0 0 rgba(31,26,20,0)}}
+  /* the timeline's play button breathes while it waits */
+  .play,.t-play{transition:transform .18s cubic-bezier(.2,.8,.2,1)}
+  .play:hover,.t-play:hover{transform:scale(1.06)}
+}
+
+/* ============ dusk ============
+   the colours of the evening scene that opens the page: near-black page, cream words, amber accents; one look for every viewer */
+:root,:root[data-theme],:root:not([data-theme="light"]){
+  color-scheme:dark;
+  --chainage:#f59e0b; --chainage-dim:#d97706; --chainage-pale:#3a2a14; --pencil:#c9a26b;
+  --bg:#17120f; --surface:#211a15; --surface-2:#2c231c; --ink:#f5ebdd; --ink-2:#c9b8a3; --muted:#a08f7c; --line:#3a2e25;
+  --focus:#f59e0b; --accent:#f5ebdd; --accent-ink:#17120f; --soft:#3a2a14;
+  --night:#1d1612; --night-2:#271e18; --night-3:#33281f; --night-line:#45372b;
+  --on-night:#f5ebdd; --on-night-2:#c9b8a3; --on-night-3:#a08f7c; --mark:#f59e0b; --sign:#1f7a4d;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 34px rgba(0,0,0,.35);
+}
+@media (prefers-color-scheme: dark){ :root,:root[data-theme],:root:not([data-theme="light"]){
+  color-scheme:dark;
+  --chainage:#f59e0b; --chainage-dim:#d97706; --chainage-pale:#3a2a14; --pencil:#c9a26b;
+  --bg:#17120f; --surface:#211a15; --surface-2:#2c231c; --ink:#f5ebdd; --ink-2:#c9b8a3; --muted:#a08f7c; --line:#3a2e25;
+  --focus:#f59e0b; --accent:#f5ebdd; --accent-ink:#17120f; --soft:#3a2a14;
+  --night:#1d1612; --night-2:#271e18; --night-3:#33281f; --night-line:#45372b;
+  --on-night:#f5ebdd; --on-night-2:#c9b8a3; --on-night-3:#a08f7c; --mark:#f59e0b; --sign:#1f7a4d;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 34px rgba(0,0,0,.35);
+} }
+.pill.done{background:rgba(74,160,110,.18);color:#9fdcb6}
+.pill.done i{background:#4caf7d}
+.pill.live{background:rgba(245,158,11,.16);color:#fcd27a}
+.pill.live i{background:#f59e0b}
+.btn.primary{background:var(--ink);color:var(--accent-ink);box-shadow:0 10px 26px rgba(0,0,0,.35)}
+.btn.ghost{color:var(--ink);border:1.5px solid rgba(245,235,221,.55);background:transparent}
+.btn.ghost:hover{background:rgba(245,235,221,.08);border-color:var(--ink)}
+button.hw:hover{box-shadow:0 18px 40px rgba(0,0,0,.45)}
+/* the dark asphalt of a route drawing gets a soft light outline, so it reads on the dark cards and maps */
+.hw .art svg,#rmap,#storymap{filter:drop-shadow(0 0 1.2px rgba(245,235,221,.75)) drop-shadow(0 0 4px rgba(245,235,221,.18))}
+/* the opening: an evening sky behind the scene; the words sit on a solid panel with a short soft edge, no wash */
+.intro3d{background:var(--bg)}
+.intro3d .i3-stage{background:linear-gradient(180deg,#241d36 0%,#5a3a52 26%,#c06a4e 48%,#e7a066 60%)}
+.intro3d .i3-stage::after{background:none}
+.lead::before{content:"";position:absolute;left:50%;width:100vw;transform:translateX(-50%);top:-26px;bottom:-40px;background:var(--bg);z-index:-1}
+.lead::after{content:"";position:absolute;left:50%;width:100vw;transform:translateX(-50%);top:-82px;height:56px;background:linear-gradient(to top,var(--bg),rgba(23,18,15,0));z-index:-1;pointer-events:none}
+/* scene labels are light cards: their words stay dark whatever the page around them */
+.dl::before{box-shadow:0 0 0 2px #1f1a14}
+.dl::after{background:#fff;opacity:1;box-shadow:0 0 0 .5px rgba(31,26,20,.5)}
+.dl-card{color:#5a4f42} .dl-card b{color:#1f1a14} .dl-card em{color:#5a4f42}
+@media (prefers-reduced-motion: no-preference){
+  @keyframes dlpulse{0%{box-shadow:0 0 0 2px #1f1a14,0 0 0 0 rgba(255,255,255,.5)}70%{box-shadow:0 0 0 2px #1f1a14,0 0 0 10px rgba(255,255,255,0)}100%{box-shadow:0 0 0 2px #1f1a14,0 0 0 0 rgba(255,255,255,0)}}
+}
+@media (max-width:760px){ .intro3d .i3-stage::after{background:none} }
+
+/* ============ compare buttons ============ */
+.compare-btn{justify-self:start;display:inline-flex;align-items:center;gap:8px;margin-top:10px;padding:7px 13px 7px 11px;border-radius:999px;
+  background:transparent;border:1px solid var(--night-line);color:var(--ink-2);font-size:13px;font-weight:600;letter-spacing:.01em}
+.compare-btn svg{color:var(--mark)}
+.compare-btn:hover{background:rgba(245,158,11,.1);border-color:var(--mark);color:var(--ink)}
+.compare{width:auto;height:auto;gap:8px;padding:7px 14px;border-radius:999px;font-weight:700;font-size:14px}
+.compare svg{color:var(--mark)}
+.compare:hover{background:rgba(245,158,11,.12);border-color:var(--mark);color:var(--on-night)}
+@media (prefers-reduced-motion: no-preference){
+  .compare-btn,.compare{transition:background-color .2s,border-color .2s,color .2s,transform .18s cubic-bezier(.2,.8,.2,1)}
+  .compare-btn svg,.compare svg{transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+  .compare-btn:hover svg,.compare:hover svg{transform:scaleX(-1)}      /* the arrows swap sides */
+  .compare-btn:active,.compare:active{transform:scale(.96)}
+}
+@media (max-width:520px){ .compare span{display:none} .compare{padding:8px} }
+
+/* ============ how an expressway is built ============ */
+.build{padding-block:72px 40px}
+.build-head{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);column-gap:48px;align-items:end;border-top:1.5px solid var(--ink);padding-top:20px}
+.build-head .eyebrow{grid-column:1/-1;color:var(--mark)}
+.build-head h2{font-size:clamp(34px,4.2vw,56px);line-height:1.02;margin-top:10px}
+.build-head .sub{color:var(--ink-2);max-width:46ch}
+.build-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px 56px;margin-top:40px;align-items:start}
+.xsec{margin:0;position:sticky;top:90px}
+.xsec svg{width:100%;height:auto;display:block}
+.xsec figcaption{margin-top:10px;font-size:13px;color:var(--muted)}
+.xsec .ly{transition:opacity .25s}
+.xsec.focus .ly{opacity:.28}
+.xsec.focus .ly.on{opacity:1}
+.xsec .ly.on path{stroke:var(--mark);stroke-width:2}
+.xsec text{font-family:var(--mono);font-size:12px;fill:var(--ink-2)}
+.xsec .num{font-family:var(--serif);font-size:15px;font-weight:600;fill:var(--ink)}
+.layerlist{list-style:none;margin:0;padding:0;display:grid}
+.layerlist li{display:grid;grid-template-columns:36px minmax(0,1fr);gap:4px 14px;padding:18px 0;border-top:1px solid var(--line);cursor:default}
+.layerlist li:last-child{border-bottom:1px solid var(--line)}
+.layerlist .n{font-family:var(--serif);font-size:26px;font-weight:600;color:var(--mark);line-height:1}
+.layerlist h3{font-size:21px;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
+.layerlist h3 small{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--muted);letter-spacing:.02em}
+.layerlist .what{grid-column:2;color:var(--ink-2);font-size:15.5px;margin:0}
+.layerlist .meta{grid-column:2;display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;color:var(--muted);margin-top:4px}
+.layerlist .meta b{color:var(--ink-2);font-weight:600}
+.layerlist .reads{display:inline-flex;align-items:center;gap:7px}
+.layerlist .reads i{width:10px;height:10px;border-radius:3px;box-shadow:0 0 0 1px rgba(245,235,221,.25)}
+.layerlist li:hover,.layerlist li:focus-within{background:linear-gradient(90deg,rgba(245,158,11,.07),transparent 70%)}
+@media (prefers-reduced-motion: no-preference){ .layerlist li{transition:background .25s} }
+@media (max-width:960px){ .build-head,.build-grid{grid-template-columns:1fr} .xsec{position:static} }
+
+/* ============ smooth motion ============
+   GSAP moves these every frame (card tilt and arrival, the magnetic button): CSS eases only their colours and shadows */
+.hw,button.hw{transition:border-color .2s,box-shadow .25s}
+button.hw:hover{transform:none}
+.btn.magnet{transition:box-shadow .18s,background-color .18s,border-color .18s}
+.btn.magnet:hover,.btn.magnet:active{transform:none}
+
+/* ============ a scene you can drive ============ */
+.i3-ctl{grid-column:1/-1;justify-self:end;display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:8px;margin-bottom:-6px}
+.i3-ctl[hidden],.i3-b[hidden]{display:none}
+.i3-ctl.still #i3pause,.i3-ctl.still #i3replay{display:none}
+.i3-hint{font-family:var(--mono);font-size:11.5px;letter-spacing:.02em;color:var(--ink);padding:6px 11px;border-radius:999px;background:rgba(23,18,15,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.i3-hint b{color:var(--mark);font-weight:600}
+.i3-b{display:inline-flex;align-items:center;gap:7px;padding:7px 13px;border-radius:999px;border:1px solid rgba(245,235,221,.35);background:rgba(23,18,15,.62);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);color:var(--ink);font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.i3-b:hover{border-color:var(--mark);background:rgba(23,18,15,.8)}
+.i3-b:focus-visible{outline:2px solid var(--mark);outline-offset:2px}
+.i3-b.i3-resume{background:var(--mark);border-color:var(--mark);color:#17120f}
+.i3-b.i3-resume:hover{background:#fbb534}
+.dl.on .dl-card{pointer-events:auto;cursor:pointer}
+/* pressing on the scene, its labels or its controls never starts a text selection */
+#i3canvas,.dlayer,.i3-ctl{-webkit-user-select:none;user-select:none}
+.dl.on .dl-card:hover{box-shadow:0 0 0 2px var(--mark),0 10px 24px rgba(0,0,0,.3)}
+.dl.focus .dl-card{box-shadow:0 0 0 2.5px var(--mark),0 12px 28px rgba(0,0,0,.35)}
+.dl.focus::before{background:var(--mark)}
+.seeit{grid-column:2;justify-self:start;margin-top:8px;display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;
+  border:1px solid var(--night-line);background:transparent;color:var(--ink-2);font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.seeit:hover{border-color:var(--mark);color:var(--ink);background:rgba(245,158,11,.08)}
+.seeit:focus-visible{outline:2px solid var(--mark);outline-offset:2px}
+@media (prefers-reduced-motion: no-preference){ .i3-b,.seeit{transition:background-color .2s,border-color .2s,color .2s} .seeit span{display:inline-block;transition:transform .2s} .seeit:hover span{transform:translateY(-2px)} }
+@media (max-width:600px){ .i3-ctl{justify-self:stretch;justify-content:flex-start;gap:6px;margin-bottom:0} .i3-hint{display:none} .i3-b{padding:7px 11px;font-size:12.5px} }
+
+/* ============ close-ups pan out by themselves ============ */
+.i3-b.i3-resume{background:linear-gradient(90deg,rgba(23,18,15,.22) calc(var(--p,0) * 100%),transparent 0) var(--mark)}
+.i3-b.i3-resume:hover{background:linear-gradient(90deg,rgba(23,18,15,.22) calc(var(--p,0) * 100%),transparent 0) #fbb534}
+
+/* ============ headline descenders ============ */
+.lead h1 .line,.hero h1 .line{padding:0 .1em .22em 0;margin:0 -.1em -.16em 0}
+
+/* ============ where work has stalled, at a glance ============ */
+.st-sum{display:grid;gap:10px;margin:4px 0 18px;padding:16px 18px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line)}
+.st-big{margin:0;font-family:var(--serif);font-size:clamp(20px,2.4vw,26px);line-height:1.25;color:var(--ink-2)}
+.st-big b{color:var(--ink);font-weight:600}
+.st-key{margin:0;display:flex;flex-wrap:wrap;gap:8px 22px;font-size:15px;color:var(--ink-2)}
+.st-key .k{display:inline-flex;align-items:center;gap:8px}
+.st-key b{color:var(--ink)}
+.st-key i{width:26px;height:12px;border-radius:4px;display:inline-block}
+.st-key .ew i,.g-bar.ew{background:var(--s3)}
+.st-key .none i,.g-bar.none{background:repeating-linear-gradient(135deg,var(--s1) 0 5px,color-mix(in srgb,var(--s1) 35%,transparent) 5px 10px)}
+.g-bar.ew[data-pulse]{animation:none}
+.g-axis,.g-row{grid-template-columns:200px minmax(0,1fr) 92px;column-gap:20px}
+.g-axis .g-track{height:34px}
+.g-axis .g-yr{bottom:0;top:auto!important}
+.g-axis .g-msl,.g-axis .g-today{position:absolute;top:0;font-family:var(--mono);font-size:11px;letter-spacing:.02em;color:var(--ink-2);white-space:nowrap}
+.g-axis .g-msl{transform:translateX(-50%);padding:1px 6px;border-radius:4px;background:var(--surface-2)}
+.g-axis .g-today{right:0;left:auto!important;transform:none!important;color:var(--ink);font-weight:600}
+.g-row{align-items:center;padding:14px 8px;border-top:1px solid var(--line);border-radius:0}
+.g-row:hover{border-radius:12px}
+.g-label small{font-family:inherit;font-size:13.5px;color:var(--muted)}
+.g-mid{display:grid;gap:7px;min-width:0}
+.g-tag{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;font-size:14px;color:var(--ink-2)}
+.g-status{font-weight:700;font-size:13px;padding:3px 9px;border-radius:999px}
+.g-status.ew{background:rgba(184,92,42,.22);color:#f2a774}
+.g-status.none{background:rgba(74,124,58,.24);color:#a6d48e}
+.g-dur{display:grid;justify-items:end;line-height:1.05}
+.g-dur b{font-family:var(--serif);font-size:28px;font-weight:600;color:var(--ink);white-space:nowrap}
+.g-dur small{font-size:12.5px;color:var(--muted)}
+.g-what{display:none}
+@media (max-width:760px){
+  .g-axis{display:none}
+  .g-row{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"label dur" "mid mid";row-gap:10px}
+  .g-label{grid-area:label} .g-dur{grid-area:dur} .g-mid{grid-area:mid}
+  .g-ms{display:block}
+  .st-sum{padding:14px}
+}
+
+/* ============ polish ============ */
+:root,:root[data-theme],:root:not([data-theme="light"]){--stage-4:#5a7396;--s4:#5a7396}
+@media (prefers-color-scheme: dark){ :root,:root[data-theme],:root:not([data-theme="light"]){--stage-4:#5a7396;--s4:#5a7396} }
+.track .ms span{font-size:12px}
+@media (max-width:760px){ .t-dot{font-size:11px} }
+/* a phone's timeline: the track starts at 2020 anyway, so its label goes and 2022, 2024, 2026 sit evenly */
+@media (max-width:520px){ .track .yrs span:first-child{display:none} }
+/* a fact that runs to two lines in its narrow box breaks evenly */
+@media (max-width:420px){ .dfacts b{font-size:14px;text-wrap:balance} }
+@media (pointer:coarse){
+  .dots button{height:40px}
+  .dots button::before{top:17px}
+  .trust .links a,.foot a{display:inline-block;padding-block:9px}
+}
+
+/* ============ labels beside their machine, and compact ============ */
+.dl.side-r .dl-card,.dl.side-l .dl-card{bottom:auto;top:0;translate:0 -50%;transform-origin:0 50%}
+.dl.side-r .dl-card{left:24px}
+.dl.side-l .dl-card{left:auto;right:24px;transform-origin:100% 50%}
+.dl.side-r::after,.dl.side-l::after{bottom:auto;top:-.5px;height:1px;width:20px}
+.dl.side-r::after{left:4px}
+.dl.side-l::after{left:-24px}
+.dl.side-ul .dl-card{left:auto;right:-14px;transform-origin:calc(100% - 12px) 100%}
+.intro3d:not(.i3-ready) .dlayer{opacity:0}
+.dlayer{transition:opacity .9s ease}
+.dlayer.compact .dl-card > span{display:none}
+.dlayer.compact .dl-card{padding:6px 10px 7px}
+.dlayer.compact .dl-card em{margin-top:1px}
 </style>
 </head>
 <body>
@@ -821,38 +1185,61 @@ details .body a{color:var(--accent)}
 
 <div id="home">
   <section class="intro3d" id="intro" aria-labelledby="introTitle">
-    <div class="inner topbar i3-top"><a class="brand" href="#" id="brand1" aria-label="Expressway Watch, back to the top"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><rect width="30" height="30" rx="8" fill="var(--chainage)"/><path d="M11 25 L14 5 M19 25 L16 5" stroke="var(--void)" stroke-width="2.2" stroke-linecap="round"/><path d="M15 9v2.5M15 15v2.5M15 21v2.5" stroke="var(--void)" stroke-width="1.6" stroke-linecap="round"/></svg><span>Expressway Watch</span></a>
-      <nav class="nav" aria-label="Sections"><a href="#pick">Highways</a><a href="#learn">How it works</a><a class="hide-sm" href="https://github.com/Elmozoop/expressway-watch">Code</a></nav></div>
+    <div class="inner topbar i3-top"><a class="brand" href="#" id="brand1" aria-label="Expressway Watch, back to the top"><svg width="30" height="30" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#f2b705"/><path d="M7 52h50l-6-10H13z" fill="#a8734b"/><path d="M14 39h36l-2.5-6h-31z" fill="#bdb4a4"/><path d="M18 29.5h28l-2.4-7.5H20.4z" fill="#2e2f36"/><path d="M24 26h4M30 26h4M36 26h4" stroke="#eef2f7" stroke-width="1.6"/></svg><span>Expressway Watch</span></a>
+      <nav class="nav" aria-label="Sections"><a href="#pick">Highways</a><a href="#build">How it's built</a><a href="#learn">How to read it</a><a class="hide-sm" href="https://github.com/Elmozoop/expressway-watch">Code</a></nav></div>
     <div class="i3-stage" id="i3stage">
-      <canvas id="i3canvas" role="img" aria-label="A 3D cut-away of a stretch of expressway, taken apart into its layers as you scroll"></canvas>
+      <canvas id="i3canvas" role="img" aria-label="A model of an expressway being built: an excavator raises the embankment, a roller lays the gravel and a paver lays the asphalt"></canvas>
       <svg class="i3-lines" id="i3lines" aria-hidden="true"></svg>
       <div class="i3-labels" id="i3labels" aria-hidden="true"></div>
-      <div class="inner i3-title" id="i3title">
-        <p class="eyebrow">How an expressway is built</p>
-        <h2 id="introTitle">An expressway,<br><span class="hl">taken apart.</span></h2>
-        <p class="i3-sub">Five layers go down on top of the fields, and a satellite sees each one arrive.<span class="i3-go"> Scroll to take one apart.</span></p>
-        <p class="i3-cue"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>Scroll</p>
+      <div class="dlayer" id="dlabels"></div>
+      <div class="inner lead" id="i3title">
+      <div class="i3-ctl" id="i3ctl" hidden>
+        <span class="i3-hint" id="i3hint" aria-live="polite"></span>
+        <button class="i3-b i3-resume" id="i3resume" type="button" hidden><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5l13 7.5-13 7.5z" fill="currentColor"/></svg><span>Resume tour</span></button>
+        <button class="i3-b" id="i3pause" type="button" aria-pressed="false"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg><span>Pause</span></button>
+        <button class="i3-b" id="i3replay" type="button"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg><span>Replay</span></button>
       </div>
-      <p class="i3-note" id="i3note" aria-hidden="true">Layers drawn much thicker than they are</p>
-      <div class="i3-cap" id="i3cap" aria-hidden="true"><span class="i3-n"></span><b></b><span class="i3-t"></span></div>
-      <div class="i3-stages" id="i3stages" aria-hidden="true"></div>
+        <div class="lead-copy">
+          <p class="eyebrow" data-in>Satellite construction tracker&nbsp;·&nbsp;India</p>
+          <h1 id="introTitle"><span class="line"><span>Watch India's</span></span><span class="line"><span>expressways being built,</span></span><span class="line"><span class="hl">from space.</span></span></h1>
+        </div>
+        <div class="lead-side">
+          <p class="lede" data-in>Every three months, Expressway Watch reads fresh satellite images of each 2 km of road and shows how far it has got: still farmland, earthwork, or finished road.</p>
+          <div class="ctas" data-in>
+            <button class="btn primary magnet" id="cta">See the live NHAI project <span class="arr" aria-hidden="true">→</span></button>
+            <a class="btn ghost" id="cta2" href="#learn">How to read it <span class="arr" aria-hidden="true">↓</span></a>
+          </div>
+          <div class="herostats" id="herostats" data-in><div><b data-to="260" data-suf=" km">260 km</b><span>tracked on two expressways</span></div><div><b data-to="27" data-suf="">27</b><span>quarters of satellite images</span></div><div><b data-to="94" data-suf="%">94%</b><span>of Ganga pieces seen paved by its opening</span></div></div>
+        </div>
+      </div>
+      <p class="i3-note" id="i3note" aria-hidden="true" hidden></p><div class="i3-cap" id="i3cap" aria-hidden="true" hidden><span class="i3-n"></span><b></b><span class="i3-t"></span></div><div class="i3-stages" id="i3stages" aria-hidden="true" hidden></div>
       <a class="i3-skip" href="#hero">Skip to the tracker ↓</a>
     </div>
     <div class="inner i3-static sr-only" id="i3static"></div>
+  </section>
+  <section class="build" id="build" aria-labelledby="buildTitle">
+    <div class="inner">
+      <div class="build-head">
+        <p class="eyebrow">How an expressway is built</p>
+        <h2 id="buildTitle">Five layers on top of the fields</h2>
+        <p class="sub">Each layer goes down in turn, laid by its own machine. A satellite only ever sees the top one, so the stage the tracker reads changes as each layer arrives.</p>
+      </div>
+      <div class="build-grid">
+        <figure class="xsec"><svg id="xsec" viewBox="0 0 600 330" role="img" aria-label="Cross-section of an expressway: embankment, sub-base, base, binder course and asphalt surface, on top of the fields"></svg>
+          <figcaption>Cross-section, not to scale: the pavement layers are drawn much thicker than they are.</figcaption></figure>
+        <ol class="layerlist" id="layerlist"></ol>
+      </div>
+    </div>
   </section>
   <header class="band edge hero-band" id="hero">
     <div class="lanes" aria-hidden="true"></div><div class="glow" aria-hidden="true"></div>
     <div class="inner">
       <div class="hero">
         <div class="herotext">
-          <p class="eyebrow" data-in>Satellite construction tracker&nbsp;·&nbsp;India</p>
-          <h1><span class="line"><span>Watch India's</span></span><span class="line"><span>expressways</span></span><span class="line"><span>being built,</span></span><span class="line"><span class="hl">from space.</span></span></h1>
-          <p class="lede" data-in>A satellite photographs India every few days. Every three months, Expressway Watch takes a fresh look at each 2 km of road and shows how far each highway has got: still farmland, earthwork, or finished road.</p>
-          <div class="ctas" data-in>
-            <button class="btn primary magnet" id="cta">See the live NHAI project →</button>
-            <a class="btn ghost" id="cta2" href="#learn">How to read it ↓</a>
-          </div>
-          <div class="herostats" id="herostats" data-in><div><b data-to="260" data-suf=" km">260 km</b><span>tracked on two expressways</span></div><div><b data-to="27" data-suf="">27</b><span>quarters of satellite images</span></div><div><b data-to="94" data-suf="%">94%</b><span>of Ganga pieces seen paved by its opening</span></div></div>
+          <p class="eyebrow" data-in>From orbit&nbsp;·&nbsp;Ganga Expressway, km 0–2</p>
+          <h2 class="orbit-h" data-in>Six years of one 2 km piece</h2>
+          <p class="lede" data-in>Real Sentinel-2 images from 2020 to 2026. Watch the expressway's junction appear beside the old highway near Meerut, with the stage the tracker reads for each quarter.</p>
+          <p class="orbit-note" data-in>Each pixel is 10 × 10 m: the same view the tracker uses for every 2 km of road.</p>
         </div>
         <figure class="scope" id="scope">
           <div class="scope-img loading" id="scopeImg" role="img" aria-label="Satellite time-lapse of a stretch of expressway, 2020 to 2026">
@@ -948,7 +1335,7 @@ const STAGES = [
   {name: "Not started", c: "#4a7c3a"},
   {name: "Clearing", c: "#d4a52a"},
   {name: "Earthwork", c: "#b85c2a"},
-  {name: "Paved", c: "#2d3a4a"}
+  {name: "Paved", c: "#5a7396"}
 ];
 const REDUCE = matchMedia("(prefers-reduced-motion: reduce)").matches;
 let G_ = null;                                   // gsap, once motion is set up
@@ -971,7 +1358,7 @@ const tip = $("#tip");
 function showTip(e, html){ tip.innerHTML = html; tip.hidden = false; const x = Math.min(e.clientX + 14, innerWidth - tip.offsetWidth - 8), y = Math.min(e.clientY + 14, innerHeight - tip.offsetHeight - 8); tip.style.left = x + "px"; tip.style.top = y + "px"; }
 function hideTip(){ tip.hidden = true; }
 function toast(msg){ const t = $("#toast"); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => t.hidden = true, 2600); }
-const brandHTML = `<svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><rect width="30" height="30" rx="8" fill="var(--chainage)"/><path d="M11 25 L14 5 M19 25 L16 5" stroke="var(--void)" stroke-width="2.2" stroke-linecap="round"/><path d="M15 9v2.5M15 15v2.5M15 21v2.5" stroke="var(--void)" stroke-width="1.6" stroke-linecap="round"/></svg><span>Expressway Watch</span>`;
+const brandHTML = `<svg width="30" height="30" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#f2b705"/><path d="M7 52h50l-6-10H13z" fill="#a8734b"/><path d="M14 39h36l-2.5-6h-31z" fill="#bdb4a4"/><path d="M18 29.5h28l-2.4-7.5H20.4z" fill="#2e2f36"/><path d="M24 26h4M30 26h4M36 26h4" stroke="#eef2f7" stroke-width="1.6"/></svg><span>Expressway Watch</span>`;
 const READY = HIGHWAYS.filter(h => h.segs);
 const G = READY.find(h => EXPLAIN && h.id === EXPLAIN.hw) || READY[0];            // the finished road that tells the story
 const LIVE = READY.find(h => h.live) || G;
@@ -1053,8 +1440,8 @@ function drawRoute(svg, h, opt){
     // All names are measured together (one layout), then placed.
     const towns = (opt.towns || []).map(([name, pt]) => {
       const [x, y] = proj(pt), g = el("g", {}, labels);
-      el("circle", {cx: x, cy: y, r: 2.4, fill: "#a9b3c2"}, g);
-      const t = el("text", {x: x - 8, y: y + 4, "font-size": 11.5, fill: "#a9b3c2", "text-anchor": "end", stroke: "#06090e", "stroke-width": 3, "stroke-linejoin": "round", "paint-order": "stroke"}, g); t.textContent = name;
+      el("circle", {cx: x, cy: y, r: 2.4, fill: "#5d6b80"}, g);
+      const t = el("text", {x: x - 8, y: y + 4, "font-size": 11.5, fill: "#c9b8a3", "text-anchor": "end", stroke: "#17120f", "stroke-width": 3, "stroke-linejoin": "round", "paint-order": "stroke"}, g); t.textContent = name;
       return {g, t, x};
     });
     towns.forEach(o => { const b = o.t.getBBox(); o.b = {x: b.x, y: b.y, width: b.width, height: b.height}; });
@@ -1094,6 +1481,497 @@ function makeCompare(box, barBox, place, before, afterDefault, onAfter){
 }
 
 /* ================= home: opening scene, an expressway taken apart (three.js) ================= */
+// The opening scene: a stretch of expressway being built, seen from a camera that flies beside it.
+// Excavator, roller and paver work in place while the road and the fields travel past; a 42 s loop.
+function makeDiorama(T, canvas, opt = {}){
+const REDUCE = !!opt.still;
+// lit and coloured on three.js r149: newer versions are asked for r149's colour handling and light units
+if (T.ColorManagement && "enabled" in T.ColorManagement) T.ColorManagement.enabled = false;
+const renderer = new T.WebGLRenderer({canvas, antialias: true, alpha: true});
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = T.PCFSoftShadowMap;
+if ("outputColorSpace" in renderer) renderer.outputColorSpace = T.SRGBColorSpace; else renderer.outputEncoding = T.sRGBEncoding; renderer.toneMapping = T.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.08;
+const scene = new T.Scene(), camera = new T.PerspectiveCamera(34, 1, .5, 600);
+const LOOKS = {   // sky-matched haze (far out, so the land stays crisp), sunlight, sky fill and exposure
+  day:       {fog: 0xe2e3dd, near: 130, far: 340, sun: 0xfff0d8, sunI: 2.4, sunAt: [-70, 52, 34], sky: 0xd6e2ee, ground: 0x7d6b4f, hemiI: .8,  exp: 1.04},
+  dusk:      {fog: 0xc98a63, near: 110, far: 300, sun: 0xff9a5c, sunI: 2.9, sunAt: [-95, 16, 22], sky: 0x7a5f86, ground: 0x2a1f1a, hemiI: .55, exp: 1.0},
+  blueprint: {fog: 0xbccbd8, near: 120, far: 330, sun: 0xf2f6ff, sunI: 2.1, sunAt: [-55, 62, 40], sky: 0xc5d6ec, ground: 0x56606e, hemiI: .9,  exp: 1.0},
+  monsoon:   {fog: 0xc9d0ca, near: 90,  far: 280, sun: 0xe6ece4, sunI: 1.3, sunAt: [-30, 85, 30], sky: 0xd3dbd7, ground: 0x55604a, hemiI: 1.05, exp: 1.12}
+};
+const LOOK = LOOKS[(typeof opt !== "undefined" && opt.look) || document.documentElement.dataset.look] || LOOKS.day;
+renderer.toneMappingExposure = LOOK.exp;
+scene.fog = new T.Fog(new T.Color(LOOK.fog).convertSRGBToLinear(), LOOK.near, LOOK.far);
+const rng = s => () => { s |= 0; s = s + 0x6D2B79F5 | 0; let t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+const clamp = v => Math.max(0, Math.min(1, v)), sm = (v, a, b) => { const x = clamp((v - a) / (b - a)); return x * x * (3 - 2 * x); };
+// physically based materials: r = roughness, m = metalness; colours given in sRGB
+const lin = c => new T.Color(c).convertSRGBToLinear();
+const M = (c, o = {}) => new T.MeshStandardMaterial({color: lin(c), roughness: o.r ?? .85, metalness: o.m ?? 0, map: o.map || null, flatShading: !!o.flat});
+// canvas textures: grain, speckle and clumps, so surfaces read as material rather than flat colour
+const texture = (w, h, draw, rep = [1, 1]) => { const c = document.createElement("canvas"); c.width = w; c.height = h; draw(c.getContext("2d"), w, h, rng(w * 7 + h));
+  const t = new T.CanvasTexture(c); if ("colorSpace" in t) t.colorSpace = T.SRGBColorSpace; else t.encoding = T.sRGBEncoding; t.wrapS = t.wrapT = T.RepeatWrapping; t.repeat.set(rep[0], rep[1]); t.anisotropy = 8; return t; };
+const speckle = (g, w, h, r, n, cols, s0, s1) => { for (let i = 0; i < n; i++){ g.fillStyle = cols[(r() * cols.length) | 0]; const z = s0 + r() * (s1 - s0); g.fillRect(r() * w, r() * h, z, z); } };
+const asphaltTex = texture(512, 512, (g, w, h, r) => { g.fillStyle = "#2c2d31"; g.fillRect(0, 0, w, h);
+  speckle(g, w, h, r, 26000, ["#3a3b40", "#232428", "#45464b", "#1d1e22"], .8, 2.2);
+  for (let i = 0; i < 14; i++){ g.strokeStyle = "rgba(0,0,0,.18)"; g.lineWidth = 6 + r() * 10; g.beginPath(); const y = r() * h; g.moveTo(0, y); g.lineTo(w, y + (r() - .5) * 20); g.stroke(); } });
+const gravelTex = texture(512, 512, (g, w, h, r) => { g.fillStyle = "#a99f8f"; g.fillRect(0, 0, w, h);
+  speckle(g, w, h, r, 30000, ["#c4bba9", "#8e8577", "#b3a996", "#776f63", "#d2c9b6"], 1, 3.6); });
+const soilTex = texture(512, 512, (g, w, h, r) => { g.fillStyle = "#9c7550"; g.fillRect(0, 0, w, h);
+  for (let i = 0; i < 9; i++){ g.fillStyle = i % 2 ? "rgba(70,45,25,.10)" : "rgba(255,230,190,.06)"; g.fillRect(0, i * h / 9, w, h / 18); }
+  speckle(g, w, h, r, 22000, ["#8a6444", "#b08560", "#6f4f34", "#c09670"], 1, 4);
+  for (let i = 0; i < 260; i++){ g.fillStyle = r() < .5 ? "rgba(60,38,20,.35)" : "rgba(210,175,135,.35)"; g.beginPath(); g.arc(r() * w, r() * h, 2 + r() * 5, 0, 7); g.fill(); } }, [.35, .35]);
+const mesh = (geo, mat, parent, cast = true) => { const m = new T.Mesh(geo, mat); m.castShadow = cast; m.receiveShadow = true; parent.add(m); return m; };
+const C = {earth: 0x9c7550, earthTop: 0xa98260, gravel: 0xb0a694, asphalt: 0x2c2d31, paint: 0xf2efe6, yellow: 0xd9a21b, dark: 0x2a2b30, steel: 0x8a8f96, glass: 0x1e2a33,
+           leaf: [0x4f6a34, 0x5d7a3c, 0x445d2c, 0x6b7f40], trunk: 0x5e4630, wall: 0xe9e1d2, roof: 0x8f5a46, cone: 0xf2711c};
+
+// ---------- the road and everything beside it move together, left to right, and loop ----------
+const SPEED = 1.45, SPAN = 150, HALF = SPAN / 2;                 // the strip is longer than the screen, so pieces wrap out of sight
+const wrap = x => ((x + HALF) % SPAN + SPAN) % SPAN - HALF;
+
+// farmland: a canvas of plots and crop rows that scrolls with the road
+const fields = (() => { const c = document.createElement("canvas"); c.width = 2048; c.height = 1024; const g = c.getContext("2d"), r = rng(9);
+  const crops = [["#6f8a3e", "#788f45"], ["#7a9147", "#839a50"], ["#66803a", "#6f8842"], ["#b29a4c", "#bba454"], ["#8c6f4e", "#94785a"], ["#a39070", "#ab987a"], ["#5f7a37", "#67823e"], ["#748c42", "#7d944a"]];
+  g.fillStyle = "#7d9246"; g.fillRect(0, 0, 2048, 1024);
+  for (let y = 0; y < 1024;){ const h = 90 + r() * 140; for (let x = 0; x < 2048;){ const w = 140 + r() * 320, pair = crops[(r() * crops.length) | 0];
+      g.fillStyle = pair[0]; g.fillRect(x, y, w, h);
+      g.strokeStyle = pair[1]; g.lineWidth = 3; g.beginPath(); const vert = r() < .5;          // crop rows and plough furrows
+      for (let k = 5; k < (vert ? w : h); k += 8){ if (vert){ g.moveTo(x + k, y); g.lineTo(x + k, y + h); } else { g.moveTo(x, y + k); g.lineTo(x + w, y + k); } } g.stroke();
+      for (let i = 0; i < w * h / 90; i++){ g.fillStyle = r() < .5 ? "rgba(0,0,0,.07)" : "rgba(255,255,230,.07)"; g.fillRect(x + r() * w, y + r() * h, 2, 2); }
+      g.strokeStyle = "rgba(150,132,100,.75)"; g.lineWidth = 3; g.strokeRect(x, y, w, h); x += w; } y += h; }   // earth bunds between plots
+  const t = new T.CanvasTexture(c); if ("colorSpace" in t) t.colorSpace = T.SRGBColorSpace; else t.encoding = T.sRGBEncoding; t.wrapS = t.wrapT = T.RepeatWrapping; t.anisotropy = 8; return t; })();
+const GW = 360, GD = 320;                                      // farmland out to where the fog takes over
+fields.repeat.set(GW / 130, GD / 130);
+const ground = mesh(new T.PlaneGeometry(GW, GD), new T.MeshStandardMaterial({map: fields, roughness: .95}), scene, false); ground.rotation.x = -Math.PI / 2;
+
+// the road: pieces of 2 km, each with embankment, gravel, asphalt and markings
+const P = 4.2, GAP = .16, L = P - GAP, N = Math.round(SPAN / P);
+const embShape = new T.Shape(); embShape.moveTo(-6.2, 0); embShape.lineTo(6.2, 0); embShape.lineTo(5, 1.3); embShape.lineTo(-5, 1.3); embShape.closePath();
+const embGeo = new T.ExtrudeGeometry(embShape, {depth: L, bevelEnabled: false}); embGeo.rotateY(Math.PI / 2); embGeo.translate(-L / 2, 0, 0);
+const boxR = (w, h, d) => { const g = new T.BoxGeometry(w, h, d); g.translate(w / 2, h / 2, 0); return g; };   // grows from its left edge
+const pieces = Array.from({length: N}, (_, i) => { const g = new T.Group(); scene.add(g);
+  const emb = mesh(embGeo, [M(0xffffff, {map: soilTex, r: .95}), M(0xe9ddd0, {map: soilTex, r: .97})], g);
+  // sub-base (GSB: gravel and sand), base (WMM: wet-mix crushed stone), binder course (DBM: thick asphalt), surface course (BC)
+  const gsb = mesh(boxR(1, .15, 9.9), M(0xf3ead6, {map: gravelTex, r: .96}), g); gsb.position.set(-L / 2, 1.3, 0);
+  const wmm = mesh(boxR(1, .12, 9.6), M(0xb4ada1, {map: gravelTex, r: .95}), g); wmm.position.set(-L / 2, 1.45, 0);
+  const dbm = mesh(boxR(1, .08, 9.35), M(0xbdbcb8, {map: asphaltTex, r: .85}), g); dbm.position.set(-L / 2, 1.57, 0);
+  const asph = mesh(boxR(1, .05, 9.2), M(0xffffff, {map: asphaltTex, r: .74}), g); asph.position.set(-L / 2, 1.65, 0);
+  const marks = new T.Group(); marks.position.y = 1.7; g.add(marks);
+  [-4.2, 4.2].forEach(z => mesh(new T.BoxGeometry(L, .03, .16), M(C.paint), marks, false).position.z = z);         // edge lines
+  [-1.6, 1.6].forEach(z => mesh(new T.BoxGeometry(L * .45, .03, .14), M(C.paint), marks, false).position.z = z);   // lane dashes
+  mesh(new T.BoxGeometry(L, .12, .5), M(0x6c8a42, {r: .95}), marks, false).position.y = .02;                                  // median
+  let lamp = null;
+  if (i % 3 === 0){ lamp = new T.Group(); lamp.position.set(0, 1.7, 0); g.add(lamp);
+    mesh(new T.CylinderGeometry(.07, .09, 3.2, 10), M(C.steel, {r: .4, m: .8}), lamp).position.y = 1.6;
+    mesh(new T.BoxGeometry(.12, .12, 2.6), M(C.steel, {r: .4, m: .8}), lamp).position.set(0, 3.2, 0);
+    [-1.3, 1.3].forEach(z => mesh(new T.BoxGeometry(.5, .14, .3), new T.MeshBasicMaterial({color: 0xfff1c2}), lamp, false).position.set(0, 3.12, z)); }
+  g.userData = {emb, gsb, wmm, dbm, asph, marks, lamp, x0: i * P}; return g; });
+
+// scenery beside the road: trees, a few village houses, field huts; all ride along and wrap
+const scenery = [], r = rng(21);
+const leafMats = C.leaf.map(c => M(c, {r: .9, flat: true}));
+const tree = () => { const g = new T.Group(), s = .8 + r() * .8, mat = leafMats[(r() * leafMats.length) | 0];
+  const trunk = mesh(new T.CylinderGeometry(.1 * s, .17 * s, 1.3 * s, 7), M(C.trunk, {r: .95}), g); trunk.position.y = .65 * s; trunk.rotation.z = (r() - .5) * .15;
+  const n = 5 + ((r() * 4) | 0);
+  for (let k = 0; k < n; k++){ const blob = mesh(new T.IcosahedronGeometry((.42 + r() * .3) * s, 1), mat, g);
+    blob.position.set((r() - .5) * 1.1 * s, (1.45 + r() * .7) * s, (r() - .5) * 1.1 * s); blob.scale.y = .78 + r() * .2; }
+  return g; };
+const house = () => { const g = new T.Group(), w = 1.8 + r() * 1.2, d = 1.6 + r();
+  mesh(new T.BoxGeometry(w, 1.2, d), M(C.wall, {r: .95}), g).position.y = .6;
+  const roof = mesh(new T.ConeGeometry(Math.max(w, d) * .78, .9, 4), M(C.roof, {r: .85}), g); roof.position.y = 1.65; roof.rotation.y = Math.PI / 4; roof.scale.set(w / Math.max(w, d), 1, d / Math.max(w, d));
+  return g; };
+for (let i = 0; i < 130; i++){ const side = r() < .5 ? -1 : 1, z = side * (8.6 + Math.pow(r(), 1.5) * 46), obj = r() < .05 ? house() : tree();
+  obj.position.set(0, 0, z); obj.rotation.y = r() * 6; obj.userData.x0 = r() * SPAN;
+  obj.traverse(m => { if (m.isMesh) m.receiveShadow = false; }); scene.add(obj); scenery.push(obj); }
+// (nothing stands on the moving fields by itself: every prop rides the road or a machine)
+const site = new T.Group(); scene.add(site);
+
+// ---------- the machines (fixed in place; the road travels under them) ----------
+const EXC = -26, GRD = -15, ROL = -6, PAV = 4, TROL = 13;       // excavator, grader, roller, paver, tandem roller along the road
+const Y = M(C.yellow, {r: .42, m: .15}), Y2 = M(0xd49a00, {r: .5, m: .15}), D = M(C.dark, {r: .55, m: .3}), TRK = M(0x232429, {r: .7, m: .4}), STEEL = M(C.steel, {r: .32, m: .85}),
+      GL = M(C.glass, {r: .06, m: .6}), RUB = M(0x1a1b1f, {r: .95}), HUB = M(0xa7adb5, {r: .35, m: .8});
+const box = (w, h, d, mat, parent, x = 0, y = 0, z = 0) => { const m = mesh(new T.BoxGeometry(w, h, d), mat, parent); m.position.set(x, y, z); return m; };
+const cylZ = (r, len, mat, parent, x, y, z, seg = 14) => { const m = mesh(new T.CylinderGeometry(r, r, len, seg), mat, parent); m.rotation.x = Math.PI / 2; m.position.set(x, y, z); return m; };
+const cylY = (r, len, mat, parent, x, y, z, seg = 10) => { const m = mesh(new T.CylinderGeometry(r, r, len, seg), mat, parent); m.position.set(x, y, z); return m; };
+const beacons = [];
+const beacon = (parent, x, y, z) => { cylY(.1, .08, D, parent, x, y, z); const b = new T.Mesh(new T.CylinderGeometry(.11, .13, .22, 10), new T.MeshBasicMaterial({color: 0xffa31a}));
+  b.position.set(x, y + .15, z); parent.add(b); beacons.push(b); return b; };
+// a crawler track along x: belt, end wheels, rollers underneath and shoes on top
+const tracks = [];
+const track = (parent, len, z, h = .75) => {
+  const g = new T.Group(); g.position.z = z; parent.add(g); const r = h / 2;
+  box(len - 2 * r, h, .7, TRK, g, 0, r, 0);
+  cylZ(r, .72, TRK, g, -(len / 2 - r), r, 0); cylZ(r, .72, TRK, g, len / 2 - r, r, 0);
+  cylZ(r * .55, .76, STEEL, g, -(len / 2 - r), r, 0); cylZ(r * .55, .76, STEEL, g, len / 2 - r, r, 0);   // sprocket and idler hubs
+  const n = Math.floor(len / .42);
+  const x0 = -len / 2 + r + .2, pitch = (len - 2 * r - .4) / (n - 1), shoes = [];
+  for (let i = 0; i < n; i++) shoes.push(box(.16, .06, .74, M(0x34363c), g, x0 + i * pitch, h + .02, 0));
+  tracks.push({shoes, x0, pitch, n}); return g; };
+// a glass cab with corner pillars and a roof
+const cabin = (parent, x, y, z, w, h, d, frame) => {
+  const g = new T.Group(); g.position.set(x, y, z); parent.add(g);
+  box(w - .1, h - .1, d - .1, GL, g, 0, 0, 0);
+  [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([a, b]) => box(.1, h, .1, frame, g, a * (w / 2 - .05), 0, b * (d / 2 - .05)));
+  box(w + .1, .1, d + .1, frame, g, 0, h / 2, 0); return g; };
+// an open canopy on four posts
+const canopy = (parent, x, y, z, w, d, h, mat) => {
+  [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([a, b]) => box(.08, h, .08, mat, parent, x + a * (w / 2 - .05), y + h / 2, z + b * (d / 2 - .05)));
+  box(w + .15, .1, d + .15, mat, parent, x, y + h, z); };
+const exhaust = (parent, x, y, z) => { cylY(.08, .9, D, parent, x, y + .45, z); cylY(.11, .1, D, parent, x, y + .92, z); };
+
+// --- excavator, driving along beside the road on the far side, digging from the field and dumping onto the embankment ---
+const exc = new T.Group(); exc.position.set(EXC, 0, -10.5); exc.scale.setScalar(.72); scene.add(exc);      // ~10 m long
+track(exc, 4.6, -1.25); track(exc, 4.6, 1.25);
+box(2.2, .35, 1.6, TRK, exc, 0, .55, 0);                                   // car body between the tracks
+cylY(.95, .25, D, exc, 0, .9, 0, 18);                                      // slewing ring
+const turret = new T.Group(); turret.position.y = 1.02; exc.add(turret);
+box(3.2, 1.15, 2.5, Y, turret, -.35, .6, 0);
+box(1.05, 1.05, 2.55, Y2, turret, -2.35, .58, 0);                          // counterweight
+for (let k = 0; k < 4; k++) box(.9, .05, .08, D, turret, -1.2, 1.2, -.9 + k * .22);   // engine grille
+exhaust(turret, -1.55, 1.18, .95);
+cabin(turret, .75, 1.95, .62, 1.35, 1.5, 1.15, Y);
+box(.5, .5, .1, D, turret, 1.4, 1.5, .02);                                 // boom foot
+const boom = new T.Group(); boom.position.set(1.15, 1.25, -.35); turret.add(boom);
+const boomA = box(3, .55, .5, Y, boom, 1.35, .45, 0); boomA.rotation.z = .32;  // the boom's dog-leg: up, then out
+const boomB = box(2.1, .5, .46, Y, boom, 3.55, .8, 0); boomB.rotation.z = -.18;
+const ram1 = cylY(.11, 1.9, STEEL, boom, .9, -.05, .32); ram1.rotation.z = -1.05;   // boom ram
+cylY(.07, 1.3, M(0xd8dde3), boom, 1.5, .3, .32).rotation.z = -1.05;
+const stick = new T.Group(); stick.position.set(4.55, .62, 0); boom.add(stick);
+box(.46, 3, .42, Y, stick, 0, -1.45, 0);
+const ram2 = cylY(.09, 1.6, STEEL, stick, .32, -.5, 0); ram2.rotation.z = .12;     // stick ram
+const bucket = new T.Group(); bucket.position.y = -3; stick.add(bucket);
+box(.12, .9, 1.3, D, bucket, -.1, -.15, 0);                                 // back
+box(1.05, .12, 1.3, D, bucket, .38, -.58, 0);                               // floor
+[-1, 1].forEach(s => box(1.05, .9, .08, D, bucket, .38, -.15, s * .62));    // sides
+for (let k = 0; k < 5; k++){ const tooth = mesh(new T.ConeGeometry(.08, .3, 6), STEEL, bucket); tooth.rotation.z = -Math.PI / 2; tooth.position.set(1, -.58, -.48 + k * .24); }
+const scoop = mesh(new T.SphereGeometry(.48, 10, 8), M(C.earth), bucket); scoop.position.set(.42, -.2, 0);
+
+// --- roller: steel drum in a yoke at the front, an articulated joint, engine and big tyres at the back ---
+const rol = new T.Group(); rol.position.set(ROL, 1.57, 0); rol.scale.setScalar(.74); scene.add(rol);
+const drum = cylZ(.95, 2.5, STEEL, rol, 1.25, .95, 0, 22);
+[-1, 1].forEach(s => { const disc = mesh(new T.CylinderGeometry(.97, .97, .07, 22), M(0x55575e), drum); disc.position.y = s * 1.22;
+  const hubD = mesh(new T.CylinderGeometry(.3, .3, .1, 12), Y2, drum); hubD.position.y = s * 1.27; });
+[-1, 1].forEach(s => box(1.7, 1.25, .14, Y, rol, 1.25, 1.15, s * 1.42));    // yoke side plates
+box(1.9, .3, 3, Y, rol, 1.25, 1.85, 0);                                      // yoke top
+box(.5, .5, .9, D, rol, .05, 1.15, 0);                                       // articulation joint
+box(2.5, 1.1, 2.2, Y, rol, -1.55, 1.25, 0);                                  // engine
+for (let k = 0; k < 5; k++) box(.05, .7, .14, D, rol, -2.81, 1.25, -.7 + k * .35);   // rear grille
+[-1, 1].forEach(s => { cylZ(.72, .62, RUB, rol, -1.65, .72, s * 1.25, 18); cylZ(.34, .66, HUB, rol, -1.65, .72, s * 1.25, 10); });
+box(1.6, .15, 1.9, D, rol, -.95, 1.88, 0);                                   // operator deck
+box(.5, .5, .5, D, rol, -1.1, 2.2, 0);                                       // seat
+cylY(.05, .45, D, rol, -.55, 2.2, 0); mesh(new T.TorusGeometry(.22, .035, 6, 14), D, rol).position.set(-.55, 2.45, 0);   // steering
+canopy(rol, -.95, 1.95, 0, 1.7, 2, 1.45, Y);
+beacon(rol, -.95, 3.5, 0); exhaust(rol, -2.3, 1.8, .8);
+
+// --- paver: tracks, a hopper with wings at the front (left), auger and screed at the back (right) ---
+const pav = new T.Group(); pav.position.set(PAV, 1.57, 0); pav.scale.set(.72, .72, .86); scene.add(pav);  // its screed still spans a carriageway
+track(pav, 3.9, -1.55, .7); track(pav, 3.9, 1.55, .7);
+box(3.1, 1.25, 3.5, Y, pav, 0, 1.3, 0);
+for (let k = 0; k < 5; k++) box(.08, .05, 2.6, D, pav, -.8 + k * .3, 1.95, 0);       // engine cover slats
+box(1.9, .35, 3.4, D, pav, -2.35, .75, 0);                                   // hopper floor
+box(1.7, .3, 3, M(0x3b3c42), pav, -2.35, .98, 0);                            // asphalt in the hopper
+[-1, 1].forEach(s => { const wing = box(1.9, 1, .12, Y, pav, -2.35, 1.25, s * 1.95); wing.rotation.x = s * -.45; });
+box(.12, .9, 3.6, Y, pav, -3.3, 1.05, 0);                                    // hopper front
+cylZ(.22, 3, D, pav, -3.45, .55, 0, 10);                                     // push rollers
+cylZ(.24, 9, M(0x4a4c53), pav, 1.85, .35, 0, 10);                            // auger, spreading across the full width
+box(1, .55, 9.4, M(0x3a3d46), pav, 2.45, .42, 0);                            // screed
+[-1, 1].forEach(s => box(1.3, .95, .1, Y, pav, 2.45, .55, s * 4.75));        // screed end gates
+box(.9, .08, 9.2, Y, pav, 2.6, .78, 0);                                      // walkway on the screed
+for (let k = 0; k < 7; k++) box(.05, .55, .05, Y, pav, 3, 1.05, -4.2 + k * 1.4);   // walkway rail posts
+box(.05, .05, 8.6, Y, pav, 3, 1.32, 0);
+box(1.6, .15, 3.2, D, pav, .7, 2, 0);                                        // operator platform
+[-1, 1].forEach(s => { box(.55, .5, .55, D, pav, .9, 2.3, s * .9); box(.3, .6, .5, M(0x45474e), pav, .35, 2.35, s * .9); });   // seats and consoles
+canopy(pav, .7, 2.05, 0, 1.8, 3.2, 1.4, Y);
+beacon(pav, .7, 3.6, 1.1); exhaust(pav, -.9, 1.92, -1.2);
+const SCREED = PAV + 2.2 * .72;
+
+// --- tipper truck backed up to the paver, body raised, feeding the hopper ---
+const truck = new T.Group(); truck.position.set(PAV - 4.5, 1.57, 0); truck.scale.setScalar(.72); scene.add(truck);
+box(6.2, .35, 1.4, D, truck, -.5, .8, 0);                                    // chassis
+const CAB = M(0x2f5fa8);
+box(1.9, 1.5, 2.3, CAB, truck, -2.85, 1.7, 0);                               // cab
+box(.06, .65, 2, GL, truck, -3.82, 2.05, 0);                                 // windscreen
+[-1, 1].forEach(s => box(1, .55, .06, GL, truck, -2.7, 2.08, s * 1.16));     // side windows
+box(.1, .45, 1.9, D, truck, -3.83, 1.25, 0);                                 // grille
+box(.2, .25, 2.4, D, truck, -3.85, .85, 0);                                  // bumper
+[-1, 1].forEach(s => { box(.06, .16, .3, new T.MeshBasicMaterial({color: 0xfff6d8}), truck, -3.88, 1.08, s * .85); box(.1, .35, .06, D, truck, -3.6, 2.2, s * 1.32); });
+const tip = new T.Group(); tip.position.set(2.5, 1, 0); tip.rotation.z = .16; truck.add(tip);   // the body pivots at its back end
+box(3.9, 1.35, 2.45, M(0x3a3d46), tip, -1.95, .68, 0);
+for (let k = 0; k < 4; k++) [-1, 1].forEach(s => box(.1, 1.35, .08, M(0x2b2d33), tip, -3.5 + k * 1.05, .68, s * 1.25));   // ribs
+box(3.7, .2, 2.3, M(0x3b3c42), tip, -1.95, 1.3, 0);                          // load
+[[-2.85, 1], [.55, 1], [1.6, 1]].forEach(([x]) => [-1, 1].forEach(s => { cylZ(.5, .45, RUB, truck, x, .5, s * 1.12, 16); cylZ(.24, .48, HUB, truck, x, .5, s * 1.12, 8); }));
+[-1, 1].forEach(s => { box(1.2, .1, .5, D, truck, -2.85, 1.05, s * 1.12); box(2.2, .1, .5, D, truck, 1.07, 1.05, s * 1.12); });   // mudguards
+
+
+// --- motor grader, spreading the sub-base with its angled blade (front to the left, cab over the rear wheels) ---
+const grd = new T.Group(); grd.position.set(GRD, 1.45, 0); grd.scale.setScalar(.72); scene.add(grd);
+box(5.8, .38, .55, Y, grd, .1, 1.25, 0);                                   // the long frame
+box(1.7, 1.05, 2.2, Y, grd, 2.3, 1.2, 0);                                  // engine
+for (let k = 0; k < 4; k++) box(.05, .6, .12, D, grd, 3.16, 1.2, -.6 + k * .4);
+cabin(grd, 1.05, 2.3, 0, 1.35, 1.35, 1.7, Y);
+[[-2.7], [1.5], [2.7]].forEach(([x]) => [-1.08, 1.08].forEach(z => { cylZ(.48, .4, RUB, grd, x, .48, z, 16); cylZ(.22, .42, HUB, grd, x, .48, z, 8); }));
+box(.3, .5, .3, D, grd, -.5, .75, 0);                                      // blade mount
+const blade = box(.16, .55, 3.6, STEEL, grd, -.55, .32, 0); blade.rotation.y = .38;   // set at an angle, pushing the gravel aside
+beacon(grd, 1.05, 3.02, 0); exhaust(grd, 2.8, 1.72, .65);
+// --- tandem roller, a steel drum at each end, rolling the hot surface course smooth ---
+const trl = new T.Group(); trl.position.set(TROL, 1.7, 0); trl.scale.setScalar(.66); scene.add(trl);
+const drumA = cylZ(.7, 2.2, STEEL, trl, -1.6, .7, 0, 22), drumB = cylZ(.7, 2.2, STEEL, trl, 1.6, .7, 0, 22);
+box(2.4, .95, 2, Y, trl, 0, 1.35, 0);
+[-1, 1].forEach(sd => [-1.6, 1.6].forEach(x => box(1.15, .95, .12, Y, trl, x, .95, sd * 1.18)));
+box(.6, .55, .6, D, trl, 0, 2.1, 0);
+canopy(trl, 0, 1.82, 0, 1.4, 1.7, 1.2, Y); beacon(trl, 0, 3.12, 0);
+// --- crew in hi-vis: the screed operator, riding the paver ---
+const workers = [];
+const worker = (x, y, z, ry, flag) => { const g = new T.Group(); g.position.set(x, y, z); g.rotation.y = ry; scene.add(g);
+  [-1, 1].forEach(s => box(.16, .55, .16, M(0x2c3e66), g, 0, .28, s * .11));       // legs
+  box(.42, .55, .34, M(0xf97316), g, 0, .82, 0);                                    // vest
+  box(.43, .06, .35, M(0xe7ecef), g, 0, .78, 0);                                    // reflective band
+  const head = mesh(new T.SphereGeometry(.15, 10, 8), M(0xc68a5e), g); head.position.y = 1.25;
+  const hat = mesh(new T.SphereGeometry(.17, 10, 6, 0, Math.PI * 2, 0, Math.PI / 2), M(0xffffff), g); hat.position.y = 1.29;
+  const arm = new T.Group(); arm.position.set(0, 1, .24); g.add(arm); box(.11, .5, .11, M(0xf97316), arm, 0, -.22, 0);
+  let sign = null; if (flag){ cylY(.025, .9, D, arm, 0, -.1, 0); sign = mesh(new T.CylinderGeometry(.24, .24, .04, 16), M(0xd23b2f), arm); sign.rotation.x = Math.PI / 2; sign.position.y = .4; }
+  g.userData = {arm, sign, phase: workers.length * 1.9}; workers.push(g); return g; };
+worker(PAV + 2.6 * .72, 1.57 + .8 * .72, 3.1, Math.PI / 2).scale.setScalar(.42);   // a person, ~1.8 m
+// cones marking the work zone
+
+
+// puffs: dust where the bucket dumps, steam behind the screed
+const puffMat = new T.MeshBasicMaterial({color: 0xffffff, transparent: true, opacity: .7, depthWrite: false, fog: false});
+const puffTex = (() => { const c = document.createElement("canvas"); c.width = c.height = 128; const g = c.getContext("2d"), gr = g.createRadialGradient(64, 64, 4, 64, 64, 62);
+  gr.addColorStop(0, "rgba(255,255,255,1)"); gr.addColorStop(.45, "rgba(255,255,255,.55)"); gr.addColorStop(1, "rgba(255,255,255,0)"); g.fillStyle = gr; g.fillRect(0, 0, 128, 128); return new T.CanvasTexture(c); })();
+const puffs = Array.from({length: 26}, (_, k) => { const m = new T.Sprite(new T.SpriteMaterial({map: puffTex, color: 0xffffff, transparent: true, depthWrite: false, fog: false})); m.userData = {kind: k < 12 ? "dust" : "steam", seed: k * 1.37}; scene.add(m); return m; });
+puffs.forEach(p => { if (p.userData.kind === "dust") p.material.color.set(0xd8b48e); else { p.material.color.set(0xe9e1d6); p.material.fog = true; } });
+
+// cars on the finished stretch
+const carCols = [0xd23b2f, 0x2f5fa8, 0xf4efe6, 0x5a5d66, 0xf2b705, 0x3f7a3a];
+const cars = Array.from({length: 7}, (_, k) => { const g = new T.Group(); g.scale.setScalar(.75);
+  mesh(new T.BoxGeometry(1.9, .55, .95), M(carCols[k % 6], {r: .3, m: .35}), g).position.y = .3;
+  mesh(new T.BoxGeometry(1, .42, .85), M(C.glass, {r: .06, m: .6}), g).position.set(-.1, .75, 0);
+  g.userData = {lane: [-3, -1, 1, 3][k % 4], x0: k * 21, v: k % 4 < 2 ? -1.6 - (k % 3) * .5 : 1.4 + (k % 3) * .6}; scene.add(g); return g; });
+
+// ---------- light ----------
+const hemi = new T.HemisphereLight(lin(LOOK.sky), lin(LOOK.ground), LOOK.hemiI); scene.add(hemi);
+const sun = new T.DirectionalLight(lin(LOOK.sun), LOOK.sunI); sun.position.set(...LOOK.sunAt); sun.castShadow = true;
+const fill = new T.DirectionalLight(lin(0xb9cbe6), .35); fill.position.set(60, 30, -40); scene.add(fill);
+if (parseInt(T.REVISION, 10) >= 155) [hemi, sun, fill].forEach(l => l.intensity *= Math.PI);   // r155+: lit as on r149
+Object.assign(sun.shadow.camera, {left: -80, right: 80, top: 50, bottom: -50, near: 1, far: 260}); const SM = innerWidth < 700 ? 2048 : 4096; sun.shadow.mapSize.set(SM, SM); sun.shadow.bias = -.0003; sun.shadow.normalBias = .04; sun.shadow.radius = 3; scene.add(sun);
+
+// ---------- each frame ----------
+function pose(t){
+  const s = t * SPEED;
+  tracks.forEach(({shoes, x0, pitch, n}) => { const span = n * pitch, sh = s % span;
+    shoes.forEach((m, i) => { m.position.x = x0 + (((i * pitch - sh) % span) + span) % span * ((n - 1) / n); }); });
+  pieces.forEach(g => { const {emb, gsb, wmm, dbm, asph, marks, lamp, x0} = g.userData, x = wrap(x0 + s); g.position.x = x;
+    const left = x - L / 2;                                                     // the piece's leading edge... and its trailing edge is x + L/2
+    const e = sm(x, EXC - 2, EXC + 6);                                          // the embankment rises as it passes the excavator
+    emb.scale.y = Math.max(.001, e); emb.visible = e > .005;
+    // a layer exists on the part of a piece that has passed the machine laying it
+    const lay = (m, at) => { const f = clamp((x + L / 2 - at) / L); m.visible = f > 0; m.scale.x = Math.max(.001, f * L); m.position.x = L / 2 - f * L; };
+    lay(gsb, GRD - 2.6); lay(wmm, ROL - 3.4); lay(dbm, SCREED); lay(asph, TROL - 2.9);
+    const fin = sm(x, TROL + 4, TROL + 8);
+    marks.visible = fin > .02; marks.scale.set(1, 1, 1); marks.children.forEach(m => m.scale.x = fin);
+    if (lamp){ const lp = sm(x, TROL + 8, TROL + 12); lamp.visible = lp > .02; lamp.scale.set(1, Math.max(.001, lp), 1); } });
+  scenery.forEach(o => { o.position.x = wrap(o.userData.x0 + s); });
+  fields.offset.x = -(s / (GW / fields.repeat.x)) % 1;
+  // excavator: dig from the field, swing over, dump onto the embankment, swing back (6 s cycle)
+  const c = (t % 6) / 6, toRoad = sm(c, .2, .42) * (1 - sm(c, .7, .92));
+  turret.rotation.y = -1.6 + toRoad * 2.3;
+  const reach = Math.sin(c * Math.PI * 2);
+  boom.rotation.z = -.15 + reach * .12 - toRoad * .1; stick.rotation.z = -.55 + Math.sin(c * Math.PI * 2 + 1) * .3;
+  bucket.rotation.z = c > .42 && c < .58 ? -1.6 * sm(c, .42, .5) : -.2;
+  scoop.visible = c > .08 && c < .5;
+  // roller rocks over its stretch; its drum turns with it
+  const rx = Math.sin(t * .9) * 1.4; rol.position.x = ROL + rx; drum.rotation.y = -(rx + s) / .95;
+  truck.position.y = 1.57 + Math.sin(t * 7) * .015; pav.position.y = 1.57 + Math.sin(t * 9) * .012; grd.position.y = 1.45 + Math.sin(t * 6) * .01;
+  const tx = Math.sin(t * 1.1 + 1) * 1.2; trl.position.x = TROL + tx; drumA.rotation.y = drumB.rotation.y = -(tx + s) / .7;   // rolls back and forth
+  // amber beacons flash; the crew shift their weight, and the flagger turns the stop/go sign
+  beacons.forEach((b, k) => { const on = Math.sin(t * 7 + k * 2) > .2; b.material.color.setHex(on ? 0xffb02e : 0x7a4a10); });
+  workers.forEach(w => { const {arm, sign, phase} = w.userData; arm.rotation.z = sign ? -.25 + Math.sin(t * .8 + phase) * .08 : Math.sin(t * 1.3 + phase) * .25;
+    if (sign) sign.material.color.setHex(Math.floor((t + phase) / 4) % 2 ? 0x2f9e44 : 0xd23b2f); });     // stop, then go
+  puffs.forEach((p, k) => { const {kind, seed} = p.userData, life = ((t * (kind === "dust" ? .8 : .55) + seed) % 1);
+    const o = kind === "dust" ? [EXC + 2.4, 2.2, -5.2] : [SCREED + .3, 1.90, -3.3 + (k % 7) * 1.08];
+    p.position.set(o[0] + life * (kind === "dust" ? 1.6 : .8) + Math.sin(seed * 5) * .6, o[1] + life * (kind === "dust" ? 2 : 2.8), o[2] + Math.cos(seed * 3) * .7);
+    const sc = .4 + life * (kind === "dust" ? 1.4 : 1.1); p.scale.setScalar(sc * (kind === "dust" ? 2.6 : 1.7));
+    p.material.opacity = (kind === "dust" ? (c > .45 && c < .75 ? .8 : 0) : .3) * Math.pow(1 - life, .7); p.visible = p.material.opacity > .02; });
+  cars.forEach(car => { const {lane, x0, v} = car.userData, x = wrap(x0 + s + v * t * 3);
+    car.position.set(x, 1.7, lane); car.rotation.y = v > 0 ? 0 : Math.PI; car.visible = x > TROL + 14; });
+}
+
+// ---------- camera: a looping flight beside the road ----------
+// wide establishing shot -> down beside the excavator -> tracking the roller -> close on the paver and its steam ->
+// low along the finished road and its traffic -> rising back to the wide shot. A closed spline, so the loop has no seam.
+const SHOTS = [
+  //  camera position          looking at
+  [[-40, 23, 58],             [4, 1, -2]],     // wide: the whole works, from a drone
+  [[-42, 13, 25],             [-23, 2.5, -6]], // the excavator, dumping earth
+  [[-27, 10, 22],             [-11, 2.2, 0]],  // the grader spreading the sub-base, the roller behind it
+  [[-7, 11, 23],              [6, 3.0, -1]],   // the truck, the paver and the steam
+  [[4, 10, 22],               [17, 3.2, 0]],   // the tandem roller finishing the surface
+  [[22, 6, 12],               [46, 2.0, 0]],   // low down the finished road, traffic coming past
+  [[30, 17, 44],              [14, 2.2, 0]]      // rising, back towards the wide shot
+];
+const LOOP = 84;                                                              // seconds for the whole flight: ~12 s per shot
+const camPath = new T.CatmullRomCurve3(SHOTS.map(s => new T.Vector3(...s[0])), true, "centripetal");
+const aimPath = new T.CatmullRomCurve3(SHOTS.map(s => new T.Vector3(...s[1])), true, "centripetal");
+const tmpA = new T.Vector3(), tmpB = new T.Vector3(), tmpF = new T.Vector3(), tmpG = new T.Vector3();
+// a close-up for each label: what to look at (a machine, or a point and how tall a view of it should be), the direction
+// the camera looks from, and the tour shot it hands back to
+const FOCUS = [
+  [pav, [-6.5, 5, 14.5], 3],
+  [exc, [-10, 5.3, 15], 1],
+  [grd, [-7.5, 4.2, 11], 2],
+  [rol, [-7.5, 4.2, 11], 2],
+  [trl, [-7, 4, 11], 4],
+  [[TROL + 26, 1.8, -1], [-24, 3.6, 12], 5, 4],     // finished expressway
+  [[EXC - 8, .6, 3], [-14, 6.4, 16], 0, 6]          // farmland, beside the excavator
+];
+// framed for the screen it is on: the machine fills about half the free band between the top bar and the words, low in
+// it so its label fits above, and the camera follows it as it moves
+const tmpC = new T.Vector3(), tmpD = new T.Vector3(), tmpU = new T.Vector3(), tmpR = new T.Vector3(), tmpH = new T.Vector3(), fbox = new T.Box3();
+// each machine is measured once, where it was built: its swinging arm never makes the camera zoom in and out, and the
+// camera holds on the middle of a roller's run while the roller rolls back and forth inside the shot.
+// Seen at an angle, its depth adds to its height on screen
+FOCUS.forEach(f => { if (Array.isArray(f[0])) return; fbox.setFromObject(f[0]);
+  f[4] = fbox.getCenter(new T.Vector3()); f[3] = (fbox.max.y - fbox.min.y) * 1.1 + (fbox.max.z - fbox.min.z) * .25 + (fbox.max.x - fbox.min.x) * .08; });
+function focusPose(k, outP, outA){
+  const [tg, dir, , size, off] = FOCUS[k];   // off: the machine's middle, as built
+  if (Array.isArray(tg)) tmpC.fromArray(tg); else tmpC.copy(off);
+  let top = 0, bot = H;
+  avoidRects.forEach(r => { if (r[3] < H * .5) top = Math.max(top, r[3]); else if (r[1] > H * .25) bot = Math.min(bot, r[1]); });
+  // the free band eases to a new size (the words settling in), rather than jolting the framing
+  if (FOC.bandK !== k){ FOC.top = top; FOC.bot = bot; FOC.bandK = k; } else { FOC.top += (top - FOC.top) * .08; FOC.bot += (bot - FOC.bot) * .08; }
+  top = FOC.top; bot = FOC.bot;
+  const band = Math.max(150, bot - top), tanH = Math.tan(camera.fov * Math.PI / 360);
+  const px = Math.max(48, Math.min(band - 150, band * .55));                // the machine's height on screen
+  const d = H * size / (2 * tanH * px), ppu = H / (2 * d * tanH);
+  const vo = W / H < .8 ? .2 : .15, yT = Math.min(bot, H) - 12 - px / 2;      // where its middle should land
+  const shift = (yT - (VIEW_Y == null ? (.5 - vo) * H : VIEW_Y)) / ppu;                                 // the view moves up this much to put it there
+  // on a narrow screen it sits left of centre, so its label (which opens to the right) still fits
+  const side = (W / 2 - Math.min(W / 2, W - 250)) / ppu;
+  tmpD.fromArray(dir).normalize(); tmpU.set(0, 1, 0).addScaledVector(tmpD, -tmpD.y).normalize(); tmpR.crossVectors(tmpU, tmpD);
+  outA.copy(tmpC).addScaledVector(tmpU, shift).addScaledVector(tmpR, side); outP.copy(outA).addScaledVector(tmpD, d);
+  outP.y = Math.max(outP.y, 7.5);                                           // always above the treetops
+}
+// mode 0: on the tour; 1: flying to / holding a close-up; 2: gliding back. b runs 0..1 through a glide
+const FOC = {k: -1, mode: 0, b: 1, at: 0, fromP: new T.Vector3(), fromA: new T.Vector3(), lastP: new T.Vector3(), lastA: new T.Vector3()};
+let W = 1, H = 1, VIEW_Y = null, VIEW_SET = NaN;                            // where on screen the shot is centred (px)
+function frame(){
+  const a = W / H; camera.aspect = a; camera.fov = a < .8 ? 38 : 32;
+  // the words sit along the bottom of the screen, so the action is lifted into the space above them
+  camera.setViewOffset(W, H, 0, H * (a < .8 ? .2 : .15), W, H);
+  camera.updateProjectionMatrix(); VIEW_SET = NaN; VIEW_Y = null;
+}
+
+// ---------- labels pinned to the scene ----------
+// Each says what the thing is and which stage the tracker reads there. A label shows only when its point is on
+// screen, in front of the camera, and clear of the page's own words and of the labels already placed.
+const LABEL_LAYER = (typeof opt !== "undefined" && opt.labels) || document.getElementById("labels");
+const AVOID = (typeof opt !== "undefined" && opt.avoid) || ".copybar, .bar";
+const STAGE_C = {1: "#4a7c3a", 3: "#b85c2a", 4: "#2d3a4a"};
+const LABELS = [
+  {at: () => tmpL.set(PAV + 1.8, 4.1, -.4), name: "Paver", what: "Binder course (DBM): the thick asphalt layer", stage: 4, reads: "paved"},
+  {at: () => tmpL.set(EXC + .4, 3.2, -10.5), name: "Excavator", what: "Embankment: earth raised 2–3 m above the fields", stage: 3, reads: "earthwork"},
+  {at: () => tmpL.set(GRD + .6, 3.4, 0), name: "Motor grader", what: "Sub-base (GSB): gravel and sand, spread level", stage: 3, reads: "earthwork"},
+  {at: () => tmpL.set(rol.position.x, 3.9, 0), name: "Roller", what: "Base (WMM): crushed stone, rolled flat", stage: 3, reads: "earthwork"},
+  {at: () => tmpL.set(trl.position.x, 4.2, 0), name: "Tandem roller", what: "Surface course (BC): smooth top asphalt", stage: 4, reads: "paved"},
+  {at: () => tmpL.set(TROL + 26, 2.3, -1.5), name: "Finished expressway", what: "Open to traffic", stage: 4, reads: "paved"},
+  {at: () => tmpL.set(EXC - 8, .4, 3), name: "Farmland", what: "Where the road will run", stage: 1, reads: "not started"}
+];
+const tmpL = new T.Vector3();
+const labelEls = LABEL_LAYER ? LABELS.map(l => { const d = document.createElement("div"); d.className = "dl"; d.setAttribute("aria-hidden", "true");
+  d.innerHTML = `<div class="dl-card"><b>${l.name}</b><span>${l.what}</span><em><i style="background:${STAGE_C[l.stage]}"></i>Satellite reads: ${l.reads}</em></div>`;
+  // a mouse press counts at once (the label drifts with the camera, and a click needs press and release on the same
+  // element); a tap waits for the click, so a finger scrolling past does not fly anywhere
+  const pickL = () => opt.onPick && opt.onPick(LABELS.indexOf(l));
+  d.firstChild.addEventListener("pointerdown", e => { if (e.pointerType === "mouse" && e.button === 0){ e.preventDefault(); pickL(); } });
+  d.firstChild.addEventListener("click", e => { if (e.pointerType !== "mouse") pickL(); });
+  LABEL_LAYER.appendChild(d); return d; }) : [];
+let avoidRects = [], avoidAt = -1;
+function placeLabels(t){
+  if (!LABEL_LAYER) return;
+  let bandBot = H;
+  { const base = LABEL_LAYER.getBoundingClientRect();                         // measured every frame: the words may still be moving in
+    avoidRects = [...document.querySelectorAll(AVOID)].map(e => e.getBoundingClientRect()).filter(r => r.width && r.height)
+      .map(r => [r.left - base.left - 12, r.top - base.top - 12, r.right - base.left + 12, r.bottom - base.top + 12]); }
+  // a short open band (a laptop with the words below, a phone) gets compact labels: the name and what the satellite reads
+  { let bt = 0, bb = H; avoidRects.forEach(r => { if (r[3] < H * .5) bt = Math.max(bt, r[3]); else if (r[1] > H * .25) bb = Math.min(bb, r[1]); });
+    LABEL_LAYER.classList.toggle("compact", bb - bt < 360 || W < 560); bandBot = bb; }
+  const placed = [], hit = (a, b) => a[0] < b[2] && a[2] > b[0] && a[1] < b[3] && a[3] > b[1], now = performance.now() / 1000;
+  const fk = FOC.mode === 1 ? FOC.k : -1;
+  // where a card can go around its pin: above it (opening right, or left near the right edge), or beside it
+  const boxOf = (m, x, y, cw, ch) => m === "r" ? [x - 6, y - ch / 2, x + 28 + cw, y + ch / 2] : m === "l" ? [x - 28 - cw, y - ch / 2, x + 6, y + ch / 2]
+    : m === "ul" ? [x - cw, y - ch - 34, x + 14, y + 6] : [x - 14, y - ch - 34, x + cw, y + 6];
+  // labels showing are placed first, keep their side while it still fits, and get some slack against the page's words; a label
+  // comes only after it has fitted for a moment (and goes a little sooner), so none flickers as the camera drifts. The
+  // screen's own edges are never stretched
+  LABELS.map((l, k) => k).sort((a, b) => (b === fk) - (a === fk) || !!LABELS[b].on - !!LABELS[a].on).forEach(k => { const l = LABELS[k], el = labelEls[k];
+    l.at(); tmpL.project(camera);
+    const x = (tmpL.x + 1) / 2 * W, y = (1 - tmpL.y) / 2 * H, cw = el.firstChild.offsetWidth || 200, ch = el.firstChild.offsetHeight || 60;
+    let mode = null, box = null, clash = false;
+    // a pin sits just above its machine: one too near the words, or near a side of the screen, means the machine itself
+    // is mostly behind the words or out of the picture, and a label pointing at it would point at nothing
+    if (tmpL.z < 1 && y < bandBot - 50 && x > 60 && x < W - 60) for (const m of [l.mode || "up", ...["up", "ul", "r", "l"].filter(m => m !== (l.mode || "up"))]){
+      const b = boxOf(m, x, y, cw, ch), sl = l.on && m === l.mode ? 18 : 0, core = [b[0] + sl, b[1] + sl, b[2] - sl, b[3] - sl];
+      if (b[0] < 4 || b[2] > W - 4 || b[1] < 4 || b[3] > H - 8) continue;
+      // other labels get no slack: two cards never overlap, the later one tries its other sides or steps aside at once
+      if (placed.some(p => hit(b, p))){ clash = true; continue; }
+      if (avoidRects.some(r => hit(core, r))) continue;
+      mode = m; box = b; break;
+    }
+    const fits = !!mode, inView = tmpL.z < 1 && x > 0 && x < W && y > 0 && y < H;
+    if (l.on === undefined || REDUCE || !inView || (!fits && clash)) l.on = fits;
+    else if (fits !== l.on){ if (l.want == null) l.want = now; if (now - l.want > (fits ? .45 : .2)){ l.on = fits; l.want = null; } }
+    else l.want = null;
+    if (mode) l.mode = mode;
+    if (l.on) placed.push(box || boxOf(l.mode || "up", x, y, cw, ch));
+    el.classList.toggle("on", l.on); el.classList.toggle("focus", k === fk);
+    el.classList.toggle("side-r", l.mode === "r"); el.classList.toggle("side-l", l.mode === "l"); el.classList.toggle("side-ul", l.mode === "ul");
+    el.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px)`; });
+}
+function fly(t){
+  // the camera eases to a stop at each shot, holds while its label can be read, then glides to the next
+  const n = SHOTS.length, raw = REDUCE ? 0 : (t % LOOP) / LOOP * n, k = Math.floor(raw), f = raw - k;
+  const dwell = f < .45 ? 0 : (f - .45) / .55, glide = dwell - Math.sin(2 * Math.PI * dwell) / (2 * Math.PI);   // still for 45%, then a smooth move
+  const u = (k + glide) / n;
+  camPath.getPoint(u, tmpA); aimPath.getPoint(u, tmpB);
+  // a machine someone clicked: glide from wherever the camera is to its close-up and hold; on release, glide back into the tour
+  const now = performance.now() / 1000, step = FOC.at ? Math.min(.05, now - FOC.at) : 0; FOC.at = now;
+  let held = 0;                                                               // how far into a close-up: the hand-held sway fades out there
+  if (FOC.mode){
+    FOC.b = Math.min(1, FOC.b + step / 2.2); const b = FOC.b, e = b * b * b * (b * (b * 6 - 15) + 10);
+    if (FOC.mode === 1) focusPose(FOC.k, tmpF, tmpG); else { tmpF.copy(tmpA); tmpG.copy(tmpB); }
+    tmpA.copy(FOC.fromP).lerp(tmpF, e); tmpB.copy(FOC.fromA).lerp(tmpG, e);
+    held = FOC.mode === 1 ? e : 1 - e;
+    if (FOC.mode === 2 && b >= 1){ FOC.mode = 0; FOC.k = -1; }
+  }
+  FOC.lastP.copy(tmpA); FOC.lastA.copy(tmpB);
+  tmpA.x += Math.sin(t * .37) * .35 * (1 - held); tmpA.y += Math.sin(t * .53) * .22 * (1 - held);      // a little hand-held drift
+  // trees and houses ride past on the fields: any that come close to the camera shrink out of the way instead of
+  // sweeping through the lens
+  scenery.forEach(o => { tmpH.set(o.position.x, 2, o.position.z); const s = sm(tmpH.distanceTo(tmpA), 5, 9); o.scale.setScalar(Math.max(.001, s)); o.visible = s > .01; });
+  // the shot is centred on the open band of the screen, between the top bar and the words, as the page lays it out
+  { let bt = 0, bb = H; avoidRects.forEach(r => { if (r[3] < H * .5) bt = Math.max(bt, r[3]); else if (r[1] > H * .25) bb = Math.min(bb, r[1]); });
+    const want = bb - bt > 120 ? bt + (bb - bt) * .5 : H * (W / H < .8 ? .3 : .35);
+    VIEW_Y = VIEW_Y == null ? want : VIEW_Y + (want - VIEW_Y) * .12;
+    if (!(Math.abs(VIEW_Y - VIEW_SET) < .3)){ VIEW_SET = VIEW_Y; camera.setViewOffset(W, H, 0, H / 2 - VIEW_Y, W, H); camera.updateProjectionMatrix(); } }
+  camera.position.copy(tmpA); camera.lookAt(tmpB);
+  camera.updateMatrixWorld(); placeLabels(t);
+}
+
+  const PICK = [[exc, 1], [grd, 2], [rol, 3], [pav, 0], [truck, 0], [trl, 4]], ray = new T.Raycaster(), ndc = new T.Vector2(), pbox = new T.Box3(), phit = new T.Vector3();
+  function pick(cx, cy){
+    const r = canvas.getBoundingClientRect(); ndc.set((cx - r.left) / r.width * 2 - 1, -(cy - r.top) / r.height * 2 + 1); ray.setFromCamera(ndc, camera);
+    let best = -1, d = 1e9;
+    PICK.forEach(([g, k]) => { if (ray.ray.intersectBox(pbox.setFromObject(g).expandByScalar(.25), phit)){ const dd = phit.distanceTo(ray.ray.origin); if (dd < d){ d = dd; best = k; } } });
+    return best;
+  }
+  function focus(k){ FOC.fromP.copy(FOC.lastP); FOC.fromA.copy(FOC.lastA); FOC.k = k; FOC.bandK = -1; FOC.mode = 1; FOC.b = REDUCE ? 1 : 0; }
+  function release(){ if (!FOC.mode) return; FOC.fromP.copy(FOC.lastP); FOC.fromA.copy(FOC.lastA); FOC.mode = 2; FOC.b = REDUCE ? 1 : 0; }
+  function resize(w, h, dpr){ W = Math.max(1, w); H = Math.max(1, h); renderer.setPixelRatio(dpr); renderer.setSize(W, H, false); frame(); }
+  function lower(){ if (!renderer.shadowMap.enabled) return false; renderer.shadowMap.enabled = false;
+    scene.traverse(o => { if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => m.needsUpdate = true); }); return true; }
+  return {resize, lower, frame: (p, t, ct) => { pose(t); fly(ct === undefined ? t : ct); renderer.render(scene, camera); },
+          pick, focus, release, reset: () => { FOC.mode = 0; FOC.k = -1; FOC.b = 1; }, moving: () => FOC.mode !== 0 && FOC.b < 1,
+          tourAt: k => FOCUS[k][2] * LOOP / SHOTS.length, names: LABELS.map(l => l.name), warm: () => { pose(0); fly(0); renderer.compile(scene, camera); },
+          span: () => [0, W, 0, H], spanX: () => [0, W], anchors: () => ({}), explodeOf: () => 0, ORDER: []};
+}
 function makeIntro3D(T, canvas, opt = {}){
   const renderer = new T.WebGLRenderer({canvas, antialias: !opt.soft, alpha: true});
   renderer.outputEncoding = T.sRGBEncoding;
@@ -1110,7 +1988,7 @@ function makeIntro3D(T, canvas, opt = {}){
   const rng = seed => () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
   const tex = (w, h, draw, rx = 1, ry = 1) => {
     const c = document.createElement("canvas"); c.width = w; c.height = h; draw(c.getContext("2d"), w, h);
-    const t = new T.CanvasTexture(c); t.encoding = T.sRGBEncoding; t.anisotropy = Math.min(8, maxAniso);
+    const t = new T.CanvasTexture(c); if ("colorSpace" in t) t.colorSpace = T.SRGBColorSpace; else t.encoding = T.sRGBEncoding; t.anisotropy = Math.min(8, maxAniso);
     if (opt.soft){ t.generateMipmaps = false; t.minFilter = T.LinearFilter; t.anisotropy = 1; }     // drawn in software: skip the extras
     if (rx !== 1 || ry !== 1){ t.wrapS = t.wrapT = T.RepeatWrapping; t.repeat.set(rx, ry); }
     return t;
@@ -1653,8 +2531,9 @@ const BUILD = [
 ];
 const clamp01 = v => Math.max(0, Math.min(1, v)), easeIO = v => v < .5 ? 4 * v * v * v : 1 - Math.pow(-2 * v + 2, 3) / 2;
 // q: 2 = full (shadows, sharp), 1 = no shadows, 0 = software WebGL: plain, and redrawn only when the scroll moves
-const I3 = {sc: null, mode: "", p: 0, t: 0, last: 0, raf: 0, W: 1, H: 1, labH: 0, labW: 0, cmp: false, capL: 0, capR: 0, capT: 0, ceil: 16,
-  key: "", pending: false, q: 2, slow: 0, dirty: true};
+const LOOP_S = 32, LOOP_END = .80;                                            // seconds per loop; where the loop ends
+const I3 = {lt: 0, sc: null, mode: "", p: 0, t: 0, last: 0, raf: 0, W: 1, H: 1, labH: 0, labW: 0, cmp: false, capL: 0, capR: 0, capT: 0, ceil: 16,
+  key: "", pending: false, q: 2, slow: 0, dirty: true, ct: 0, paused: false, foc: -1};
 const i3Phone = () => (I3.W < 900 && I3.H > 500) || I3.H > I3.W * 1.1;       // title on top and the model below it, not side by side
 const i3Short = () => !i3Phone() && I3.H < 520;                                 // a phone held sideways: model on the right all the way through
 const i3Compact = () => I3.W < 700 || I3.H < 520;                               // labels shortened to one word
@@ -1669,6 +2548,7 @@ function i3Caption(p){
   return [i < 4 ? `Stage ${i + 1} of 4` : "What the satellite sees", b[2], b[3], b[1]];
 }
 function i3Overlay(p){
+  return;                                                                     // background loop: nothing drawn over the model
   const W = I3.W, H = I3.H, narrow = I3.cmp, still = I3.mode === "still";
   // the title leaves as the road comes apart
   const tf = still ? 0 : clamp01((p - .02) / .05), title = $("#i3title");
@@ -1707,16 +2587,67 @@ function i3Overlay(p){
   });
   $("#i3lines").innerHTML = lines;
 }
-function i3Draw(p, t){ I3.sc.frame(p, t); i3Overlay(p); }
+// ---------------- driving the scene: pause, replay, fly to a machine ----------------
+const I3_HOLD = 8;                                                          // seconds a close-up holds before panning out by itself
+const I3_TAP = matchMedia("(pointer: coarse)").matches ? "Tap" : "Click";
+function sceneHint(){
+  const h = $("#i3hint"); if (!h) return;
+  h.innerHTML = I3.foc >= 0 ? `Showing <b>${esc(I3.sc.names[I3.foc])}</b>` : `${I3_TAP} a machine to fly to it`;
+  $("#i3resume").hidden = I3.foc < 0;
+}
+function sceneKick(){ I3.dirty = true; if (I3.mode === "motion"){ I3.last = 0; i3Run(); } else if (I3.sc) i3Draw(0, I3.t); }
+function sceneFocus(k){
+  if (!I3.sc || k < 0 || k === I3.foc) return;
+  I3.foc = k; I3.hold = 0; $("#i3resume").style.setProperty("--p", 0); I3.sc.focus(k); sceneHint(); sceneKick();
+}
+function sceneTour(){
+  if (!I3.sc || I3.foc < 0) return;
+  I3.ct = I3.sc.tourAt(I3.foc); I3.sc.release(); I3.foc = -1; sceneHint(); sceneKick();
+}
+function scenePause(v){
+  I3.paused = v; const b = $("#i3pause");
+  b.setAttribute("aria-pressed", String(v)); b.innerHTML = v ? `<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5l13 7.5-13 7.5z" fill="currentColor"/></svg><span>Play</span>` : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg><span>Pause</span>`;
+  sceneKick();
+}
+function sceneReplay(){
+  if (!I3.sc) return;
+  I3.sc.reset(); I3.foc = -1; I3.t = 0; I3.ct = 0; I3.lt = 0; sceneHint(); scenePause(false);
+}
+function sceneWire(){
+  const ctl = $("#i3ctl"), cv = $("#i3canvas"); if (!ctl || ctl.dataset.wired) return; ctl.dataset.wired = 1;
+  ctl.hidden = false; if (I3.mode !== "motion") ctl.classList.add("still");
+  sceneHint();
+  $("#i3resume").addEventListener("click", sceneTour);
+  $("#i3pause").addEventListener("click", () => scenePause(!I3.paused));
+  $("#i3replay").addEventListener("click", sceneReplay);
+  // a mouse press on a machine counts at once, so moving a little while pressing cannot lose it; a tap waits for the click
+  const hit = e => { const k = I3.sc.pick(e.clientX, e.clientY); if (k >= 0) sceneFocus(k); return k; };
+  cv.addEventListener("pointerdown", e => { if (e.pointerType === "mouse" && e.button === 0 && hit(e) >= 0) e.preventDefault(); });
+  cv.addEventListener("click", e => { if (e.pointerType !== "mouse") hit(e); });
+  // the cursor says what can be clicked; looked up at most once a frame
+  let hov = 0, hx = 0, hy = 0;
+  cv.addEventListener("pointermove", e => { if (e.pointerType !== "mouse") return; hx = e.clientX; hy = e.clientY;
+    if (!hov) hov = requestAnimationFrame(() => { hov = 0; cv.style.cursor = I3.sc.pick(hx, hy) >= 0 ? "pointer" : ""; }); });
+  addEventListener("keydown", e => { if (e.key === "Escape" && I3.foc >= 0) sceneTour(); });
+}
+function i3Draw(p, t){ I3.sc.frame(p, t, I3.ct); i3Overlay(p); }
 function i3Tick(now){
   I3.raf = 0;
   const raw = I3.last ? (now - I3.last) / 1000 : 0, dt = Math.min(.05, raw); I3.last = now;
-  if (I3.q > 0) I3.t += dt;                                                  // on the plainest setting the cars stay parked
-  const goal = progressOf($("#intro")), k = 1 - Math.pow(.84, dt * 60), was = I3.p;     // ease towards the scroll position
-  I3.p += (goal - I3.p) * k; if (Math.abs(goal - I3.p) < 1e-4) I3.p = goal;
-  if (I3.q > 0 || I3.dirty || I3.p !== was){ i3Draw(I3.p, I3.t); I3.dirty = false; }
+  const run = I3.q > 0 && !I3.paused;                                         // on the plainest setting, or paused, the cars stay parked
+  if (run){ I3.t += dt; if (I3.foc < 0) I3.ct += dt; }                       // the camera's clock waits while it holds a close-up
+  const was = I3.p;
+  if (run) I3.lt = (I3.lt + dt) % LOOP_S;
+  I3.p = LOOP_END * I3.lt / LOOP_S;
+  if (run || I3.sc.moving() || I3.dirty || I3.p !== was){ i3Draw(I3.p, I3.t); I3.dirty = false; }
+  if (I3.foc >= 0 && run && !I3.sc.moving()){
+    I3.hold += dt; $("#i3resume").style.setProperty("--p", Math.min(1, I3.hold / I3_HOLD).toFixed(3));
+    if (I3.hold >= I3_HOLD) sceneTour();
+  }
   // frames that keep coming slower than ~22 a second step the quality down: first the shadows, then the motion
-  if (I3.q > 0 && raw > .045){ if (++I3.slow > 20){ I3.slow = 0; I3.q--; if (I3.q === 1) I3.sc.lower(); i3Size(); } }
+  // only a long run of slow frames drops the shadows (a stall while scrolling or a tab coming back is not one); the scene
+  // never stops moving on its own, and it is drawn again at once so the resized canvas never shows blank
+  if (I3.q === 2 && raw > .045 && raw < .25 && I3.t > 3){ if (++I3.slow > 90){ I3.slow = 0; I3.q = 1; I3.sc.lower(); i3Size(); i3Draw(I3.p, I3.t); } }
   else I3.slow = Math.max(0, I3.slow - 1);
   i3Run();
 }
@@ -1794,19 +2725,7 @@ function i3Make(){
     const e = p => easeIO(clamp01(p / .08));                                                      // from beside the title into the story
     const words = p => easeIO(clamp01((p - .03) / .10));                                          // caption shows during layer reveal
     const lab = p => words(p) * (1 - easeIO(clamp01((p - .56) / .06)));                            // labels show during layer reveal (until 0.56)
-    I3.sc = makeIntro3D(window.THREE, $("#i3canvas"), {
-      small: innerWidth < 700, soft: I3.q === 0,
-      // zoom scales the camera's distance (below 1 is closer); every change is eased, so the model never jumps
-      zoom: p => i3Phone() ? (1 - .1 * e(p)) * (1 - lab(p)) + .84 * lab(p) : i3Short() ? .96 : .92,
-      shiftX: p => i3Phone() ? -I3.W * .13 * lab(p) : i3Short() ? I3.W * .17 : I3.W * (.17 * (1 - e(p)) - .06 * lab(p)),
-      shiftY: p => i3Phone() ? I3.H * (.1 * (1 - e(p)) - .09 * e(p)) : 0,
-      // while the labels show, the whole block keeps left of their column; on a phone held sideways, where the words sit
-      // beside the model, it also keeps right of them from the moment they show
-      band: p => { const w = lab(p), room = I3.W - 16 - ((I3.labW || (I3.cmp ? 86 : 190)) + i3Gap()) * w;
-        return i3Short() ? (words(p) ? [I3.capR + 14, room, words(p)] : null) : w ? [i3Phone() ? 10 : 24, room, w] : null; },
-      // and once the words show, its underside stays above them wherever the two would meet
-      avoid: p => { const w = words(p); return w && I3.capR && !i3Short() ? [I3.capL, I3.capR, I3.capT - 14, I3.ceil, w] : null; }
-    });
+    I3.sc = makeDiorama(window.THREE, $("#i3canvas"), {look: "dusk", still: I3.mode === "still", labels: $("#dlabels"), avoid: ".lead, .i3-top", onPick: k => sceneFocus(k)});
   } catch (err){ i3None(); return; }
   $("#i3labels").innerHTML = LAYERS.map(l => `<div class="i3-lab"><b><span class="i3-full">${l.name}</span><span class="i3-short">${l.short}</span></b><span class="i3-sp"><i style="background:${STAGES[l.stage].c}"></i>reads as ${STAGES[l.stage].name.toLowerCase()}</span></div>`).join("");
   $("#i3stages").innerHTML = [1,2,3,4].map(s => `<span data-s="${s}"><i style="background:${STAGES[s].c}"></i>${STAGES[s].name}</span>`).join("");
@@ -1815,9 +2734,9 @@ function i3Make(){
   I3.sc.warm();
   setTimeout(() => {
     i3Size();
-    I3.p = progressOf(sec);
+    I3.p = 0;
     i3Draw(I(), 0); I3.dirty = false;
-    sec.classList.add("i3-ready");
+    sec.classList.add("i3-ready"); sceneWire();
     if (document.fonts) document.fonts.ready.then(i3Measure);        // the labels grow a little once the web font is in
     addEventListener("resize", debounce(() => { if (!I3.sc || $("#home").hidden) return; i3Size(); i3Draw(I(), I3.t); }, 150));
     if (I3.mode === "motion"){
@@ -1948,7 +2867,8 @@ function renderPicker(filter = ""){
     if (ready) {
       const compareBtn = document.createElement("button");
       compareBtn.className = "compare-btn";
-      compareBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 10h4v4h-4zM14 14h4v4h-4zM10 14h4v4h-4zM14 10h4v4h-4z"/></svg> Compare`;
+      const others = READY.filter(x => x.id !== h.id), short = n => esc(n.replace(/\s+Expressway$/, ""));
+      compareBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h14M14 4l4 4-4 4M20 16H6M10 12l-4 4 4 4"/></svg><span>${others.length === 1 ? `Compare with ${short(others[0].name)}` : "Compare"}</span>`;
       compareBtn.title = "Compare this highway with another";
       compareBtn.addEventListener("click", e => { e.stopPropagation(); compareFrom(h.id); });
       b.querySelector(".body").appendChild(compareBtn);
@@ -2196,7 +3116,7 @@ scenes.push({host: $("#home"), el: story, fn: p => {
 /* ================= home: trust and footer ================= */
 function trustHTML(){
   const items = [], chk = (G.checks || []).find(c => c.n != null);
-  if (chk) items.push([`${chk.n} / ${chk.of}`, `pieces of the ${G.name} were already seen as paved ${chk.before ? `by ${chk.q}, the quarter before it opened` : `in ${chk.q}, the quarter it opened`} (${chk.reported}). The other ${chk.of - chk.n} are clearly paved in the images, but their signal was too weak to pass the test.`]);
+  if (chk) items.push([`${chk.n} / ${chk.of}`, `pieces of the ${G.name} were already seen as paved ${!chk.q ? `before it opened` : chk.before ? `by ${chk.q}, the quarter before it opened` : `in ${chk.q}, the quarter it opened`} (${chk.reported}). The other ${chk.of - chk.n} are clearly paved in the images, but their signal was too weak to pass the test.`]);
   if (Array.isArray(LIVE.trust)) items.push(LIVE.trust);
   items.push(["10 m", "is the size of one pixel. Lanes, bridges and structures are too small to see, and paving dates are good to about six months either way. These are estimates, not official figures."]);
   return items.map(([big, text]) => `<article data-reveal><b class="big">${esc(big)}</b><p>${esc(text)}</p></article>`).join("");
@@ -2204,9 +3124,9 @@ function trustHTML(){
 $("#trustgrid").innerHTML = trustHTML();
 function footHTML(){
   const last = READY.length ? pretty(READY[0].periods[READY[0].periods.length - 1]) : "";
-  return `<p>Estimates from 10 m satellite images, not official progress figures.</p>
-    <p>Built by <b>Yash</b> (<a href="https://github.com/Elmozoop">@Elmozoop</a>). Code and data: <a href="${REPO}">github.com/Elmozoop/expressway-watch</a></p>
-    <p>Satellite images to ${last}, page built ${BUILT}. Imagery: Copernicus Sentinel-2 (ESA). Route: © OpenStreetMap contributors.</p>`;
+  return `<div class="f-col"><b class="f-name">${brandHTML}</b><p>Estimates from 10 m satellite images, not official progress figures.</p></div>
+    <div class="f-col"><span class="f-k">Made by</span><p><b>Yash</b> (<a href="https://github.com/Elmozoop">@Elmozoop</a>)</p><p><a href="${REPO}">Code and data on GitHub</a></p></div>
+    <div class="f-col"><span class="f-k">Sources</span><p>Imagery: Copernicus Sentinel-2 (ESA), to ${last}</p><p>Route: © OpenStreetMap contributors</p><p>Page built ${BUILT}</p></div>`;
 }
 $("#foot1").innerHTML = footHTML();
 
@@ -2225,6 +3145,7 @@ function openHw(id, push = true){
   else show();
 }
 function goHome(push = true){
+  if (bigTween){ bigTween.kill(); bigTween = null; }
   stop(); closeComparison(); killViewTriggers();
   document.title = "Expressway Watch";
   const show = () => { view.hidden = true; view.innerHTML = ""; H = null; home.hidden = false; if (push) history.replaceState(null, "", location.pathname + location.search); scrollTo({top: 0, behavior: "instant"}); storyQ = -1; storyCh = -1;
@@ -2252,25 +3173,34 @@ function stallHTML(h){
   const [q0, n0] = (h.milestones || [])[0] || [];
   const startName = n0 ? n0.replace(/\s*\(reported\)/i, "").toLowerCase() : "";
   const allOsm = real.length > 0 && real.every(g => g.osm != null && g.osm >= .5);
+  const years = q => (qn(now) - qn(q)) / 4, dur = y => Number.isInteger(y) ? `${y} yr${y === 1 ? "" : "s"}` : y < 1 ? `${Math.round(y * 4)} qtrs` : `${Math.floor(y)}+ yrs`;
+  // the point first: how much road, stuck how long, in which two ways
+  const kmIn = g => g.n * 2, ew = real.filter(g => g.kind === "earthwork"), none = real.filter(g => g.kind !== "earthwork");
+  const ewKm = ew.reduce((a, g) => a + kmIn(g), 0), noKm = none.reduce((a, g) => a + kmIn(g), 0);
+  const stuckFor = real.map(g => years(g.kind === "earthwork" ? g.since : (q0 || P[0]))), least = Math.floor(Math.min(...stuckFor));
+  const sum = real.length ? `<div class="st-sum">
+      <p class="st-big"><b>${ewKm + noKm} km</b> of the road tracked here ${least >= 1 ? `has been stuck for <b>${least}+ years</b>` : "has stalled"}.</p>
+      <p class="st-key">${ewKm ? `<span class="k ew"><i></i><b>${ewKm} km</b> earthwork, no asphalt</span>` : ""}${noKm ? `<span class="k none"><i></i><b>${noKm} km</b> not started, still farmland</span>` : ""}</p>
+    </div>` : "";
+  // the timeline labels its own marks
+  const yrs = [...new Set(P.map(q => q.slice(0, 4)))];
+  const axis = `<div class="g-axis" aria-hidden="true"><span></span><span class="g-track">${yrs.map((y, k) => `<span class="g-yr${k % 2 ? " odd" : ""}" style="left:${xq(y + "Q1")}%">${y}</span>`).join("")}${q0 ? `<span class="g-msl" style="left:${xq(q0)}%">${esc(n0.replace(/\s*\(reported\)/i, ""))}</span>` : ""}<span class="g-today">Today</span></span><span></span></div>`;
   const ms = q0 ? `<i class="g-ms" style="left:${xq(q0)}%"></i>` : "";
-  const years = [...new Set(P.map(q => q.slice(0,4)))];
-  const axis = `<div class="g-axis" aria-hidden="true"><span class="g-label"></span><span class="g-track">${years.map((y, k) => `<span${k % 2 ? ' class="odd"' : ""} style="left:${xq(y + "Q1")}%">${y}</span>`).join("")}</span></div>`;
-  const rows = real.map(g => {
-    const ew = g.kind === "earthwork", from = ew ? g.since : (q0 || P[0]);
-    const [ka, kb] = kmOf(g.km), span = Math.round((kb - ka) / 2);        // a group may hold one other piece inside it
-    const what = ew ? `Earthwork since ${pretty(g.since)}: ${yearsSince(g.since, now)}, and still no asphalt`
-                    : `No earthwork yet${q0 ? `, ${yearsSince(q0, now)} after the ${startName}` : ""}`;
-    // --- enhanced: living bar with pulse animation for active stalls ---
-    const barClass = ew ? "ew" : "none";
-    const pulseAttr = ew ? 'data-pulse="true"' : '';
-    return `<button class="g-row" data-st="${g.stretch}"><span class="g-label"><b>${g.km}</b><small>${g.n < span ? `${g.n} of ${span} pieces` : `${g.n} piece${g.n > 1 ? "s" : ""}`}</small></span>
-      <span class="g-track">${ms}<span class="g-bar ${barClass}" ${pulseAttr} style="left:${xq(from)}%;width:${100 - xq(from)}%"></span></span><span class="g-what">${nb(what)}</span></button>`;
+  const rows = real.map((g, k) => {
+    const isEw = g.kind === "earthwork", from = isEw ? g.since : (q0 || P[0]), [ka, kb] = kmOf(g.km);
+    const tag = isEw ? `<span class="g-status ew">Earthwork, no asphalt</span><span class="g-since">since ${nb(pretty(g.since))}</span>`
+                     : `<span class="g-status none">Not started</span><span class="g-since">still farmland${q0 ? `, ${nb(yearsSince(q0, now))} after the ${startName}` : ""}</span>`;
+    return `<button class="g-row" data-st="${g.stretch}">
+      <span class="g-label"><b>${nb(g.km)}</b><small>${esc(whereText(h, (ka + kb) / 2))}</small></span>
+      <span class="g-mid"><span class="g-tag">${tag}</span><span class="g-track">${ms}<span class="g-bar ${isEw ? "ew" : "none"}" style="left:${xq(from)}%;width:${100 - xq(from)}%"></span></span></span>
+      <span class="g-dur"><b>${dur(stuckFor[k])}</b><small>stuck</small></span></button>`;
   }).join("");
   const missN = miss.reduce((a, g) => a + g.n, 0);
   return `<section class="card" data-reveal id="stallcard"><div class="card-head"><h2>Where work has stalled</h2>
-    ${h.intro ? `<p class="lede2">${nb(esc(h.intro))}</p>` : ""}
-    <p class="hint">As of ${pretty(now)}. Each bar runs from when a stretch got stuck to today: solid orange for earthwork not paved after 3 years or more, striped green for land with no earthwork at all${q0 ? `. The dashed line is the ${startName} (${pretty(q0)})` : ""}. Pick one to see it below.</p></div>
-    ${real.length ? `<div class="gantt" style="--yr:${(400 / n).toFixed(4)}%">${axis}${rows}</div>` : `<p>No stalled pieces.</p>`}
+    ${h.intro ? `<p class="lede2">${nb(esc(h.intro))}</p>` : ""}</div>
+    ${sum}
+    ${real.length ? `<div class="gantt" style="--yr:${(400 / n).toFixed(4)}%">${axis}${rows}</div>
+    <p class="hint">Each bar runs from when the stretch got stuck to today (${nb(pretty(now))}). Click one to see it on the map below.</p>` : `<p>No stalled pieces.</p>`}
     ${allOsm ? `<p class="osm" data-osm-sync>OpenStreetMap, mapped independently, also shows every stretch listed here as under construction.</p>` : ""}
     ${missN ? `<p class="note">${missN} more piece${missN > 1 ? "s" : ""} read${missN > 1 ? "" : "s"} as earthwork (${nb(miss.map(g => `${g.n > 1 ? g.n + " in" : "1 at"} ${g.km}`).join(", "))}), but OpenStreetMap maps the road there as open. They are most likely misses by the tool, not stalled work.</p>` : ""}
     ${h.context ? `<p class="hint">${nb(esc(h.context))}</p>` : ""}</section>`;
@@ -2426,7 +3356,7 @@ function renderHw(){
   view.innerHTML = `
   <header class="band edge hwhead"><div class="lanes" aria-hidden="true"></div><div class="glow" aria-hidden="true"></div><div class="inner">
     <div class="topbar"><a class="brand" href="#" id="brand2" aria-label="Expressway Watch, all highways">${brandHTML}</a>
-      <div class="hwnav"><button class="back" id="back">← All highways</button><button class="compare" id="compareHw" title="Compare with another highway"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 10h4v4h-4zM14 14h4v4h-4zM10 14h4v4h-4zM14 10h4v4h-4z"/></svg></button>${VIEWER ? "" : `<button class="share" id="share">${shareIcon}Share</button>`}</div></div>
+      <div class="hwnav"><button class="back" id="back">← All highways</button><button class="compare" id="compareHw" title="Compare with another highway"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h14M14 4l4 4-4 4M20 16H6M10 12l-4 4 4 4"/></svg><span>Compare</span></button>${VIEWER ? "" : `<button class="share" id="share">${shareIcon}Share</button>`}</div></div>
     <div class="hwband">
       <div class="hwtext">
         <p class="eyebrow">${esc(h.authority)} · ${esc(h.states)}</p>
@@ -2477,7 +3407,7 @@ function renderHw(){
       .from(view.querySelectorAll(".rb"), {scaleX: 0, transformOrigin: "0 50%", duration: .6, stagger: .08}, "-=.5");
     drawIn(r, .2);
     const o = {v: 0}, target = pct(h.share[qi][4], h.segs.length);
-    bigTween = G_.to(o, {v: target, duration: 1.6, delay: .3, ease: "power2.out", onUpdate: () => $("#bigPct").textContent = Math.round(o.v) + "%"});
+    bigTween = G_.to(o, {v: target, duration: 1.6, delay: .3, ease: "power2.out", onUpdate: () => { const b = $("#bigPct"); if (b) b.textContent = Math.round(o.v) + "%"; }});
     setupReveals(view);
     const bars = [...view.querySelectorAll(".g-bar")];
     if (bars.length) growIn(".gantt", () => G_.set(bars, {scaleX: 0}), () => G_.to(bars, {scaleX: 1, duration: .9, stagger: .09, ease: "power3.out"}));
@@ -2583,7 +3513,7 @@ function paint(){
   if (!H || view.hidden) return;
   const h = H, P = h.periods, N = h.segs.length, c = h.share[qi], q = pretty(P[qi]);
   $("#qlab").textContent = q;
-  $("#bigPct").textContent = pct(c[4], N) + "%";
+  const bp = $("#bigPct"); if (bp) bp.textContent = pct(c[4], N) + "%";
   $("#bigTxt").textContent = qi === P.length - 1 ? `of the ${N * 2} km tracked is paved, as\u00a0of ${q}` : `of the ${N * 2} km tracked had been paved by ${q}`;
   view.querySelectorAll(".rb").forEach((d, k) => { const s = [4,3,2,1][k]; d.style.flexBasis = (100 * c[s] / N) + "%"; });
   $("#rblegend").innerHTML = [4,3,2,1].map(s => `<span><i style="background:${STAGES[s].c}"></i><b>${c[s] * 2} km</b>${STAGES[s].name.toLowerCase()}</span>`).join("");
@@ -2620,15 +3550,21 @@ function growIn(trigger, reset, play){
   viewTriggers.push(ScrollTrigger.create({trigger, start: "top bottom", once: true, onEnter: () => { if (!done) reset(); }}));
   viewTriggers.push(ScrollTrigger.create({trigger, start: "top 85%", once: true, onEnter: () => { if (!done){ done = true; reset(); play(); } }}));
 }
+function revealIntro(){
+  // the headline rises line by line, then the words and buttons, and the numbers count up
+  const lines = document.querySelectorAll("#introTitle .line > span"), bits = document.querySelectorAll(".lead [data-in]"), stats = [...document.querySelectorAll("#herostats b")];
+  G_.timeline({defaults: {ease: "power4.out"}}).from(lines, {yPercent: 110, duration: 1, stagger: .1}).from(bits, {y: 24, opacity: 0, duration: .8, stagger: .1}, .35);
+  stats.forEach((b, k) => { const o = {v: 0}, to = +b.dataset.to, suf = b.dataset.suf; b.textContent = "0" + suf;
+    G_.to(o, {v: to, duration: 1.6 + k * .2, delay: .7, ease: "power2.out", onUpdate: () => b.textContent = Math.round(o.v) + suf}); });
+}
 function revealHero(){
   // the headline rises, the numbers count up and the time-lapse slides in as the hero scrolls into view.
   // Until then everything rests fully drawn; it drops to its start position only as it reaches the screen's edge.
-  const lines = document.querySelectorAll(".hero h1 .line > span"), bits = document.querySelectorAll(".herotext [data-in]"), stats = [...document.querySelectorAll("#herostats b")];
+  const lines = [], bits = document.querySelectorAll(".herotext [data-in]"), stats = [];
   let done = false;
-  const reset = () => { G_.set(lines, {yPercent: 110}); G_.set(bits, {y: 24, opacity: 0}); G_.set("#scopeImg", {scale: .94, y: 30, opacity: 0}); G_.set("#scope .cn", {scale: 1.8, opacity: 0}); G_.set("#scope .telemetry > *", {y: 12, opacity: 0}); };
+  const reset = () => { G_.set(bits, {y: 24, opacity: 0}); G_.set("#scopeImg", {scale: .94, y: 30, opacity: 0}); G_.set("#scope .cn", {scale: 1.8, opacity: 0}); G_.set("#scope .telemetry > *", {y: 12, opacity: 0}); };
   const play = () => {
     G_.timeline({defaults: {ease: "power4.out"}, onComplete: () => { TL.started = true; tlSchedule(); }})
-      .to(lines, {yPercent: 0, duration: 1, stagger: .09})
       .to(bits, {y: 0, opacity: 1, duration: .8, stagger: .1}, .4)
       .to("#scopeImg", {scale: 1, y: 0, opacity: 1, duration: 1.1, ease: "expo.out"}, .15)
       .to("#scope .cn", {scale: 1, opacity: 1, duration: .6, stagger: .06}, .5)
@@ -2643,10 +3579,10 @@ function initMotion(){
   if (!window.gsap || !window.ScrollTrigger) return;
   G_ = window.gsap; G_.registerPlugin(ScrollTrigger);
   if (REDUCE) return;
+  revealIntro();
   revealHero();
   ScrollTrigger.create({trigger: "#story", start: "top 75%", once: true, onEnter: () => drawIn(storyMap, 0)});
   G_.matchMedia().add("(min-width: 961px)", () => {       // stacked in one column, they would slide into each other
-    G_.to(".herotext", {y: -70, ease: "none", scrollTrigger: {trigger: "#hero", start: "top top", end: "bottom top", scrub: true}});
     G_.to("#scope", {y: -110, ease: "none", scrollTrigger: {trigger: "#hero", start: "top top", end: "bottom top", scrub: true}});
   });
   G_.to("#hero .lanes", {yPercent: 20, ease: "none", scrollTrigger: {trigger: "#hero", start: "top top", end: "bottom top", scrub: true}});
@@ -2965,6 +3901,7 @@ addEventListener("hashchange", () => {
   if (cmp){ openComparison(cmp[0], cmp[1], false); return; }
   const id = hash;
   if (HIGHWAYS.some(h => h.id === id)) openHw(id, false); else if (!id) goHome(false);
+  else if (home.hidden && document.getElementById(id)){ goHome(false); setTimeout(() => document.getElementById(id).scrollIntoView({behavior: "instant"}), anim() ? 320 : 0); }
 });
 // drawings sized to the page are redrawn when the window changes size
 let wasNarrow = innerWidth < 700;
@@ -3025,16 +3962,6 @@ function checkImageFormatSupport() {
   return {webp, avif};
 }
 
-// --- Frame budget integration with i3Tick ---
-const originalI3Tick = window.i3Tick;
-if (originalI3Tick) {
-  window.i3Tick = function(now) {
-    const start = performance.now();
-    originalI3Tick(now);
-    monitorFrameBudget(performance.now() - start);
-  };
-}
-
 // --- Debounced resize handler optimization ---
 let resizeTimeout;
 window.addEventListener('resize', () => {
@@ -3066,6 +3993,58 @@ document.addEventListener('DOMContentLoaded', () => {
   addResourceHints();
 });
 
+</script>
+<script>
+(() => {
+  // everything rests fully drawn; only what is still below the screen is reset, then drawn in as it arrives,
+  // so if the arrival is never reported the visitor still sees it complete
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) return;
+  const SEL = ".pickhead, .learn-head, #trust .inner > .eyebrow, .minibar";
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting){ e.target.classList.remove("pending"); io.unobserve(e.target); } }), {threshold: .35});
+  const watch = () => document.querySelectorAll(SEL).forEach(e => { if (e.dataset.watched) return; e.dataset.watched = 1;
+    if (e.getBoundingClientRect().top > innerHeight){ e.classList.add("pending"); io.observe(e); } });
+  watch(); new MutationObserver(watch).observe(document.body, {childList: true, subtree: true});   // cards are drawn by script, after load
+  // a second check that needs no observer: anything still waiting that is now on screen is drawn at once
+  // (on screen or already scrolled past); it runs on scroll and on a slow timer, which keeps going even in background tabs
+  const sweep = () => document.querySelectorAll(".pending").forEach(e => { if (e.getBoundingClientRect().top < innerHeight * .9) e.classList.remove("pending"); });
+  addEventListener("scroll", sweep, {passive: true}); addEventListener("resize", sweep); setInterval(sweep, 1200);
+})();
+</script>
+<script>
+(() => {
+  // the five layers in the order they go down, with the machine that lays each one; words from LAYERS
+  const MACHINE = {emb: "Excavators and rollers", gsb: "Motor grader, then a roller", wmm: "Spread, then rolled flat", dbm: "Asphalt paver", bc: "Paver, then a tandem roller"};
+  const SEE = {emb: 1, gsb: 2, wmm: 3, dbm: 0, bc: 4};   // the scene label of the machine that lays each layer
+  const LONG = {emb: "Embankment", gsb: "Sub-base (GSB)", wmm: "Base (WMM)", dbm: "Binder course (DBM)", bc: "Surface course (BC)"};
+  const order = ["emb", "gsb", "wmm", "dbm", "bc"].map(k => LAYERS.find(l => l.key === k)).filter(Boolean);
+  const list = document.getElementById("layerlist"), svg = document.getElementById("xsec");
+  if (!list || !svg || !order.length) return;
+  const esc = t => String(t).replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
+  list.innerHTML = order.map((l, i) => `<li data-k="${l.key}" tabindex="0"><span class="n">${i + 1}</span>
+    <h3>${esc(LONG[l.key] || l.name)}<small>${esc(l.thick || "")}</small></h3>
+    <p class="what">${esc(l.what)}</p>
+    <p class="meta"><span>Laid by <b>${esc(MACHINE[l.key])}</b></span><span class="reads"><i style="background:${STAGES[l.stage].c}"></i>Satellite reads: <b>${esc(STAGES[l.stage].name.toLowerCase())}</b></span></p>
+    <button class="seeit" type="button" data-l="${SEE[l.key]}">See it in the scene <span aria-hidden="true">↑</span></button></li>`).join("");
+  // the cross-section: fields, then each layer narrowing a little as it climbs, numbered like the list
+  const C = {emb: "#a8734b", gsb: "#d2c6a8", wmm: "#9c978d", dbm: "#5a5c62", bc: "#2c2d31"};
+  const cx = 280, rows = [["emb", 500, 390, 232, 150], ["gsb", 390, 372, 150, 122], ["wmm", 372, 356, 122, 98], ["dbm", 356, 344, 98, 80], ["bc", 344, 334, 80, 64]];
+  let out = `<rect x="0" y="232" width="600" height="98" fill="#4e5a2e"/><path d="M0 232h600" stroke="#2f381b" stroke-width="2"/>`;
+  for (let x = 6; x < 600; x += 16) out += `<path d="M${x} 236v${6 + (x % 3) * 3}" stroke="#6d7c3e" stroke-width="2" stroke-linecap="round"/>`;   // crops
+  rows.forEach(([k, wb, wt, yb, yt], i) => {
+    out += `<g class="ly" data-k="${k}"><path d="M${cx - wb / 2} ${yb}L${cx + wb / 2} ${yb}L${cx + wt / 2} ${yt}L${cx - wt / 2} ${yt}Z" fill="${C[k]}" stroke="rgba(0,0,0,.35)"/>`;
+    if (k === "bc") out += [-1, 1].map(s => `<path d="M${cx + s * 90} ${yt + 6}h${s * 46}" stroke="#f4efe6" stroke-width="2.5" stroke-dasharray="14 10"/>`).join("") + `<path d="M${cx - 8} ${yt + 6}h16" stroke="#7fae5c" stroke-width="3"/>`;
+    // numbers stand in a spaced column at the right, each joined to its layer by an angled leader
+    const ly = (yb + yt) / 2, ny = 214 - i * 36, x0 = cx + (wb + wt) / 4 + 6; out += `<path d="M${x0} ${ly}H${x0 + 26}L548 ${ny}H552" fill="none" stroke="rgba(245,235,221,.4)"/><circle cx="566" cy="${ny}" r="12" fill="var(--surface)" stroke="rgba(245,235,221,.4)"/><text class="num" x="566" y="${ny + 5}" text-anchor="middle">${i + 1}</text></g>`;
+  });
+  out += `<text x="${cx}" y="300" text-anchor="middle">fields: where the road will run</text><text x="${cx}" y="44" text-anchor="middle">about 30 m across</text><path d="M${cx - 167} 54h334" stroke="rgba(245,235,221,.35)"/><path d="M${cx - 167} 50v8M${cx + 167} 50v8" stroke="rgba(245,235,221,.35)"/>`;
+  svg.innerHTML = out;
+  list.addEventListener("click", e => { const b = e.target.closest(".seeit"); if (!b) return;
+    const k = +b.dataset.l; scrollTo({top: 0, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth"});
+    if (typeof sceneFocus === "function") sceneFocus(k); });
+  const fig = svg.closest(".xsec");
+  list.querySelectorAll("li").forEach(li => { const on = v => { fig.classList.toggle("focus", v); svg.querySelectorAll(".ly").forEach(g => g.classList.toggle("on", v && g.dataset.k === li.dataset.k)); };
+    li.addEventListener("mouseenter", () => on(true)); li.addEventListener("mouseleave", () => on(false)); li.addEventListener("focus", () => on(true)); li.addEventListener("blur", () => on(false)); });
+})();
 </script>
 </body>
 </html>
