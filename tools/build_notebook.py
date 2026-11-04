@@ -28,6 +28,7 @@ md("## Step 1 — Settings")
 code("""
 EXPRESSWAY_NAME = "Ganga Expressway"    # matched (case-insensitive) against OSM name / name:en tags
 NAME_PATTERN = None                      # optional regex for the fallback OSM search, e.g. "Amritsar.{0,4}Katra"
+ROUTE_REF = None                         # optional exact OSM ref (road number), e.g. "NE-4", for roads mapped under many names
 SEARCH_BBOX = (24.0, 77.0, 30.5, 84.8)   # (south, west, north, east) area to search OSM — here Uttar Pradesh
 # Alignment: a saved copy of the Ganga Expressway OSM ways lives in the repo, so no Overpass call is needed.
 # Set ROUTE_FILE = None to fetch from OpenStreetMap instead, or point it at your own GeoJSON/KML line.
@@ -94,9 +95,10 @@ def _overpass(q, max_s=90):
 def fetch_osm(name, bbox):
     s, w, n, e = bbox
     bb = f"({s},{w},{n},{e})"
-    # 1) fast: exact name match on roads (uses Overpass's tag index)
-    q_fast = f'''[out:json][timeout:60];
-    ( way["highway"]["name"="{name}"]{bb}; way["highway"]["name:en"="{name}"]{bb}; );
+    # 1) fast: exact name (or road number) match on roads (uses Overpass's tag index)
+    by_ref = f'way["highway"]["ref"="{ROUTE_REF}"]{bb};' if ROUTE_REF else ""
+    q_fast = f'''[out:json][timeout:90];
+    ( way["highway"]["name"="{name}"]{bb}; way["highway"]["name:en"="{name}"]{bb}; {by_ref} );
     out tags geom;'''
     # 2) slower fallback: case-insensitive partial match
     q_slow = f'''[out:json][timeout:80];
@@ -115,7 +117,7 @@ def fetch_osm(name, bbox):
             continue
         t = el.get("tags", {})
         hw = t.get("highway", "")
-        if "link" in hw or "link" in t.get("construction", "") or hw in ("service", "footway", "track"):
+        if "link" in hw or "link" in t.get("construction", "") or hw in ("service", "footway", "track", "proposed"):
             continue
         rows.append({"osm_id": el["id"], "highway": hw, "oneway": t.get("oneway"),
                      "name": t.get("name"), "geometry": LineString([(p["lon"], p["lat"]) for p in el["geometry"]])})
@@ -582,35 +584,75 @@ nb = nbf.v4.new_notebook(cells=cells, metadata={"colab": {"provenance": [], "nam
                                                   "kernelspec": {"name": "python3", "display_name": "Python 3"}})
 nbf.write(nb, ROOT / "notebooks" / "Expressway_Watch.ipynb")
 
-# ---- preset: Delhi-Amritsar-Katra Expressway (NHAI, under construction) ----
+# ---- presets: the same notebook with Step 1 set up for another expressway ----
 import copy, re
-dak = copy.deepcopy(nb)
-cfg = dak.cells[[i for i, c in enumerate(dak.cells) if c.cell_type == "code"][1]]
-src = cfg.source
-for k, v in {
-    "EXPRESSWAY_NAME": '"Delhi–Amritsar–Katra Expressway"',
-    "NAME_PATTERN": '"Amritsar.{0,4}Katra"',
-    "SEARCH_BBOX": "(28.4, 74.3, 33.2, 77.4)",
-    "ROUTE_FILE": "None",
-    "KEEP_ON_DRIVE": "True",
-    "ROUTE_START": "(76.85, 28.75)",
-    "MAX_GAP_KM": "25",
-    "AUTO_STRETCHES": "6",
-    "MILESTONES": '{"Foundation stone (reported)": "2022Q1"}',
-}.items():
-    src, n = re.subn(rf"^{k} = [^#\n]*", f"{k} = {v}   ", src, count=1, flags=re.M)
-    assert n == 1, k
-for a, b in [("area to search OSM — here Uttar Pradesh", "area to search OSM — here Haryana, Punjab and J&K"),
-             ("# Alignment: a saved copy of the Ganga Expressway OSM ways lives in the repo, so no Overpass call is needed.\n", ""),
-             ("near the end that should be km 0 — here the Meerut (Bijauli) end", "near the end that should be km 0 — here the Delhi end"),
-             ('"/content/expressway_watch_outputs"', '"/content/expressway_watch_delhi_katra"'),
-             ('"/content/drive/MyDrive/expressway_watch_outputs"', '"/content/drive/MyDrive/expressway_watch_delhi_katra"')]:
-    assert a in src, a
-    src = src.replace(a, b)
-src = src.replace("# Ganga Expressway (Wikipedia): physical work began Apr 2022; inaugurated 29 Apr 2026.",
-                  "# Delhi–Amritsar–Katra (Wikipedia): foundation stone 5 Jan 2022; Punjab delayed by land acquisition, completion now March 2028.")
-cfg.source = src
-dak.cells[0].source = dak.cells[0].source.replace("# Expressway Watch", "# Expressway Watch: Delhi–Amritsar–Katra Expressway (live NHAI project)", 1)
-dak.metadata["colab"]["name"] = "Expressway_Watch_Delhi_Katra.ipynb"
-nbf.write(dak, ROOT / "notebooks" / "Expressway_Watch_Delhi_Katra.ipynb")
+
+def preset(filename, title, slug, settings, where, km0, source_note):
+    """Write notebooks/<filename>: Step 1's values replaced by `settings`, its comments by `where`, `km0` and `source_note`,
+    and results kept in their own Drive folder (expressway_watch_<slug>)."""
+    out = copy.deepcopy(nb)
+    cfg = out.cells[[i for i, c in enumerate(out.cells) if c.cell_type == "code"][1]]
+    src = cfg.source
+    for k, v in {"ROUTE_FILE": "None", "KEEP_ON_DRIVE": "True", **settings}.items():
+        src, n = re.subn(rf"^{re.escape(k)} = [^#\n]*", f"{k} = {v}   ", src, count=1, flags=re.M)
+        assert n == 1, k
+    for a, b in [("area to search OSM — here Uttar Pradesh", f"area to search OSM — here {where}"),
+                 ("# Alignment: a saved copy of the Ganga Expressway OSM ways lives in the repo, so no Overpass call is needed.\n", ""),
+                 ("near the end that should be km 0 — here the Meerut (Bijauli) end", f"near the end that should be km 0 — here {km0}"),
+                 ('"/content/expressway_watch_outputs"', f'"/content/expressway_watch_{slug}"'),
+                 ('"/content/drive/MyDrive/expressway_watch_outputs"', f'"/content/drive/MyDrive/expressway_watch_{slug}"'),
+                 ("# Ganga Expressway (Wikipedia): physical work began Apr 2022; inaugurated 29 Apr 2026.", f"# {source_note}")]:
+        assert a in src, a
+        src = src.replace(a, b)
+    cfg.source = src
+    out.cells[0].source = out.cells[0].source.replace("# Expressway Watch", f"# Expressway Watch: {title}", 1)
+    out.metadata["colab"]["name"] = filename
+    nbf.write(out, ROOT / "notebooks" / filename)
+
+# Delhi-Amritsar-Katra Expressway (NHAI, under construction)
+preset("Expressway_Watch_Delhi_Katra.ipynb", "Delhi–Amritsar–Katra Expressway (live NHAI project)", "delhi_katra", {
+    "EXPRESSWAY_NAME": '"Delhi–Amritsar–Katra Expressway"', "NAME_PATTERN": '"Amritsar.{0,4}Katra"',
+    "SEARCH_BBOX": "(28.4, 74.3, 33.2, 77.4)", "ROUTE_START": "(76.85, 28.75)", "MAX_GAP_KM": "25", "AUTO_STRETCHES": "6",
+    "MILESTONES": '{"Foundation stone (reported)": "2022Q1"}'},
+    "Haryana, Punjab and J&K", "the Delhi end",
+    "Delhi–Amritsar–Katra (Wikipedia): foundation stone 5 Jan 2022; Punjab delayed by land acquisition, completion now March 2028.")
+
+# For the next four, the stretches were picked by hand on the OSM route as chained here (Nov 2026), clear of any stretch
+# OSM has not mapped yet (there the chain would bridge the gap with a straight line through fields).
+# Delhi-Mumbai Expressway (NHAI): mapped under several names, one road number. The Vadodara-Mumbai end does not join
+# the main line in OSM yet, so the route runs Sohna -> Vadodara (~844 km); unmapped at km 731-737 and 759-783.
+preset("Expressway_Watch_Delhi_Mumbai.ipynb", "Delhi–Mumbai Expressway (live NHAI project)", "delhi_mumbai", {
+    "EXPRESSWAY_NAME": '"Delhi–Mumbai Expressway"', "ROUTE_REF": '"NE-4"',
+    "SEARCH_BBOX": "(18.8, 72.6, 28.8, 77.6)", "ROUTE_START": "(77.2, 28.4)", "MAX_GAP_KM": "25",
+    "KM_FROM, KM_TO": "0, 20", "EXTRA_STRETCHES": "[(170, 190), (340, 360), (510, 530), (680, 700), (800, 820)]",
+    "MILESTONES": '{"First section opened (Sohna–Dausa)": "2023Q1"}'},
+    "Haryana, Rajasthan, Madhya Pradesh, Gujarat and Maharashtra", "the Sohna (Delhi) end",
+    "Delhi–Mumbai (news, Wikipedia): foundation stone Mar 2019; Sohna–Dausa opened 12 Feb 2023; still partly open in 2026.")
+
+# Mumbai-Nagpur Expressway, Samruddhi Mahamarg (MSRDC): 699 km in OSM, no gaps; opened in four phases from the Nagpur end
+preset("Expressway_Watch_Samruddhi.ipynb", "Samruddhi Mahamarg, Mumbai–Nagpur (MSRDC)", "samruddhi", {
+    "EXPRESSWAY_NAME": '"Samruddhi Mahamarg"',
+    "SEARCH_BBOX": "(18.9, 72.9, 21.4, 79.3)", "ROUTE_START": "(79.05, 21.10)", "MAX_GAP_KM": "3",
+    "KM_FROM, KM_TO": "0, 20", "EXTRA_STRETCHES": "[(200, 220), (400, 420), (560, 580), (620, 640), (670, 690)]",
+    "MILESTONES": '{"Nagpur–Shirdi opened": "2022Q4", "Shirdi–Bharvir opened": "2023Q2", "Bharvir–Igatpuri opened": "2024Q1", "Fully open": "2025Q2"}'},
+    "Maharashtra", "the Nagpur end",
+    "Samruddhi Mahamarg (Wikipedia): work began Jan 2019; opened 11 Dec 2022, 26 May 2023, 4 Mar 2024 and 5 Jun 2025 (whole route).")
+
+# Bengaluru-Chennai Expressway (NHAI): 256 km in OSM; unmapped at km 152-165
+preset("Expressway_Watch_Bengaluru_Chennai.ipynb", "Bengaluru–Chennai Expressway (live NHAI project)", "bengaluru_chennai", {
+    "EXPRESSWAY_NAME": '"Bengaluru - Chennai Expressway"',
+    "SEARCH_BBOX": "(12.4, 77.5, 13.4, 80.2)", "ROUTE_START": "(77.83, 13.04)", "MAX_GAP_KM": "25",
+    "KM_FROM, KM_TO": "0, 20", "EXTRA_STRETCHES": "[(40, 60), (80, 100), (120, 140), (170, 190), (210, 230)]",
+    "MILESTONES": '{"Foundation stone (reported)": "2022Q2", "Karnataka section opened": "2024Q4", "Bethamangala–Baireddypalle opened": "2026Q2"}'},
+    "Karnataka, Andhra Pradesh and Tamil Nadu", "the Hoskote (Bengaluru) end",
+    "Bengaluru–Chennai (Wikipedia): foundation stone May 2022; 71 km in Karnataka opened 9 Dec 2024; 25 km in Andhra Pradesh Jun 2026; rest due 2027.")
+
+# Raipur-Visakhapatnam Expressway, NH130CD (NHAI): 465 km in OSM, no gaps
+preset("Expressway_Watch_Raipur_Visakhapatnam.ipynb", "Raipur–Visakhapatnam Expressway (live NHAI project)", "raipur_visakhapatnam", {
+    "EXPRESSWAY_NAME": '"Raipur - Visakhapatnam Expressway"',
+    "SEARCH_BBOX": "(17.4, 81.3, 21.5, 83.6)", "ROUTE_START": "(81.75, 21.05)", "MAX_GAP_KM": "3",
+    "KM_FROM, KM_TO": "0, 20", "EXTRA_STRETCHES": "[(90, 110), (180, 200), (270, 290), (360, 380), (440, 460)]",
+    "MILESTONES": '{"Foundation stone (reported)": "2022Q4", "Chhattisgarh sections\' foundation stones": "2023Q3"}'},
+    "Chhattisgarh, Odisha and Andhra Pradesh", "the Raipur end",
+    "Raipur–Visakhapatnam (Wikipedia, news): foundation stone Nov 2022; Chhattisgarh sections 7 Jul 2023; completion targeted Dec 2026.")
 print("cells:", len(cells))
