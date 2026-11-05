@@ -646,7 +646,7 @@ preset("Expressway_Watch_Delhi_Katra.ipynb", "Delhi–Amritsar–Katra Expresswa
 # Delhi-Mumbai Expressway (NHAI): mapped under several names, one road number. The Vadodara-Mumbai end does not join
 # the main line in OSM yet, so the route runs Sohna -> Vadodara (~844 km); unmapped at km 731-737 and 759-783.
 preset("Expressway_Watch_Delhi_Mumbai.ipynb", "Delhi–Mumbai Expressway (live NHAI project)", "delhi_mumbai", {
-    "EXPRESSWAY_NAME": '"Delhi–Mumbai Expressway"', "ROUTE_REF": '"NE-4"',
+    "EXPRESSWAY_NAME": '"Delhi–Mumbai Expressway"', "ROUTE_FILE": '"https://raw.githubusercontent.com/Elmozoop/expressway-watch/main/data/delhi_mumbai_osm.geojson"', "ROUTE_REF": '"NE-4"',
     "SEARCH_BBOX": "(18.8, 72.6, 28.8, 77.6)", "ROUTE_START": "(77.2, 28.4)", "MAX_GAP_KM": "25",
     "KM_FROM, KM_TO": "0, 20", "EXTRA_STRETCHES": "[(170, 190), (340, 360), (510, 530), (680, 700), (800, 820)]",
     "MILESTONES": '{"First section opened (Sohna–Dausa)": "2023Q1"}'},
@@ -655,7 +655,7 @@ preset("Expressway_Watch_Delhi_Mumbai.ipynb", "Delhi–Mumbai Expressway (live N
 
 # Mumbai-Nagpur Expressway, Samruddhi Mahamarg (MSRDC): 699 km in OSM, no gaps; opened in four phases from the Nagpur end
 preset("Expressway_Watch_Samruddhi.ipynb", "Samruddhi Mahamarg, Mumbai–Nagpur (MSRDC)", "samruddhi", {
-    "EXPRESSWAY_NAME": '"Samruddhi Mahamarg"',
+    "EXPRESSWAY_NAME": '"Samruddhi Mahamarg"', "ROUTE_FILE": '"https://raw.githubusercontent.com/Elmozoop/expressway-watch/main/data/samruddhi_osm.geojson"',
     "SEARCH_BBOX": "(18.9, 72.9, 21.4, 79.3)", "ROUTE_START": "(79.05, 21.10)", "MAX_GAP_KM": "3",
     "KM_FROM, KM_TO": "0, 20", "EXTRA_STRETCHES": "[(200, 220), (400, 420), (560, 580), (620, 640), (670, 690)]",
     "MILESTONES": '{"Nagpur–Shirdi opened": "2022Q4", "Shirdi–Bharvir opened": "2023Q2", "Bharvir–Igatpuri opened": "2024Q1", "Fully open": "2025Q2"}'},
@@ -664,7 +664,7 @@ preset("Expressway_Watch_Samruddhi.ipynb", "Samruddhi Mahamarg, Mumbai–Nagpur 
 
 # Bengaluru-Chennai Expressway (NHAI): 256 km in OSM; unmapped at km 152-165
 preset("Expressway_Watch_Bengaluru_Chennai.ipynb", "Bengaluru–Chennai Expressway (live NHAI project)", "bengaluru_chennai", {
-    "EXPRESSWAY_NAME": '"Bengaluru - Chennai Expressway"',
+    "EXPRESSWAY_NAME": '"Bengaluru - Chennai Expressway"', "ROUTE_FILE": '"https://raw.githubusercontent.com/Elmozoop/expressway-watch/main/data/bengaluru_chennai_osm.geojson"',
     "SEARCH_BBOX": "(12.4, 77.5, 13.4, 80.2)", "ROUTE_START": "(77.83, 13.04)", "MAX_GAP_KM": "25",
     "KM_FROM, KM_TO": "0, 20", "EXTRA_STRETCHES": "[(40, 60), (80, 100), (120, 140), (170, 190), (210, 230)]",
     "MILESTONES": '{"Foundation stone (reported)": "2022Q2", "Karnataka section opened": "2024Q4", "Bethamangala–Baireddypalle opened": "2026Q2"}'},
@@ -673,7 +673,7 @@ preset("Expressway_Watch_Bengaluru_Chennai.ipynb", "Bengaluru–Chennai Expressw
 
 # Raipur-Visakhapatnam Expressway, NH130CD (NHAI): 465 km in OSM, no gaps
 preset("Expressway_Watch_Raipur_Visakhapatnam.ipynb", "Raipur–Visakhapatnam Expressway (live NHAI project)", "raipur_visakhapatnam", {
-    "EXPRESSWAY_NAME": '"Raipur - Visakhapatnam Expressway"',
+    "EXPRESSWAY_NAME": '"Raipur - Visakhapatnam Expressway"', "ROUTE_FILE": '"https://raw.githubusercontent.com/Elmozoop/expressway-watch/main/data/raipur_visakhapatnam_osm.geojson"',
     "SEARCH_BBOX": "(17.4, 81.3, 21.5, 83.6)", "ROUTE_START": "(81.75, 21.05)", "MAX_GAP_KM": "3",
     "KM_FROM, KM_TO": "0, 20", "EXTRA_STRETCHES": "[(90, 110), (180, 200), (270, 290), (360, 380), (440, 460)]",
     "MILESTONES": '{"Foundation stone (reported)": "2022Q4", "Chhattisgarh sections\' foundation stones": "2023Q3"}'},
