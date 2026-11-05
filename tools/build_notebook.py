@@ -574,9 +574,18 @@ else:
 
 md("## Download results\\nEverything in one zip (one folder per stretch), without the large imagery cache.")
 code("""
-# One zip with a folder per stretch, without the large imagery cache
-import shutil, subprocess
-zip_path = "/content/expressway_watch_outputs.zip"
+# One zip with a folder per stretch, without the large imagery cache.
+# Works on its own too: after a restart it finds the results folder again (in this session or on Drive).
+import os, glob, shutil, subprocess
+if "OUT_ROOT" not in globals() or not os.path.isdir(OUT_ROOT):
+    found = [p for p in glob.glob("/content/expressway_watch_*") + glob.glob("/content/drive/MyDrive/expressway_watch_*")
+             if os.path.isdir(p)]
+    if not found:
+        raise RuntimeError("No results folder found. The Colab session was reset, so the results are gone: "
+                           "choose Runtime > Run all again and keep the tab open until this last cell finishes.")
+    OUT_ROOT = max(found, key=os.path.getmtime)
+print("Zipping", OUT_ROOT)
+zip_path = f"/content/{os.path.basename(OUT_ROOT)}.zip"
 if os.path.exists(zip_path): os.remove(zip_path)
 subprocess.run(["zip", "-qr", zip_path, os.path.basename(OUT_ROOT), "-x", "*.npy", "*.npz", "*composites_km*"],
                cwd=os.path.dirname(OUT_ROOT), check=True)
