@@ -348,6 +348,8 @@ for p in tqdm(todo):
     for k in range(3):
         try:
             c = composite(plan[p])
+            if float(np.isnan(c["red"].values).mean()) > 0.98:     # reads failed (bad connection) rather than a real picture
+                raise RuntimeError("came back empty, most likely a failed download")
             np.save(f"{CACHE_DIR}/{p}.npy", np.stack([c[n].values for n in NAMES]).astype("float16"))   # (5, y, x)
             json.dump({"built_on": dt.date.today().isoformat(), "days": plan_days(p)}, open(f"{CACHE_DIR}/{p}.json", "w"))
             break
