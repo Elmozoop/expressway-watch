@@ -109,11 +109,17 @@ def fetch_osm(name, bbox):
     q_slow = f'''[out:json][timeout:80];
     way["highway"]["name"~"{NAME_PATTERN or name}",i]{bb};
     out tags geom;'''
-    print("Fast exact-name query:")
-    els = _overpass(q_fast, 70)
-    if not els:
-        print("Nothing with the exact name — trying partial match (slower):")
-        els = _overpass(q_slow, 90)
+    for attempt in range(4):                     # the public servers have bad minutes: wait and try again
+        if attempt:
+            print(f"All servers busy — waiting {90 * attempt}s, then trying again ({attempt}/3)")
+            time.sleep(90 * attempt)
+        print("Fast exact-name query:")
+        els = _overpass(q_fast, 70)
+        if els == []:
+            print("Nothing with the exact name — trying partial match (slower):")
+            els = _overpass(q_slow, 90)
+        if els is not None:
+            break
     if els is None:
         raise RuntimeError("Overpass unavailable right now. Re-run this cell in a few minutes, or use ROUTE_FILE.")
     rows = []
@@ -147,7 +153,9 @@ if ROUTE_FILE:
     ways = gpd.read_file(ROUTE_FILE).to_crs(4326)
     ways = ways[ways.geom_type.isin(["LineString", "MultiLineString"])]
 else:
-    cache = f"{OUT_DIR}/osm_{EXPRESSWAY_NAME.replace(' ', '_')}.geojson"
+    cache = f"{OUT_ROOT}/osm_{EXPRESSWAY_NAME.replace(' ', '_')}.geojson"   # one copy shared by every stretch
+    if not os.path.exists(cache) and os.path.exists(f"{OUT_DIR}/{os.path.basename(cache)}"):
+        cache = f"{OUT_DIR}/{os.path.basename(cache)}"                     # saved by an older version of this notebook
     if os.path.exists(cache):
         ways = gpd.read_file(cache); print("Loaded cached OSM route:", cache)
     else:
@@ -572,7 +580,7 @@ else:
     print("No extra stretches set in Step 1 — skipping.")
 """)
 
-md("## Download results\\nEverything in one zip (one folder per stretch), without the large imagery cache.")
+md("## Download results\nEverything in one zip (one folder per stretch), without the large imagery cache.")
 code("""
 # One zip with a folder per stretch, without the large imagery cache.
 # Works on its own too: after a restart it finds the results folder again (in this session or on Drive).
