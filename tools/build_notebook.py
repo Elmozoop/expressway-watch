@@ -46,9 +46,14 @@ KEEP_ON_DRIVE = False   # True -> results + imagery cache go to your Google Driv
                         #         (recommended when running several stretches; asks for Drive access once, now)
 OUT_ROOT = "/content/expressway_watch_outputs"
 if KEEP_ON_DRIVE:
-    from google.colab import drive
-    drive.mount("/content/drive")
-    OUT_ROOT = "/content/drive/MyDrive/expressway_watch_outputs"
+    try:
+        from google.colab import drive
+        drive.mount("/content/drive")
+        OUT_ROOT = "/content/drive/MyDrive/expressway_watch_outputs"
+    except Exception as ex:   # the permission popup was closed, blocked or timed out: carry on without Drive
+        print(f"Google Drive could not be connected ({ex}).\\n"
+              "Carrying on with results kept in this Colab session: keep the tab open, and the zip downloads at the end.\\n"
+              "To keep them on Drive instead, run this cell again and allow every permission in the Google popup.")
 OUT_DIR = f"{OUT_ROOT}/km{KM_FROM}-{KM_TO}"   # each stretch gets its own folder
 CORE_M = 20                 # half-width of the carriageway strip used to detect paving
 EXTRA_STRETCHES = []          # more stretches to run after the main one, in the same session, e.g.
