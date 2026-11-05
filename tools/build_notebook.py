@@ -617,7 +617,7 @@ def preset(filename, title, slug, settings, where, km0, source_note):
     out = copy.deepcopy(nb)
     cfg = out.cells[[i for i, c in enumerate(out.cells) if c.cell_type == "code"][1]]
     src = cfg.source
-    for k, v in {"ROUTE_FILE": "None", "KEEP_ON_DRIVE": "True", **settings}.items():
+    for k, v in {"ROUTE_FILE": "None", "KEEP_ON_DRIVE": "False", **settings}.items():
         src, n = re.subn(rf"^{re.escape(k)} = [^#\n]*", f"{k} = {v}   ", src, count=1, flags=re.M)
         assert n == 1, k
     for a, b in [("area to search OSM — here Uttar Pradesh", f"area to search OSM — here {where}"),
