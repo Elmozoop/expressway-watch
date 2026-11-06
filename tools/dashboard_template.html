@@ -1965,12 +1965,7 @@ function fly(t){
     if (!m.geometry.boundingSphere) m.geometry.computeBoundingSphere();
     const ws = new T.Vector3(); m.getWorldScale(ws);
     if (m.geometry.boundingSphere.radius * Math.max(ws.x, ws.y, ws.z) < .45) m.castShadow = false; });
-  // shadows move slowly here (the road creeps, the rollers rock): the shadow map is drawn every other frame, which halves the
-  // draw calls on the frames between; a close-up redraws it every frame, where a stale shadow would show
-  renderer.shadowMap.autoUpdate = false; renderer.shadowMap.needsUpdate = true; let shadowTick = 0;
-  return {resize, lower, frame: (p, t, ct) => { pose(t); fly(ct === undefined ? t : ct);
-    if ((++shadowTick & 1) || FOC.mode) renderer.shadowMap.needsUpdate = true;
-    renderer.render(scene, camera); },
+  return {resize, lower, frame: (p, t, ct) => { pose(t); fly(ct === undefined ? t : ct); renderer.render(scene, camera); },
           pick, focus, release, reset: () => { FOC.mode = 0; FOC.k = -1; FOC.b = 1; }, moving: () => FOC.mode !== 0 && FOC.b < 1,
           tourAt: k => FOCUS[k][2] * LOOP / SHOTS.length, names: LABELS.map(l => l.name), warm: () => { pose(0); fly(0); renderer.compile(scene, camera); },
           span: () => [0, W, 0, H], spanX: () => [0, W], anchors: () => ({}), explodeOf: () => 0, ORDER: []};
@@ -2636,6 +2631,9 @@ function sceneWire(){
 function i3Draw(p, t){ I3.sc.frame(p, t, I3.ct); i3Overlay(p); }
 function i3Tick(now){
   I3.raf = 0;
+  // drawn at about 30 frames a second: the tour moves slowly, and each frame of ~600 objects costs the main thread enough
+  // that 60 left too little time for scrolling and the page's own animations
+  if (I3.last && now - I3.last < 30){ i3Run(); return; }
   const raw = I3.last ? (now - I3.last) / 1000 : 0, dt = Math.min(.05, raw); I3.last = now;
   const run = I3.q > 0 && !I3.paused;                                         // on the plainest setting, or paused, the cars stay parked
   if (run){ I3.t += dt; if (I3.foc < 0) I3.ct += dt; }                       // the camera's clock waits while it holds a close-up
@@ -2650,7 +2648,7 @@ function i3Tick(now){
   // frames that keep coming slower than ~22 a second step the quality down: first the shadows, then the motion
   // only a long run of slow frames drops the shadows (a stall while scrolling or a tab coming back is not one); the scene
   // never stops moving on its own, and it is drawn again at once so the resized canvas never shows blank
-  if (I3.q === 2 && raw > .034 && raw < .25 && I3.t > 3){ if (++I3.slow > 45){ I3.slow = 0; I3.q = 1; I3.sc.lower(); i3Size(); i3Draw(I3.p, I3.t); } }
+  if (I3.q === 2 && raw > .046 && raw < .25 && I3.t > 3){ if (++I3.slow > 45){ I3.slow = 0; I3.q = 1; I3.sc.lower(); i3Size(); i3Draw(I3.p, I3.t); } }
   else I3.slow = Math.max(0, I3.slow - 1);
   i3Run();
 }
