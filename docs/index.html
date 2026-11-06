@@ -1571,11 +1571,19 @@ const pieces = Array.from({length: N}, (_, i) => { const g = new T.Group(); scen
 // scenery beside the road: trees, a few village houses, field huts; all ride along and wrap
 const scenery = [], r = rng(21);
 const leafMats = C.leaf.map(c => M(c, {r: .9, flat: true}));
+// several shapes (already placed) as one: positions and normals, joined
+const mergeGeos = gs => { const pos = [], nor = [];
+  gs.forEach(g => { const q = g.index ? g.toNonIndexed() : g; pos.push(...q.attributes.position.array); nor.push(...q.attributes.normal.array); g.dispose(); });
+  const out = new T.BufferGeometry(); out.setAttribute("position", new T.Float32BufferAttribute(pos, 3)); out.setAttribute("normal", new T.Float32BufferAttribute(nor, 3));
+  out.computeBoundingSphere(); return out; };
 const tree = () => { const g = new T.Group(), s = .8 + r() * .8, mat = leafMats[(r() * leafMats.length) | 0];
   const trunk = mesh(new T.CylinderGeometry(.1 * s, .17 * s, 1.3 * s, 7), M(C.trunk, {r: .95}), g); trunk.position.y = .65 * s; trunk.rotation.z = (r() - .5) * .15;
-  const n = 5 + ((r() * 4) | 0);
-  for (let k = 0; k < n; k++){ const blob = mesh(new T.IcosahedronGeometry((.42 + r() * .3) * s, 1), mat, g);
-    blob.position.set((r() - .5) * 1.1 * s, (1.45 + r() * .7) * s, (r() - .5) * 1.1 * s); blob.scale.y = .78 + r() * .2; }
+  const n = 5 + ((r() * 4) | 0), parts = [];
+  // the crown's blobs are merged into one shape: one draw instead of five to eight, for each of 130 trees, twice a frame (shadow and picture)
+  for (let k = 0; k < n; k++){ const geo = new T.IcosahedronGeometry((.42 + r() * .3) * s, 1);
+    const px = (r() - .5) * 1.1 * s, py = (1.45 + r() * .7) * s, pz = (r() - .5) * 1.1 * s, sy = .78 + r() * .2;
+    parts.push(geo.applyMatrix4(new T.Matrix4().makeScale(1, sy, 1).setPosition(px, py, pz))); }
+  mesh(mergeGeos(parts), mat, g);
   return g; };
 const house = () => { const g = new T.Group(), w = 1.8 + r() * 1.2, d = 1.6 + r();
   mesh(new T.BoxGeometry(w, 1.2, d), M(C.wall, {r: .95}), g).position.y = .6;
