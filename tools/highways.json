@@ -275,5 +275,303 @@
       "km 210",
       "OpenStreetMap, mapped by volunteers, shows the Delhi–Katra road as open up to about km 210 and under construction after it. The satellite sees paving stop between km 150 and km 230."
     ]
+  },
+  {
+    "id": "delhi-mumbai-expressway",
+    "name": "Delhi–Mumbai Expressway",
+    "from": "Delhi",
+    "to": "Mumbai",
+    "length": 1386,
+    "states": "Haryana, Rajasthan, MP, Gujarat, Maharashtra",
+    "authority": "NHAI",
+    "status": "Partly open",
+    "results": "results/delhi_mumbai_km*",
+    "route_file": "data/delhi_mumbai_osm.geojson",
+    "route_start": [
+      77.2,
+      28.4
+    ],
+    "max_gap_km": 25,
+    "towns_km": [
+      [
+        "Dausa",
+        189
+      ],
+      [
+        "Sawai Madhopur",
+        286
+      ],
+      [
+        "Ratlam",
+        622
+      ],
+      [
+        "Godhra",
+        778
+      ]
+    ],
+    "from_label": "Sohna (Delhi)",
+    "to_label": "towards Vadodara",
+    "partial": "Six 20 km stretches (120 km) are tracked, from Sohna near Delhi to km 820 in Gujarat. OpenStreetMap maps the road as one line from Sohna to Vadodara, about 844 km; the Vadodara–Mumbai end is not joined to it yet.",
+    "facts": [
+      [
+        "2019",
+        "work began (reported)"
+      ],
+      [
+        "Feb 2023",
+        "Sohna–Dausa section opened"
+      ],
+      [
+        "2026",
+        "93% of the tracked road reads as paved"
+      ]
+    ],
+    "milestones": [
+      [
+        "2019Q1",
+        "Foundation stone (reported)"
+      ],
+      [
+        "2023Q1",
+        "Sohna–Dausa opened (reported)"
+      ]
+    ],
+    "intro": "The tracked road is almost all paved: the Delhi end first, by 2022, and the stretches in Rajasthan, Madhya Pradesh and Gujarat by 2025.",
+    "context": "The Sohna–Dausa section opened in February 2023; the rest has opened in parts since.",
+    "story": [
+      {
+        "from": "2020Q1",
+        "title": "Road bed near Delhi already",
+        "text": "Work began in 2019, so in 2020 the stretches near Sohna are already raised road bed, while further south most of the route is still fields."
+      },
+      {
+        "from": "2021Q1",
+        "title": "Asphalt from Sohna to Dausa",
+        "text": "The Delhi end is paved first. By {q:2022Q1}, {p4:2022Q1}% of the tracked road is paved, and the Sohna–Dausa section opens in February 2023."
+      },
+      {
+        "from": "2023Q1",
+        "title": "Rajasthan, MP and Gujarat follow",
+        "text": "Further south the road bed takes longer to get its asphalt: km 340–360 in Rajasthan and km 800–820 in Gujarat are paved through 2024 and 2025."
+      },
+      {
+        "from": "2025Q4",
+        "title": "Nearly all paved",
+        "text": "In {q:2026Q3}, {p4:2026Q3}% of the tracked road is paved and {p3:2026Q3}% still reads as earthwork."
+      }
+    ],
+    "segnote": "Pieces that still read as earthwork here are either unfinished or have a paving signal too weak for the tool; check the satellite images before relying on them.",
+    "live": true,
+    "places": [
+      {
+        "id": "dme_km0-2",
+        "label": "km 0–2, near Sohna",
+        "tag": "Paved",
+        "stage": 4,
+        "before": "2020Q1",
+        "after": "2025Q1",
+        "text": "In <b>2020</b> the road bed is a pale strip of earth through the fields. By <b>2022</b> it is dark asphalt, and by <b>2024</b> the interchange with the old highway is finished."
+      }
+    ],
+    "about": "<p><b>What was measured.</b> Six 20 km stretches, 60 pieces of 2 km, spread along the mapped route from Sohna towards Vadodara, checked every three months from 2020 to 2026.</p><p><b>Why this road.</b> It is India's longest expressway project and is opening section by section, so the satellite timeline can be set against the reported openings.</p><p><b>How it was checked.</b> The Delhi end reads as paved by 2022, ahead of the Sohna–Dausa opening in February 2023.</p><p><b>Limits.</b> The satellite sees 10 m details. Paving dates are good to about ±6 months, and a few pieces may read as earthwork where the paving signal is weak. These are estimates, not official progress figures.</p><p>Code and data: <a href=\"https://github.com/Elmozoop/expressway-watch\">github.com/Elmozoop/expressway-watch</a>. Imagery: Copernicus Sentinel-2 (ESA). Route: © OpenStreetMap contributors. Reported dates: <a href=\"https://en.wikipedia.org/wiki/Delhi%E2%80%93Mumbai_Expressway\">Wikipedia</a>.</p>"
+  },
+  {
+    "id": "bengaluru-chennai-expressway",
+    "name": "Bengaluru–Chennai Expressway",
+    "from": "Bengaluru",
+    "to": "Chennai",
+    "length": 262,
+    "states": "Karnataka, Andhra Pradesh, Tamil Nadu",
+    "authority": "NHAI",
+    "status": "Partly open",
+    "results": "results/bengaluru_chennai_km*",
+    "route_file": "data/bengaluru_chennai_osm.geojson",
+    "route_start": [
+      77.83,
+      13.04
+    ],
+    "max_gap_km": 25,
+    "towns_km": [
+      [
+        "Bangarapet",
+        39
+      ],
+      [
+        "Palamaner",
+        108
+      ],
+      [
+        "Chittoor",
+        145
+      ]
+    ],
+    "from_label": "Hoskote (Bengaluru)",
+    "to_label": "Sriperumbudur (Chennai)",
+    "partial": "Six 20 km stretches (120 km) are tracked, spread from Hoskote near Bengaluru to km 230 in Tamil Nadu. OpenStreetMap maps about 256 km of the road; a short gap near km 152–165 is not mapped.",
+    "facts": [
+      [
+        "May 2022",
+        "foundation stone laid (reported)"
+      ],
+      [
+        "Dec 2024",
+        "71 km in Karnataka opened"
+      ],
+      [
+        "2026",
+        "85% of the tracked road reads as paved"
+      ]
+    ],
+    "milestones": [
+      [
+        "2022Q2",
+        "Foundation stone (reported)"
+      ],
+      [
+        "2024Q4",
+        "Karnataka section opened (reported)"
+      ]
+    ],
+    "intro": "Built fast: farmland in 2021, earthwork almost everywhere by 2023, and 85% of the tracked road paved by 2026. The last stretch in Tamil Nadu lags behind.",
+    "context": "The 71 km Karnataka section opened in December 2024; the rest is due in 2027.",
+    "story": [
+      {
+        "from": "2020Q1",
+        "title": "Fields from Hoskote to Sriperumbudur",
+        "text": "In 2020 the line of the road is farmland and scrub. The foundation stone is laid in May 2022."
+      },
+      {
+        "from": "2022Q1",
+        "title": "Earthwork everywhere at once",
+        "text": "Work starts along the whole route within a year. By {q:2023Q1}, {p3:2023Q1}% of the tracked road is earthwork."
+      },
+      {
+        "from": "2024Q1",
+        "title": "Karnataka gets its asphalt first",
+        "text": "The Karnataka end is paved first and opens in December 2024. By {q:2025Q1}, {p4:2025Q1}% of the tracked road is paved."
+      },
+      {
+        "from": "2025Q4",
+        "title": "Tamil Nadu is still earthwork",
+        "text": "In {q:2026Q3}, {p4:2026Q3}% is paved. Most of what is left is in the last stretch, km 210–230 in Tamil Nadu, where the road bed has been bare earth since 2022."
+      }
+    ],
+    "segnote": "Pieces that still read as earthwork here are either unfinished or have a paving signal too weak for the tool; check the satellite images before relying on them.",
+    "live": true,
+    "places": [
+      {
+        "id": "bce_km0-2",
+        "label": "km 0–2, near Hoskote",
+        "tag": "Paved",
+        "stage": 4,
+        "before": "2020Q1",
+        "after": "2026Q2",
+        "text": "Fields in <b>2020</b>. By <b>2022</b> a wide strip of bare earth has been cut through them, with the junction taking shape. By <b>2025</b> it is a grey, finished carriageway."
+      },
+      {
+        "id": "bce_km210-212",
+        "label": "km 210–212, Tamil Nadu",
+        "tag": "Still earthwork",
+        "stage": 3,
+        "before": "2020Q1",
+        "after": "2026Q3",
+        "text": "Farmland in <b>2020</b>. By <b>2023</b> the road bed has been built as a straight, pale band, and in <b>2026</b> it is still bare earth, with no asphalt on it."
+      }
+    ],
+    "about": "<p><b>What was measured.</b> Six 20 km stretches, 60 pieces of 2 km, spread along the mapped route from Hoskote towards Sriperumbudur, checked every three months from 2020 to 2026.</p><p><b>Why this road.</b> It went from farmland to a mostly paved road within the satellite record, so every stage shows up.</p><p><b>How it was checked.</b> The Karnataka stretches read as paved from 2024, in line with the Karnataka section opening in December 2024.</p><p><b>Limits.</b> The satellite sees 10 m details. Paving dates are good to about ±6 months, and a few pieces may read as earthwork where the paving signal is weak. These are estimates, not official progress figures.</p><p>Code and data: <a href=\"https://github.com/Elmozoop/expressway-watch\">github.com/Elmozoop/expressway-watch</a>. Imagery: Copernicus Sentinel-2 (ESA). Route: © OpenStreetMap contributors. Reported dates: <a href=\"https://en.wikipedia.org/wiki/Bengaluru%E2%80%93Chennai_Expressway\">Wikipedia</a>.</p>"
+  },
+  {
+    "id": "raipur-visakhapatnam-expressway",
+    "name": "Raipur–Visakhapatnam Expressway",
+    "from": "Raipur",
+    "to": "Visakhapatnam",
+    "length": 464,
+    "states": "Chhattisgarh, Odisha, Andhra Pradesh",
+    "authority": "NHAI",
+    "status": "Under construction",
+    "results": "results/raipur_visakhapatnam_km*",
+    "route_file": "data/raipur_visakhapatnam_osm.geojson",
+    "route_start": [
+      81.75,
+      21.05
+    ],
+    "max_gap_km": 3,
+    "towns_km": [
+      [
+        "Koraput",
+        288
+      ]
+    ],
+    "from_label": "Raipur",
+    "to_label": "Visakhapatnam",
+    "partial": "Six 20 km stretches (120 km) are tracked, spread along the whole 465 km mapped route, from near Raipur to near Visakhapatnam.",
+    "facts": [
+      [
+        "Nov 2022",
+        "foundation stone laid (reported)"
+      ],
+      [
+        "2023",
+        "earthwork along most of the route"
+      ],
+      [
+        "2026",
+        "about half of the tracked road reads as paved"
+      ]
+    ],
+    "milestones": [
+      [
+        "2022Q4",
+        "Foundation stone (reported)"
+      ]
+    ],
+    "intro": "Untouched until 2022, then earthwork along almost the whole route within a year. Paving started at the Andhra Pradesh end; near Raipur the road bed is still bare earth.",
+    "context": "Completion was targeted for December 2026 (reported).",
+    "story": [
+      {
+        "from": "2020Q1",
+        "title": "Nothing yet",
+        "text": "In 2020 and 2021 the route runs through farmland and forest, untouched. The foundation stone is laid in November 2022."
+      },
+      {
+        "from": "2022Q3",
+        "title": "Earthwork, end to end",
+        "text": "Within a year the corridor is cleared and raised almost everywhere. By {q:2024Q1}, {p3:2024Q1}% of the tracked road is earthwork."
+      },
+      {
+        "from": "2024Q2",
+        "title": "Paving from the Andhra Pradesh end",
+        "text": "Asphalt arrives first in the south, from km 440 onwards, then in Odisha. By {q:2026Q1}, {p4:2026Q1}% of the tracked road is paved."
+      },
+      {
+        "from": "2025Q4",
+        "title": "Raipur end still bare earth",
+        "text": "Near Raipur, km 0–20 has been bare road bed since 2023, with only one 2 km piece paved. In {q:2026Q3}, {p3:2026Q3}% of the tracked road is still earthwork."
+      }
+    ],
+    "segnote": "Pieces that still read as earthwork here are either unfinished or have a paving signal too weak for the tool; check the satellite images before relying on them.",
+    "live": true,
+    "places": [
+      {
+        "id": "rvx_km90-92",
+        "label": "km 90–92, Chhattisgarh",
+        "tag": "Paved",
+        "stage": 4,
+        "before": "2020Q1",
+        "after": "2026Q2",
+        "text": "Fields and scrub in <b>2020</b>. By <b>2024</b> the raised road bed is a bright strip of earth. In <b>2026</b> it has turned into a darker, paved road."
+      },
+      {
+        "id": "rvx_km4-6",
+        "label": "km 4–6, near Raipur",
+        "tag": "Still earthwork",
+        "stage": 3,
+        "before": "2020Q1",
+        "after": "2026Q2",
+        "text": "Fields in <b>2020</b>. In <b>2023</b> a pale road bed appears, crossing the old highway. In <b>2026</b> it is still bare earth, with no asphalt."
+      }
+    ],
+    "about": "<p><b>What was measured.</b> Six 20 km stretches, 60 pieces of 2 km, spread along the whole mapped route from near Raipur to near Visakhapatnam, checked every three months from 2020 to 2026.</p><p><b>Why this road.</b> The whole build happens inside the satellite record: nothing in 2021, earthwork in 2023, asphalt from 2024.</p><p><b>How it was checked.</b> Earthwork appears within months of the November 2022 foundation stone, and OpenStreetMap still maps the whole road as under construction.</p><p><b>Limits.</b> The satellite sees 10 m details. Paving dates are good to about ±6 months, and a few pieces may read as earthwork where the paving signal is weak. These are estimates, not official progress figures.</p><p>Code and data: <a href=\"https://github.com/Elmozoop/expressway-watch\">github.com/Elmozoop/expressway-watch</a>. Imagery: Copernicus Sentinel-2 (ESA). Route: © OpenStreetMap contributors. Reported dates: <a href=\"https://en.wikipedia.org/wiki/Raipur%E2%80%93Visakhapatnam_Expressway\">Wikipedia</a>.</p>"
   }
 ]

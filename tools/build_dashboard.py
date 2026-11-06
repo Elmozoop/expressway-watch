@@ -8,7 +8,7 @@ docs/img/sat/, and fetches three.js from docs/vendor/, which it copies there fro
 docs/dashboard.html (the same page as one self-contained file, images and three.js embedded, for
 downloading and opening anywhere) and docs/_fragment.html (the single-file page without its
 <html>/<head>/<body> shell, for hosts that add their own). GSAP is inlined into both pages."""
-import base64, datetime, glob, json, os, pathlib, re, shutil, sys
+import base64, datetime, glob, hashlib, json, os, pathlib, re, shutil, sys
 import numpy as np, pandas as pd, geopandas as gpd
 from PIL import Image
 from shapely.geometry import Point, LineString
@@ -95,7 +95,7 @@ def load_places(hw, inline):
         if not files:
             raise SystemExit(f"no satellite chips in {d}")
         imgs = {f.stem: ("data:image/jpeg;base64," + base64.b64encode(f.read_bytes()).decode() if inline
-                         else f"img/sat/{p['id']}/{f.name}") for f in files}
+                         else f"img/sat/{p['id']}/{f.name}?v={hashlib.md5(f.read_bytes()).hexdigest()[:8]}") for f in files}   # new image, new address: no stale cache
         for q in (p["before"], p["after"], p.get("hero_after")):
             if q and q not in imgs:
                 raise SystemExit(f"missing satellite chip {d}/{q}.jpg")
@@ -150,9 +150,23 @@ def checks(hw, segs, periods):
                             q=nb(c["quarter"]), before=bool(c.get("before_opening"))))
     return out
 
+def built_before():
+    """The highway data and explainer already built into docs/index.html, for highways whose results/ folders
+    aren't on this computer: they are carried over as they are, so adding one highway doesn't need the others' results."""
+    page = (ROOT / "docs/index.html").read_text(encoding="utf-8")
+    grab = lambda name: json.loads(re.search(rf"^const {name} = (.*);$", page, re.M).group(1))
+    return {h["id"]: h for h in grab("HIGHWAYS")}, grab("EXPLAIN")
+
+BEFORE, EXPLAIN_BEFORE = built_before() if (ROOT / "docs/index.html").exists() else ({}, None)
+
 def build(hw):
     if "results" not in hw:
         return {k: v for k, v in hw.items()}
+    if not glob.glob(str(ROOT / hw["results"])):
+        if hw["id"] not in BEFORE:
+            raise SystemExit(f"no results for {hw['id']} ({hw['results']}) and nothing built before to carry over")
+        print(f"{hw['id']}: results not here, carrying over the data built before")
+        return BEFORE[hw["id"]], (EXPLAIN_BEFORE if hw.get("explainer") else None)
     w = gpd.read_file(ROOT / hw["route_file"]); lon, lat = w.union_all().centroid.coords[0]
     epsg = 32600 + int((lon + 180) // 6) + 1
     r = order_route(w.to_crs(epsg), max_gap_m=hw.get("max_gap_km", 3) * 1000)
@@ -214,19 +228,29 @@ def hero_stats(data):
             break
     return "".join(f'<div><b data-to="{v}" data-suf="{s}">{v}{s}</b><span>{t}</span></div>' for v, s, t in stats)
 
-highways = json.load(open(ROOT / "tools/highways.json"))
+highways = json.load(open(ROOT / "tools/highways.json", encoding="utf-8"))
 built_hw = [build(h) for h in highways]
 data = [b[0] if isinstance(b, tuple) else b for b in built_hw]
 EXPLAIN = next((b[1] for b in built_hw if isinstance(b, tuple) and b[1]), None)
-built = os.environ.get("EW_BUILD_DATE") or datetime.date.today().strftime("%-d %B %Y")
-gsap = "\n".join(f"<script>\n{(ROOT / 'tools/vendor' / f).read_text().strip()}\n</script>" for f in ("gsap.min.js", "ScrollTrigger.min.js"))
-template = (ROOT / "tools/dashboard_template.html").read_text()
+built = os.environ.get("EW_BUILD_DATE") or (lambda d: f"{d.day} {d:%B %Y}")(datetime.date.today())
+vendor_js = [ROOT / "tools/vendor" / f for f in ("gsap.min.js", "ScrollTrigger.min.js")]
+if all(f.exists() for f in vendor_js):
+    gsap = "\n".join("<script>\n" + f.read_text(encoding="utf-8").strip() + "\n</script>" for f in vendor_js)
+else:   # not in tools/vendor: reuse the copy built into the current page (as render_pages.py does)
+    page = (ROOT / "docs/index.html").read_text(encoding="utf-8")
+    gsap = re.search(r"</noscript>\n(?:<!--.*?-->\n<script src=[^\n]*\n)?(.*?)\n<style>", page, re.S).group(1).split("</style></noscript>\n", 1)[-1].rstrip()
+# the single file keeps the three.js build it already has (r149, without r160's deprecation warning)
+_dash = ROOT / "docs/dashboard.html"
+_m = re.search(r"<script>\n/\*\*\n \* @license\n \* Copyright 2010-\d+ Three\.js Authors.*?</script>",
+               _dash.read_text(encoding="utf-8"), re.S) if _dash.exists() else None
+THREE_BEFORE = _m.group(0) if _m else None
+template =(ROOT / "tools/dashboard_template.html").read_text(encoding="utf-8")
 
 def render(inline):
     images = {h["id"]: load_places(h, inline) for h in highways if h.get("places")}
     # three.js draws the opening scene: inlined in the single file; the hosted page fetches docs/vendor/three.min.js
     # itself, only when the scene is about to be drawn (not on a highway page, not before a scroll where WebGL is slow)
-    three = f"<script>\n{(ROOT / 'tools/vendor/three.min.js').read_text().strip()}\n</script>" if inline else ""
+    three = (THREE_BEFORE or "<script>\n" + (ROOT / "tools/vendor/three.min.js").read_text(encoding="utf-8").strip() + "\n</script>") if inline else ""
     html = template
     for key, val in [("__DATA__", json.dumps(data, ensure_ascii=False, separators=(",", ":"))),
                      ("__IMAGES__", json.dumps(images, separators=(",", ":"))),
@@ -243,10 +267,10 @@ def render(inline):
 web, single = render(inline=False), render(inline=True)
 (ROOT / "docs/vendor").mkdir(exist_ok=True)
 shutil.copyfile(ROOT / "tools/vendor/three.min.js", ROOT / "docs/vendor/three.min.js")   # served beside index.html
-(ROOT / "docs/index.html").write_text(web)             # served at "/" by Netlify / GitHub Pages; images load from docs/img/sat/
-(ROOT / "docs/dashboard.html").write_text(single)      # one self-contained file, to download and open anywhere
+(ROOT / "docs/index.html").write_text(web, encoding="utf-8", newline="\n")             # served at "/" by Netlify / GitHub Pages; images load from docs/img/sat/
+(ROOT / "docs/dashboard.html").write_text(single, encoding="utf-8", newline="\n")      # one self-contained file, to download and open anywhere
 frag = "<title>" + single.split("<title>", 1)[1]
 frag = frag.replace("</head>\n<body>", "").replace("\n</body>\n</html>", "")
-(ROOT / "docs/_fragment.html").write_text(frag)        # the same page without its <html>/<head>/<body> shell
+(ROOT / "docs/_fragment.html").write_text(frag, encoding="utf-8", newline="\n")        # the same page without its <html>/<head>/<body> shell
 print(f"index.html {len(web) // 1000} KB, dashboard.html {len(single) // 1000} KB; built {built};",
       [(h["name"], len(h.get("segs") or [])) for h in data])
