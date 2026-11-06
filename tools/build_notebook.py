@@ -636,6 +636,7 @@ def preset(filename, title, slug, settings, where, km0, source_note):
 # Delhi-Amritsar-Katra Expressway (NHAI, under construction)
 preset("Expressway_Watch_Delhi_Katra.ipynb", "Delhi–Amritsar–Katra Expressway (live NHAI project)", "delhi_katra", {
     "EXPRESSWAY_NAME": '"Delhi–Amritsar–Katra Expressway"', "NAME_PATTERN": '"Amritsar.{0,4}Katra"',
+    "ROUTE_FILE": '"https://raw.githubusercontent.com/Elmozoop/expressway-watch/main/data/dak_expressway_osm.geojson"',
     "SEARCH_BBOX": "(28.4, 74.3, 33.2, 77.4)", "ROUTE_START": "(76.85, 28.75)", "MAX_GAP_KM": "25", "AUTO_STRETCHES": "6",
     "MILESTONES": '{"Foundation stone (reported)": "2022Q1"}'},
     "Haryana, Punjab and J&K", "the Delhi end",

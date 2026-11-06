@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# notebook run outputs (large; the dashboard keeps what it needs in docs/)
+results/
+*.zip
+
+# editor and build leftovers
+*.backup*
+docs/_fragment.html
+.DS_Store
+Thumbs.db

@@ -17,6 +17,9 @@ Expressway Watch takes a highway's route, cuts it into 2 km pieces, and reads ev
 | Home: the road taken apart in 3D, a satellite time-lapse, how to read it | [expresswaywatch.netlify.app](https://expresswaywatch.netlify.app) |
 | Delhi–Amritsar–Katra Expressway (NHAI, still being built) | [/#delhi-amritsar-katra](https://expresswaywatch.netlify.app/#delhi-amritsar-katra) |
 | Ganga Expressway (UPEIDA, opened April 2026) | [/#ganga-expressway](https://expresswaywatch.netlify.app/#ganga-expressway) |
+| Delhi–Mumbai Expressway (NHAI, partly open) | [/#delhi-mumbai-expressway](https://expresswaywatch.netlify.app/#delhi-mumbai-expressway) |
+| Bengaluru–Chennai Expressway (NHAI, partly open) | [/#bengaluru-chennai-expressway](https://expresswaywatch.netlify.app/#bengaluru-chennai-expressway) |
+| Raipur–Visakhapatnam Expressway (NHAI, still being built) | [/#raipur-visakhapatnam-expressway](https://expresswaywatch.netlify.app/#raipur-visakhapatnam-expressway) |
 | The two side by side | [/#compare/delhi-amritsar-katra/ganga-expressway](https://expresswaywatch.netlify.app/#compare/delhi-amritsar-katra/ganga-expressway) |
 | Offline copy (one self-contained file) | [`docs/dashboard.html`](docs/dashboard.html): download it and open it in any browser |
 
@@ -26,6 +29,7 @@ Expressway Watch takes a highway's route, cuts it into 2 km pieces, and reads ev
 - [What's on the dashboard](#whats-on-the-dashboard)
 - [Results: Ganga Expressway](#results-ganga-expressway)
 - [Results: Delhi–Amritsar–Katra Expressway](#results-delhiamritsarkatra-expressway)
+- [Results: three more expressways](#results-three-more-expressways)
 - [How it works](#how-it-works)
 - [Run it yourself](#run-it-yourself)
 - [Build and deploy the dashboard](#build-and-deploy-the-dashboard)
@@ -44,7 +48,7 @@ Expressway Watch takes a highway's route, cuts it into 2 km pieces, and reads ev
 | Paved by 2026 Q3 | **94%** of the tracked km | **35%** of the tracked km |
 | What it shows | The method checks out: 66 of 70 pieces seen paved before the road opened | Progress falls away along the route: the Delhi end is largely paved, almost nothing past km 230 is |
 
-The Ganga Expressway has a known finish date, so it is the test of the method. The Delhi–Amritsar–Katra Expressway is still being built, which is where a tool like this is actually useful.
+The Ganga Expressway has a known finish date, so it is the test of the method. The Delhi–Amritsar–Katra Expressway is still being built, which is where a tool like this is actually useful. Three more are tracked the same way (see [below](#results-three-more-expressways)): Delhi–Mumbai, Bengaluru–Chennai and Raipur–Visakhapatnam, for **620 km on five expressways** in all.
 
 ## What's on the dashboard
 
@@ -52,7 +56,7 @@ The Ganga Expressway has a known finish date, so it is the test of the method. T
 
 **The home page** explains before it asks:
 
-- **An expressway, taken apart.** A 3D slice of road (three.js) comes apart as you scroll, one layer at a time: asphalt surface, binder course, base, sub-base and embankment. Each is outlined as the words reach it, with its typical real thickness and the stage the satellite reads while it is the top layer. The slice is then rebuilt the way the satellite sees it (not started, clearing, earthwork, paved), and the camera swings overhead to the satellite's view.
+- **A road being built.** A 3D diorama (three.js) loops behind the opening words: an excavator raises the embankment, a grader spreads the sub-base, rollers pack the base, and a paver lays the asphalt, each layer at its real thickness, while the road travels under the machines. Labels say what each machine lays and what the satellite reads there. The camera tours the works on its own; click a machine to fly to it.
 - **A satellite time-lapse** of one piece of the Ganga Expressway, 2020 to 2026, with the stage the tool decided for each quarter.
 - **How to read it:** six years of that one piece, scrolled through. The photo, the two readings the tool takes (green cover against nearby fields, and short-wave infrared brightness) and the stage it decides move together, with the thresholds drawn on the charts.
 - **The whole road, told as you scroll:** the Ganga route colours itself quarter by quarter, from farmland to opening day.
@@ -112,6 +116,19 @@ Six 20 km stretches along the route OpenStreetMap maps from Delhi towards Katra 
 - **An independent check agrees.** OpenStreetMap tags the road as *under construction* from about km 210 onward and as an open motorway before that. The satellite timeline sees paving stop between km 150 and km 230. Neither source knows about the other.
 - **Where the tool is wrong:** a few pieces near Delhi read as earthwork although the road there is open, the same weakness as on the Ganga.
 
+## Results: three more expressways
+
+Six 20 km stretches each (60 pieces of 2 km), along the routes OpenStreetMap maps today.
+
+| | Delhi–Mumbai | Bengaluru–Chennai | Raipur–Visakhapatnam |
+|---|---|---|---|
+| Built by | NHAI | NHAI | NHAI |
+| Tracked | Sohna (Delhi) to km 820 in Gujarat, on the 844 km mapped line | Hoskote to km 230 in Tamil Nadu | the whole 465 km mapped line |
+| Paved by 2026 Q3 | **93%** | **85%** | **53%** |
+| What it shows | The Delhi end paved by 2022, ahead of the Sohna–Dausa opening (Feb 2023); Rajasthan, MP and Gujarat by 2025 | Farmland in 2021, earthwork almost everywhere by 2023; Karnataka paved first (opened Dec 2024); km 210–218 in Tamil Nadu still earthwork since 2022 | Untouched until late 2022, then earthwork end to end; asphalt from the Andhra Pradesh end first; km 0–20 near Raipur still bare earth |
+
+The Samruddhi Mahamarg (Mumbai–Nagpur) was run too, but is not on the dashboard: it is mostly a concrete road, which stays pale in infrared, so the paving test reads much of the finished road as earthwork (see [Limitations](#limitations)).
+
 ## How it works
 
 1. **Route.** OpenStreetMap ways for the expressway are chained into one carriageway (594 km for the Ganga Expressway). Copies are saved in [`data/`](data/), so runs don't depend on Overpass.
@@ -135,7 +152,7 @@ More detail is in [docs/METHOD.md](docs/METHOD.md). How the method and the dashb
 3. Choose `Runtime → Run all`. About 20 minutes the first time, then a few minutes for re-runs: the notebook saves the imagery and fetches only what is new.
 
 - **Add a quarter:** move `END` in Step 1 to its last day (for example `"2026-12-31"`) and run all again, at least five days after that date so the last images have reached the catalogues. Only the new quarter is built, plus any quarter saved before it had ended or for which clearer days have turned up since.
-- **Try another expressway:** change `EXPRESSWAY_NAME`, `SEARCH_BBOX` and `ROUTE_START`, and set `ROUTE_FILE = None` to fetch the route from OpenStreetMap. There is also a [Delhi–Amritsar–Katra preset](notebooks/Expressway_Watch_Delhi_Katra.ipynb).
+- **Try another expressway:** change `EXPRESSWAY_NAME`, `SEARCH_BBOX` and `ROUTE_START`, and set `ROUTE_FILE = None` to fetch the route from OpenStreetMap. There are presets for [Delhi–Amritsar–Katra](notebooks/Expressway_Watch_Delhi_Katra.ipynb), [Delhi–Mumbai](notebooks/Expressway_Watch_Delhi_Mumbai.ipynb), [Bengaluru–Chennai](notebooks/Expressway_Watch_Bengaluru_Chennai.ipynb), [Raipur–Visakhapatnam](notebooks/Expressway_Watch_Raipur_Visakhapatnam.ipynb) and [Samruddhi](notebooks/Expressway_Watch_Samruddhi.ipynb), each reading its saved route from [`data/`](data/).
 - **Unit tests:** `pytest tests/` (pure functions in [`src/expressway_watch/core.py`](src/expressway_watch/core.py), on synthetic data).
 
 ## Build and deploy the dashboard
@@ -147,7 +164,9 @@ More detail is in [docs/METHOD.md](docs/METHOD.md). How the method and the dashb
 
 For changes to the page itself (layout, styles, scripts) without the `results/` folders at hand, `python tools/render_pages.py` re-renders both pages from the template, reusing the data already inside them.
 
-`tools/test_dashboard.py` drives every screen in Chromium (Playwright) on a desktop, phones and phones held sideways, and fails on any error.
+`tools/test_dashboard.py` drives every screen in Chromium (Playwright) on a desktop, phones and phones held sideways, and fails on any error. It still checks the v4 opening (the scroll-driven model) and has to be brought up to date with the v5 diorama.
+
+Highways whose `results/` folders are not on your computer are carried over from the pages already built, so you can add one highway with only its own results. Before/after satellite chips come from a run's saved composites: [`tools/make_chips.py`](tools/make_chips.py) on your computer, or [`tools/colab_chips.py`](tools/colab_chips.py) inside the Colab notebook.
 
 **Deploy.** The live site is on Netlify, which redeploys on every push to `master`:
 
@@ -159,10 +178,10 @@ For changes to the page itself (layout, styles, scripts) without the `results/` 
 
 ```
 notebooks/Expressway_Watch.ipynb        the full pipeline (generated from src/ by tools/build_notebook.py)
-notebooks/Expressway_Watch_Delhi_Katra  the same, preset for the Delhi–Amritsar–Katra Expressway
+notebooks/Expressway_Watch_*.ipynb      the same, preset for Delhi–Katra, Delhi–Mumbai, Bengaluru–Chennai, Raipur–Visakhapatnam, Samruddhi
 src/expressway_watch/core.py            geometry, pixel classes and stage logic (pure functions)
 tests/test_core.py                      unit tests on synthetic data  ->  pytest
-data/                                   saved OpenStreetMap routes (Ganga, Delhi–Amritsar–Katra)
+data/                                   saved OpenStreetMap routes, one per expressway (the notebooks read these)
 tools/highways.json                     what the dashboard shows for each highway
 tools/dashboard_template.html           the dashboard page: markup, styles and scripts
 tools/build_dashboard.py                builds docs/ from the template and the notebook results
@@ -170,7 +189,9 @@ tools/render_pages.py                   re-renders docs/ from the template alone
 tools/test_dashboard.py                 browser test of the built dashboard (Playwright)
 tools/whole_route_figures.py            whole-route chart and summary table from the results folders
 tools/netlify_build.sh                  Netlify's build step (see netlify.toml)
-tools/vendor/                           GSAP and three.js, with their licences
+tools/make_chips.py                     before/after satellite chips from a run's saved composites
+tools/colab_chips.py                    the same, run inside a finished Colab notebook
+tools/vendor/                           three.js (GSAP is carried over from the built page)
 docs/                                   the dashboard, method notes, changelog, satellite chips (docs/img/sat/),
                                         README screenshots (docs/img/readme/) and the page's copy of three.js
 netlify.toml                            static hosting config
@@ -180,7 +201,7 @@ netlify.toml                            static hosting config
 
 - **Resolution:** Sentinel-2 pixels are 10 m, so lanes, bridges and other structures can't be told apart. Stages describe a 2 km piece as a whole.
 - **Monsoon gaps:** monsoon quarters are cloudy; gaps are filled from the previous quarter.
-- **Pavement type:** paving detection assumes bituminous (asphalt) pavement. Concrete is bright and would need a different signal.
+- **Pavement type:** paving detection assumes bituminous (asphalt) pavement. Concrete is bright and would need a different signal; this is why the Samruddhi Mahamarg, mostly concrete, is not on the dashboard.
 - **Chainage:** this follows the OpenStreetMap line and may differ from official NHAI/UPEIDA chainage by a few km.
 - **Paving dates** are estimates, good to about ±1–2 quarters: SWIR also changes with soil moisture and dust, and at 10 m the paving signal can't separate the upper gravel layers from the bitumen itself.
 - **Status:** these are independent estimates, not official progress figures.
@@ -193,7 +214,8 @@ netlify.toml                            static hosting config
 - [ ] Sentinel-1 radar to fill monsoon gaps
 - [ ] Stronger paving signal, to fix the 4 missed pieces
 - [ ] Whole-route run (594 km) with a stalled-piece report
-- [ ] More live projects, refreshed every quarter
+- [x] More live projects: Delhi–Mumbai, Bengaluru–Chennai, Raipur–Visakhapatnam
+- [ ] Refresh every quarter, and a paving signal for concrete roads
 
 ## Data and credits
 
