@@ -1,5 +1,11 @@
 # Changelog: how the method changed after checking it on real data
 
+## v5.2: visual polish
+- **Home cards.** Each road is drawn brighter on a faint survey grid, with a ring at its start and a dot at its end, below the status pill instead of under it. The paved share is a large amber figure, the bars line up across a row, and a last row of one or two cards sits in the middle instead of leaving a hole.
+- **Opening.** A soft shade behind the top bar keeps the navigation readable over the bright sky of the scene.
+- **How to read it.** The paving line's label fits its margin ("paving line", "drag ↕"); it used to run off the screen.
+- **Highway pages.** The signs at the two ends of the route map use the short name ("Hoskote") where the full one ("Hoskote (Bengaluru)") would cover the road or the other sign. In "See it for yourself" a wide satellite image gets the wider column, and the words sit right beside a tall one.
+
 ## v5.1: three more expressways, and a lighter opening
 - **Three more expressways.** Delhi–Mumbai (six 20 km stretches from Sohna to km 820 in Gujarat), Bengaluru–Chennai (six stretches from Hoskote to km 230 in Tamil Nadu) and Raipur–Visakhapatnam (six stretches along the whole route), each with its story, timeline, stalled pieces and before/after satellite images. The site now tracks 620 km on five expressways.
 - **Samruddhi Mahamarg was run but is not shown.** It is mostly a concrete road: concrete stays pale in infrared, so the paving test reads much of the finished road as earthwork, and much of it was built before the 2020 imagery starts. Its results are kept for a method that can tell concrete from soil.

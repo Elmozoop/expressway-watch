@@ -1158,6 +1158,41 @@ button.hw:hover{transform:none}
 /* ============ the words on a see-through panel ============ */
 .lead::before{background:rgba(23,18,15,.86)}   /* see-through, but no backdrop blur: blurring over the moving 3D scene costs every frame */
 .lead::after{background:linear-gradient(to top,rgba(23,18,15,.78),rgba(23,18,15,0))}
+
+/* ============ v5.2: visual polish ============ */
+/* the nav stays readable over the bright sky of the opening scene */
+.intro3d .i3-stage::after{background:linear-gradient(180deg,rgba(23,18,15,.62) 0,rgba(23,18,15,.28) 60px,rgba(23,18,15,0) 132px)}
+.i3-top .nav a{color:var(--ink);text-shadow:0 1px 8px rgba(23,18,15,.55)}
+
+/* home cards: the road drawn on a faint survey grid, under the status pill; the numbers line up across a row */
+.hw .art{height:188px;background:
+  radial-gradient(120% 90% at 50% 62%,rgba(245,158,11,.07),rgba(245,158,11,0) 62%),
+  linear-gradient(rgba(245,235,221,.035) 1px,transparent 1px) 0 0/100% 24px,
+  linear-gradient(90deg,rgba(245,235,221,.035) 1px,transparent 1px) 0 0/24px 100%,
+  var(--night);border-bottom:1px solid var(--line)}
+.hw .art svg{inset:36px 0 2px 0;height:calc(100% - 38px)}
+.hw .body{display:flex;flex-direction:column;gap:10px;padding:18px 20px 20px}
+.hw h3{font-size:24px;line-height:1.08}
+.hw .minibar{margin-top:auto;height:10px;flex:none}
+.hw .meta{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;column-gap:12px;font-size:13.5px;line-height:1.35}
+.hw .meta b{font-family:var(--serif);font-size:38px;font-weight:600;line-height:1;color:var(--mark);margin:0;font-variant-numeric:tabular-nums}
+.hw .go{margin-top:2px}
+.hw .compare-btn{align-self:flex-start;margin-top:4px}
+.hw .art .pill{backdrop-filter:none}
+@media (min-width:1100px){
+  /* three across; a last row of two or one sits in the middle rather than leaving a hole */
+  .hwgrid{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .hwgrid .hw{grid-column:span 2}
+  .hwgrid .hw:nth-last-child(2):nth-child(3n+1){grid-column:2/span 2}
+  .hwgrid .hw:last-child:nth-child(3n+1){grid-column:3/span 2}
+}
+
+/* see it for yourself: a wide satellite image gets the wider column */
+.two.wide{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:32px}
+@media (min-width:861px){ .two.portrait{grid-template-columns:minmax(0,var(--cw,460px)) minmax(0,1fr);gap:32px} }
+@media (max-width:860px){ .two.wide{grid-template-columns:1fr} }
+.cmp{border:1px solid var(--line)}
+.cmpbar{gap:8px 8px}
 </style>
 </head>
 <body>
@@ -1387,7 +1422,9 @@ function drawRoute(svg, h, opt){
   const path = c => c.map((p, i) => (i ? "L" : "M") + proj(p).map(v => v.toFixed(1)).join(",")).join("");
   svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
   svg.innerHTML = "";
-  const road = el("path", {d: path(h.route), fill: "none", stroke: "#2e3848", "stroke-width": rw, "stroke-linecap": "round", "stroke-linejoin": "round"}, svg);
+  // on a home card the road is small: a soft halo under it and a lighter road keep it readable on the dark card
+  if (opt.card) el("path", {d: path(h.route), fill: "none", stroke: "rgba(245,158,11,.09)", "stroke-width": rw * 3.4, "stroke-linecap": "round", "stroke-linejoin": "round"}, svg);
+  const road = el("path", {d: path(h.route), fill: "none", stroke: opt.card ? "#4b4f5c" : "#2e3848", "stroke-width": rw, "stroke-linecap": "round", "stroke-linejoin": "round"}, svg);
   const lane = el("path", {d: path(h.route), fill: "none", stroke: "var(--chainage)", "stroke-width": Math.max(1, rw / 7), "stroke-dasharray": "4 7", opacity: .55, "stroke-linejoin": "round"}, svg);
   const ends = el("g", {}, svg);                  // the white end dots sit under the pieces, so a piece at the very end stays visible
   const lines = [];
@@ -1397,6 +1434,8 @@ function drawRoute(svg, h, opt){
     p.dataset.st = st.id; p.dataset.k = lines.length; lines.push([p, s]);
   }));
   const labels = el("g", {}, svg);
+  if (opt.card) [h.route[0], h.route[h.route.length - 1]].forEach((pt, k) => { const [x, y] = proj(pt);
+    el("circle", {cx: x, cy: y, r: rw * .62, fill: k ? "#f5ebdd" : "#17120f", stroke: "#f5ebdd", "stroke-width": 1.6}, labels); });   // start: a ring, end: a dot
   if (opt.labels){
     // the road as points every 4 px, to keep signs and names off it
     const pts = [];
@@ -1406,13 +1445,18 @@ function drawRoute(svg, h, opt){
     const clash = b => placed.some(o => b.x < o.x + o.width + 4 && b.x + b.width + 4 > o.x && b.y < o.y + o.height + 2 && b.y + b.height + 2 > o.y);
     const pick = cands => { const ok = cands.filter(c => inside(c.b) && !clash(c.b)); return ok.find(c => !onRoad(c.b)) || ok.sort((a, c) => onRoad(a.b) - onRoad(c.b))[0]; };
     // the two ends: a green sign beside the white dot, where it covers neither the road nor the other sign
-    [[h.route[0], h.from_label || h.from], [h.route[h.route.length - 1], h.to_label || h.to]].forEach(([pt, name]) => {
-      const [x, y] = proj(pt), w = name.length * 8.4 + 16, hh = 24;
+    [[h.route[0], h.from_label || h.from], [h.route[h.route.length - 1], h.to_label || h.to]].forEach(([pt, full]) => {
+      const [x, y] = proj(pt), hh = 24;
       el("circle", {cx: x, cy: y, r: 5, fill: "#fff"}, ends);
-      const box = (bx, by) => ({b: {x: bx, y: by, width: w, height: hh}});
-      const c = pick([box(x - w - 10, y - hh / 2), box(x + 10, y - hh / 2), box(x - w / 2, y - hh - 10), box(x - w / 2, y + 10),
-                      box(x - w + 14, y - hh - 8), box(x - 14, y - hh - 8), box(x - w + 14, y + 8), box(x - 14, y + 8)])
-             || box(Math.max(2, Math.min(W - w - 2, x - w / 2)), Math.max(2, Math.min(H - hh - 2, y + 10)));
+      // "Hoskote (Bengaluru)" where it fits clear of the road and the other sign; on a small or flat map just "Hoskote"
+      const tryName = nm => { const w = nm.length * 8.4 + 16, box = (bx, by) => ({nm, w, b: {x: bx, y: by, width: w, height: hh}});
+        const cands = [box(x - w - 10, y - hh / 2), box(x + 10, y - hh / 2), box(x - w / 2, y - hh - 10), box(x - w / 2, y + 10),
+                       box(x - w + 14, y - hh - 8), box(x - 14, y - hh - 8), box(x - w + 14, y + 8), box(x - 14, y + 8),
+                       box(x - w / 2, y - hh - 22), box(x - w / 2, y + 22), box(x - w + 14, y - hh - 20), box(x - 14, y - hh - 20), box(x - w + 14, y + 20), box(x - 14, y + 20)];
+        return {clean: cands.filter(q => inside(q.b) && !clash(q.b)).find(q => !onRoad(q.b)), any: pick(cands),
+                last: box(Math.max(2, Math.min(W - w - 2, x - w / 2)), Math.max(2, Math.min(H - hh - 2, y + 10)))}; };
+      const short = full.replace(/\s*\(.*\)\s*$/, ""), A = tryName(full), B = short !== full ? tryName(short) : A;
+      const c = A.clean || B.clean || B.any || B.last, name = c.nm, w = c.w;
       el("rect", {x: c.b.x, y: c.b.y, width: w, height: hh, rx: 4, fill: "var(--safety-green)", stroke: "#fff", "stroke-width": 1.2}, labels);
       const t = el("text", {x: c.b.x + w / 2, y: c.b.y + 16.5, "font-size": 12.5, "font-weight": 800, fill: "#fff", "text-anchor": "middle", "letter-spacing": ".04em"}, labels); t.textContent = name.toUpperCase();
       placed.push(c.b);
@@ -1449,6 +1493,7 @@ function makeCompare(box, barBox, place, before, afterDefault, onAfter){
   const imgs = place.imgs, keys = Object.keys(imgs).sort();
   box.style.aspectRatio = `${place.w} / ${place.h}`;
   box.style.width = place.h > place.w ? `min(100%, ${Math.round(520 * place.w / place.h)}px)` : "";   // portrait: cap the height
+  const two = box.closest(".two"); if (two) two.style.setProperty("--cw", place.h > place.w ? Math.round(520 * place.w / place.h) + "px" : "460px");   // the words sit right beside a narrow image
   box.innerHTML = `<img alt="" class="before" loading="lazy"><img alt="" class="after" loading="lazy"><div class="handle"></div><div class="knob">⇆</div><span class="tag l"></span><span class="tag r"></span><span class="tag cloud" hidden>White patches are cloud</span><input type="range" min="0" max="100" value="50" aria-label="Drag to compare the two satellite images">`;
   const [bi, ai] = box.querySelectorAll("img"), inp = box.querySelector("input"), [tl, tr] = box.querySelectorAll(".tag"), cl = box.querySelector(".tag.cloud"), cloudy = place.cloudy || [];
   bi.src = imgs[before]; tl.textContent = pretty(before); bi.alt = "Satellite image, " + pretty(before);
@@ -2862,7 +2907,7 @@ function renderPicker(filter = ""){
     b.innerHTML = `<div class="art"><svg aria-hidden="true"></svg><span class="pill ${done ? "done" : "live"}"><i></i>${esc(h.status)}</span></div><div class="body">
       <h3>${esc(h.name)}</h3><p class="route">${esc(h.from)} → ${esc(h.to)}, ${h.length} km, ${esc(h.authority)}</p>` +
       (ready ? `<div class="minibar" aria-hidden="true">${barHTML(last)}</div><p class="meta"><b>${pct(last[4], h.segs.length)}%</b> paved, of the ${h.segs.length * 2} km tracked, with images to ${pretty(h.periods[h.periods.length - 1])}</p><span class="go">Open the tracker <span>→</span></span>` : `<p class="meta">${esc(h.pending || "")}</p>`) + `</div>`;
-    if (h.route) drawRoute(b.querySelector(".art svg"), h, {W: 420, H: 176, pad: 22, road: 8});
+    if (h.route) drawRoute(b.querySelector(".art svg"), h, {W: 420, H: 150, pad: 20, road: 9.5, card: true});
     if (ready) b.addEventListener("click", () => openHw(h.id));
     // --- enhanced: compare button ---
     if (ready) {
@@ -2955,7 +3000,8 @@ function exDraw(){
     label(svg, L - 6, y(.3) + 3.5, "0.30", "ex-lab"); if (y(.2) - y(.3) >= 13) label(svg, L - 6, y(.2) + 3.5, "0.20", "ex-lab");   // a short chart keeps one label
     // --- enhanced: interactive paving threshold ---
     const thrLine = el("line", {x1: x(EX.peakI), x2: W - R, y1: y(EX.threshold), y2: y(EX.threshold), class: "ex-thr", id: "ex-thr-line"}, svg);
-    label(svg, W - R + 6, y(EX.threshold) + 3.5, "paving line (drag to adjust)", "ex-lab hi", "start");
+    label(svg, W - R + 6, y(EX.threshold) + 3.5, "paving line", "ex-lab hi", "start");
+    if (y(EX.threshold) + 16 < h) label(svg, W - R + 6, y(EX.threshold) + 15.5, "drag ↕", "ex-lab", "start");
     // make threshold draggable
     let thrDragging = false;
     thrLine.addEventListener("pointerdown", e => { thrDragging = true; e.preventDefault(); });
@@ -3270,7 +3316,7 @@ function placesHTML(h){
   return `<section class="card lightcmp" data-reveal><div class="card-head"><h2>See it for yourself</h2>
     <p class="hint">${many ? `Real satellite images of ${PL.length} places on this road. Pick one, then drag the handle.` : `Real satellite images of ${esc(PL[0].label)}. Drag the handle.`}</p></div>
     ${many ? `<div class="places" role="group" aria-label="Choose a place">${PL.map((p, i) => `<button class="place" data-i="${i}" aria-pressed="false"><i style="background:${STAGES[p.stage].c}"></i><span><b>${esc(p.label)}</b><small>${esc(p.tag)}</small></span></button>`).join("")}</div>` : ""}
-    <div class="two${PL.some(p => p.h > p.w) ? " portrait" : ""}"><div><div class="cmp" id="hwCmp"></div><div class="cmpbar" id="hwYears"></div>
+    <div class="two${PL.some(p => p.h > p.w) ? " portrait" : PL.every(p => p.w > p.h * 1.3) ? " wide" : ""}"><div><div class="cmp" id="hwCmp"></div><div class="cmpbar" id="hwYears"></div>
       ${VIDEO_TYPE ? `<div class="cmp-actions"><button class="btn line" id="exportTimelapseBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Save time-lapse video</button></div>` : ""}</div>
       <div class="placetext"><div id="placeText"></div><p class="hint">Each pixel is 10 × 10 m. That's enough to see the road take shape, but not individual lanes.</p></div></div></section>`;
 }
