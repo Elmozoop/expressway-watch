@@ -1216,6 +1216,26 @@ button.hw:hover{transform:none}
 @media (max-width:860px){ .two.wide{grid-template-columns:1fr} }
 .cmp{border:1px solid var(--line)}
 .cmpbar{gap:8px 8px}
+
+/* ---- v5.3: small touches ---- */
+::selection{background:rgba(245,158,11,.38);color:#fff}
+html{scrollbar-color:#4a4038 #17120f}                      /* a dark scrollbar, not the bright system one */
+.search input:focus{outline:none;border-color:var(--mark);box-shadow:0 0 0 3px rgba(245,158,11,.18)}
+.search input::placeholder{color:var(--muted)}
+/* a card answers the pointer: an amber edge, and its road lights up a little */
+button.hw:hover{border-color:rgba(245,158,11,.6)}
+.hw .art svg{transition:opacity .25s;opacity:.92}
+button.hw:hover .art svg{opacity:1}
+.place:hover{border-color:var(--mark)}
+.yr:hover{border-color:var(--mark)}
+/* the three checks: the same serif amber figures as the cards */
+.trust-grid .big{font-family:var(--serif);font-weight:600;font-size:46px;color:var(--mark);letter-spacing:-.01em}
+.trust-grid article{border-radius:14px;padding:24px 24px 26px;transition:border-color .2s}
+.trust-grid article:hover{border-color:rgba(245,158,11,.45)}
+.trust .links a{text-underline-offset:4px}
+/* highway pages: card titles get a short amber rule, so the sections read as chapters */
+.cards .card-head h2{position:relative;padding-left:16px}
+.cards .card-head h2::before{content:"";position:absolute;left:0;top:.18em;bottom:.14em;width:4px;border-radius:2px;background:var(--mark)}
 </style>
 </head>
 <body>
