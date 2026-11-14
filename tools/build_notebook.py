@@ -684,7 +684,7 @@ preset("Expressway_Watch_Raipur_Visakhapatnam.ipynb", "Raipur–Visakhapatnam Ex
 # Bundelkhand Expressway (UPEIDA): built entirely inside the satellite record, Feb 2020 to Jul 2022, in asphalt; like the
 # Ganga Expressway, a finished road with a known opening date to check the method against
 preset("Expressway_Watch_Bundelkhand.ipynb", "Bundelkhand Expressway (UPEIDA, opened July 2022)", "bundelkhand", {
-    "EXPRESSWAY_NAME": '"Bundelkhand Expressway"', "ROUTE_FILE": "None",
+    "EXPRESSWAY_NAME": '"Bundelkhand Expressway"', "ROUTE_FILE": '"https://raw.githubusercontent.com/Elmozoop/expressway-watch/main/data/bundelkhand_osm.geojson"',
     "SEARCH_BBOX": "(24.9, 78.6, 27.1, 81.4)", "ROUTE_START": "(80.86, 25.2)", "MAX_GAP_KM": "3",
     "KM_FROM, KM_TO": "0, 20", "EXTRA_STRETCHES": "[(50, 70), (100, 120), (150, 170), (200, 220), (250, 270)]",
     "MILESTONES": '{"Foundation stone (reported)": "2020Q1", "Opened (reported)": "2022Q3"}'},
