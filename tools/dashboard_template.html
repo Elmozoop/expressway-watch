@@ -1213,6 +1213,15 @@ button.hw:hover .art svg{opacity:1}
 /* highway pages: card titles get a short amber rule, so the sections read as chapters */
 .cards .card-head h2{position:relative;padding-left:16px}
 .cards .card-head h2::before{content:"";position:absolute;left:0;top:.18em;bottom:.14em;width:4px;border-radius:2px;background:var(--mark)}
+
+/* ---- v5.4: comparison page and maps ---- */
+/* the title names the two roads without repeating "Expressway", each underlined in its own colour */
+.cmphead h1{max-width:none}
+.cmphead h1 .rname{white-space:nowrap;text-decoration:underline;text-decoration-color:var(--c);text-decoration-thickness:.07em;text-underline-offset:.16em}
+@media (max-width:560px){ .cmphead h1 .rname{white-space:normal} }
+.cmpcol .big b{color:var(--c);font-family:var(--serif);font-weight:600}
+/* the story map sits on the same faint survey grid as the cards */
+.mapcard{background-image:linear-gradient(rgba(245,235,221,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(245,235,221,.03) 1px,transparent 1px);background-size:100% 28px,28px 100%}
 </style>
 </head>
 <body>
@@ -3743,7 +3752,7 @@ function renderComparison(h1, h2){
       <div class="hwnav"><button class="back" id="backComp">← All highways</button>${VIEWER ? "" : `<button class="share" id="shareComp">${shareIcon}Share</button>`}</div></div>
     <div class="cmphead">
       <p class="eyebrow">Side by side · same images, same method</p>
-      <h1>${esc(h1.name)} <span class="vs">vs</span> ${esc(h2.name)}</h1>
+      <h1>${hs.map((h, k) => `<span class="rname" style="--c:${CMPC[k]}">${esc(h.name.replace(/\s+Expressway$/, ""))}</span>`).join(' <span class="vs">vs</span> ')}</h1>
       <p class="cmpkey">${hs.map(key).join("")}</p>
       <p class="cmpnote">Both roads are cut into 2 km pieces and read from the same Sentinel-2 images every quarter. Shares are of the tracked km, not the whole road.</p>
       <div class="cmpjump">${hs.map(h => `<button class="btn ghost" data-open="${h.id}">Open ${esc(h.name)} →</button>`).join("")}</div>
