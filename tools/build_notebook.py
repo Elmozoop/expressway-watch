@@ -680,4 +680,14 @@ preset("Expressway_Watch_Raipur_Visakhapatnam.ipynb", "Raipur–Visakhapatnam Ex
     "MILESTONES": '{"Foundation stone (reported)": "2022Q4", "Chhattisgarh sections\' foundation stones": "2023Q3"}'},
     "Chhattisgarh, Odisha and Andhra Pradesh", "the Raipur end",
     "Raipur–Visakhapatnam (Wikipedia, news): foundation stone Nov 2022; Chhattisgarh sections 7 Jul 2023; completion targeted Dec 2026.")
+
+# Bundelkhand Expressway (UPEIDA): built entirely inside the satellite record, Feb 2020 to Jul 2022, in asphalt; like the
+# Ganga Expressway, a finished road with a known opening date to check the method against
+preset("Expressway_Watch_Bundelkhand.ipynb", "Bundelkhand Expressway (UPEIDA, opened July 2022)", "bundelkhand", {
+    "EXPRESSWAY_NAME": '"Bundelkhand Expressway"', "ROUTE_FILE": "None",
+    "SEARCH_BBOX": "(24.9, 78.6, 27.1, 81.4)", "ROUTE_START": "(80.86, 25.2)", "MAX_GAP_KM": "3",
+    "KM_FROM, KM_TO": "0, 20", "EXTRA_STRETCHES": "[(50, 70), (100, 120), (150, 170), (200, 220), (250, 270)]",
+    "MILESTONES": '{"Foundation stone (reported)": "2020Q1", "Opened (reported)": "2022Q3"}'},
+    "Uttar Pradesh", "the Chitrakoot end",
+    "Bundelkhand Expressway (Wikipedia): foundation stone 29 Feb 2020; opened 16 Jul 2022; 296 km, Chitrakoot to Etawah.")
 print("cells:", len(cells))
