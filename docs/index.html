@@ -1586,7 +1586,14 @@ const M = (c, o = {}) => new T.MeshStandardMaterial({color: lin(c), roughness: o
 // canvas textures: grain, speckle and clumps, so surfaces read as material rather than flat colour
 const texture = (w, h, draw, rep = [1, 1]) => { const c = document.createElement("canvas"); c.width = w; c.height = h; draw(c.getContext("2d"), w, h, rng(w * 7 + h));
   const t = new T.CanvasTexture(c); if ("colorSpace" in t) t.colorSpace = T.SRGBColorSpace; else t.encoding = T.sRGBEncoding; t.wrapS = t.wrapT = T.RepeatWrapping; t.repeat.set(rep[0], rep[1]); t.anisotropy = 8; return t; };
-const speckle = (g, w, h, r, n, cols, s0, s1) => { for (let i = 0; i < n; i++){ g.fillStyle = cols[(r() * cols.length) | 0]; const z = s0 + r() * (s1 - s0); g.fillRect(r() * w, r() * h, z, z); } };
+// thousands of grains, written straight into the pixels in one pass: a canvas call per grain held the page up for ~0.1 s.
+// The random numbers are drawn in the same order as before, so the textures come out the same.
+const hexRGB = c => [parseInt(c.slice(1, 3), 16), parseInt(c.slice(3, 5), 16), parseInt(c.slice(5, 7), 16)];
+const speckle = (g, w, h, r, n, cols, s0, s1) => { const img = g.getImageData(0, 0, w, h), d = img.data, rgb = cols.map(hexRGB);
+  for (let i = 0; i < n; i++){ const c = rgb[(r() * cols.length) | 0], z = s0 + r() * (s1 - s0), x0 = r() * w, y0 = r() * h;
+    const xa = Math.round(x0), ya = Math.round(y0), xb = Math.min(w, Math.round(x0 + z)), yb = Math.min(h, Math.round(y0 + z));
+    for (let y = ya; y < Math.max(yb, ya + 1) && y < h; y++) for (let x = xa; x < Math.max(xb, xa + 1) && x < w; x++){ const o = (y * w + x) * 4; d[o] = c[0]; d[o + 1] = c[1]; d[o + 2] = c[2]; } }
+  g.putImageData(img, 0, 0); };
 const asphaltTex = texture(512, 512, (g, w, h, r) => { g.fillStyle = "#2c2d31"; g.fillRect(0, 0, w, h);
   speckle(g, w, h, r, 26000, ["#3a3b40", "#232428", "#45464b", "#1d1e22"], .8, 2.2);
   for (let i = 0; i < 14; i++){ g.strokeStyle = "rgba(0,0,0,.18)"; g.lineWidth = 6 + r() * 10; g.beginPath(); const y = r() * h; g.moveTo(0, y); g.lineTo(w, y + (r() - .5) * 20); g.stroke(); } });
@@ -1608,12 +1615,18 @@ const wrap = x => ((x + HALF) % SPAN + SPAN) % SPAN - HALF;
 const fields = (() => { const c = document.createElement("canvas"); c.width = 2048; c.height = 1024; const g = c.getContext("2d"), r = rng(9);
   const crops = [["#6f8a3e", "#788f45"], ["#7a9147", "#839a50"], ["#66803a", "#6f8842"], ["#b29a4c", "#bba454"], ["#8c6f4e", "#94785a"], ["#a39070", "#ab987a"], ["#5f7a37", "#67823e"], ["#748c42", "#7d944a"]];
   g.fillStyle = "#7d9246"; g.fillRect(0, 0, 2048, 1024);
+  const grain = [];
   for (let y = 0; y < 1024;){ const h = 90 + r() * 140; for (let x = 0; x < 2048;){ const w = 140 + r() * 320, pair = crops[(r() * crops.length) | 0];
       g.fillStyle = pair[0]; g.fillRect(x, y, w, h);
       g.strokeStyle = pair[1]; g.lineWidth = 3; g.beginPath(); const vert = r() < .5;          // crop rows and plough furrows
       for (let k = 5; k < (vert ? w : h); k += 8){ if (vert){ g.moveTo(x + k, y); g.lineTo(x + k, y + h); } else { g.moveTo(x, y + k); g.lineTo(x + w, y + k); } } g.stroke();
-      for (let i = 0; i < w * h / 90; i++){ g.fillStyle = r() < .5 ? "rgba(0,0,0,.07)" : "rgba(255,255,230,.07)"; g.fillRect(x + r() * w, y + r() * h, 2, 2); }
+      for (let i = 0; i < w * h / 90; i++) grain.push(r() < .5, x + r() * w, y + r() * h);   // drawn in one pass below
       g.strokeStyle = "rgba(150,132,100,.75)"; g.lineWidth = 3; g.strokeRect(x, y, w, h); x += w; } y += h; }   // earth bunds between plots
+  { const img = g.getImageData(0, 0, 2048, 1024), d = img.data;               // the grain: 2 px specks, 7% darker or lighter
+    for (let k = 0; k < grain.length; k += 3){ const dark = grain[k], X = Math.round(grain[k + 1]), Y = Math.round(grain[k + 2]);
+      for (let y = Y; y < Y + 2 && y < 1024; y++) for (let x = X; x < X + 2 && x < 2048; x++){ const o = (y * 2048 + x) * 4;
+        if (dark){ d[o] *= .93; d[o + 1] *= .93; d[o + 2] *= .93; } else { d[o] += (255 - d[o]) * .07; d[o + 1] += (255 - d[o + 1]) * .07; d[o + 2] += (230 - d[o + 2]) * .07; } } }
+    g.putImageData(img, 0, 0); }
   const t = new T.CanvasTexture(c); if ("colorSpace" in t) t.colorSpace = T.SRGBColorSpace; else t.encoding = T.sRGBEncoding; t.wrapS = t.wrapT = T.RepeatWrapping; t.anisotropy = 8; return t; })();
 const GW = 360, GD = 320;                                      // farmland out to where the fog takes over
 fields.repeat.set(GW / 130, GD / 130);
@@ -1646,9 +1659,10 @@ const pieces = Array.from({length: N}, (_, i) => { const g = new T.Group(); scen
 const scenery = [], r = rng(21);
 const leafMats = C.leaf.map(c => M(c, {r: .9, flat: true}));
 // several shapes (already placed) as one: positions and normals, joined
-const mergeGeos = gs => { const pos = [], nor = [];
-  gs.forEach(g => { const q = g.index ? g.toNonIndexed() : g; pos.push(...q.attributes.position.array); nor.push(...q.attributes.normal.array); g.dispose(); });
-  const out = new T.BufferGeometry(); out.setAttribute("position", new T.Float32BufferAttribute(pos, 3)); out.setAttribute("normal", new T.Float32BufferAttribute(nor, 3));
+const mergeGeos = gs => { const qs = gs.map(g => g.index ? g.toNonIndexed() : g), n = qs.reduce((a, q) => a + q.attributes.position.array.length, 0);
+  const pos = new Float32Array(n), nor = new Float32Array(n); let o = 0;
+  qs.forEach((q, k) => { pos.set(q.attributes.position.array, o); nor.set(q.attributes.normal.array, o); o += q.attributes.position.array.length; gs[k].dispose(); });
+  const out = new T.BufferGeometry(); out.setAttribute("position", new T.BufferAttribute(pos, 3)); out.setAttribute("normal", new T.BufferAttribute(nor, 3));
   out.computeBoundingSphere(); return out; };
 const tree = () => { const g = new T.Group(), s = .8 + r() * .8, mat = leafMats[(r() * leafMats.length) | 0];
   const trunk = mesh(new T.CylinderGeometry(.1 * s, .17 * s, 1.3 * s, 7), M(C.trunk, {r: .95}), g); trunk.position.y = .65 * s; trunk.rotation.z = (r() - .5) * .15;
@@ -1973,9 +1987,12 @@ let avoidRects = [], avoidAt = -1;
 function placeLabels(t){
   if (!LABEL_LAYER) return;
   let bandBot = H;
-  { const base = LABEL_LAYER.getBoundingClientRect();                         // measured every frame: the words may still be moving in
+  const tNow = performance.now();
+  if (tNow - avoidAt > 250){ avoidAt = tNow;          // the words may still be moving in, so re-measured four times a second (each read lays the page out)
+    const base = LABEL_LAYER.getBoundingClientRect();
     avoidRects = [...document.querySelectorAll(AVOID)].map(e => e.getBoundingClientRect()).filter(r => r.width && r.height)
-      .map(r => [r.left - base.left - 12, r.top - base.top - 12, r.right - base.left + 12, r.bottom - base.top + 12]); }
+      .map(r => [r.left - base.left - 12, r.top - base.top - 12, r.right - base.left + 12, r.bottom - base.top + 12]);
+    labelEls.forEach(el => { el._cw = el.firstChild.offsetWidth || 200; el._ch = el.firstChild.offsetHeight || 60; }); }
   // a short open band (a laptop with the words below, a phone) gets compact labels: the name and what the satellite reads
   { let bt = 0, bb = H; avoidRects.forEach(r => { if (r[3] < H * .5) bt = Math.max(bt, r[3]); else if (r[1] > H * .25) bb = Math.min(bb, r[1]); });
     LABEL_LAYER.classList.toggle("compact", bb - bt < 360 || W < 560); bandBot = bb; }
@@ -1989,7 +2006,7 @@ function placeLabels(t){
   // screen's own edges are never stretched
   LABELS.map((l, k) => k).sort((a, b) => (b === fk) - (a === fk) || !!LABELS[b].on - !!LABELS[a].on).forEach(k => { const l = LABELS[k], el = labelEls[k];
     l.at(); tmpL.project(camera);
-    const x = (tmpL.x + 1) / 2 * W, y = (1 - tmpL.y) / 2 * H, cw = el.firstChild.offsetWidth || 200, ch = el.firstChild.offsetHeight || 60;
+    const x = (tmpL.x + 1) / 2 * W, y = (1 - tmpL.y) / 2 * H, cw = el._cw || 200, ch = el._ch || 60;
     let mode = null, box = null, clash = false;
     // a pin sits just above its machine: one too near the words, or near a side of the screen, means the machine itself
     // is mostly behind the words or out of the picture, and a label pointing at it would point at nothing
@@ -2064,7 +2081,8 @@ function fly(t){
     if (m.geometry.boundingSphere.radius * Math.max(ws.x, ws.y, ws.z) < .45) m.castShadow = false; });
   return {resize, lower, frame: (p, t, ct) => { pose(t); fly(ct === undefined ? t : ct); renderer.render(scene, camera); },
           pick, focus, release, reset: () => { FOC.mode = 0; FOC.k = -1; FOC.b = 1; }, moving: () => FOC.mode !== 0 && FOC.b < 1,
-          tourAt: k => FOCUS[k][2] * LOOP / SHOTS.length, names: LABELS.map(l => l.name), warm: () => { pose(0); fly(0); renderer.compile(scene, camera); },
+          tourAt: k => FOCUS[k][2] * LOOP / SHOTS.length, names: LABELS.map(l => l.name), warm: () => { pose(0); fly(0);           // three.js r158+ compiles the shaders off the main thread where the browser can; older ones block
+            return renderer.compileAsync ? renderer.compileAsync(scene, camera).catch(() => {}) : renderer.compile(scene, camera); },
           span: () => [0, W, 0, H], spanX: () => [0, W], anchors: () => ({}), explodeOf: () => 0, ORDER: []};
 }
 function makeIntro3D(T, canvas, opt = {}){
@@ -2751,8 +2769,8 @@ function i3Tick(now){
 }
 function i3Run(){
   if (I3.raf || I3.mode !== "motion" || document.hidden || $("#home").hidden) return;
-  const r = $("#intro").getBoundingClientRect();
-  if (r.bottom <= 1 || r.top >= innerHeight - 1) return;                     // off screen: the observer starts it again
+  if (I3.vis === false) return;                                               // off screen: the observer starts it again
+  if (I3.vis === undefined){ const r = $("#intro").getBoundingClientRect(); if (r.bottom <= 1 || r.top >= innerHeight - 1) return; }   // no observer yet
   I3.raf = requestAnimationFrame(i3Tick);
 }
 // the labels' size (one word on small screens, two lines on big ones) and the caption's right edge, for laying out around them
@@ -2797,12 +2815,8 @@ function startIntro(){
   $("#i3static").innerHTML = `<h3>The layers, top to bottom</h3><ol>${LAYERS.map(l => `<li><i style="background:${STAGES[l.stage].c}"></i><b>${l.name}</b><p>${nb(l.what + " " + l.space)}</p></li>`).join("")}</ol>
     <h3>What the satellite sees as it is built</h3><ol>${BUILD.map(([, s, t, x]) => `<li><i style="background:${STAGES[s].c}"></i><b>${t}</b><p>${nb(x)}</p></li>`).join("")}</ol>`;
   try {
-    const probe = document.createElement("canvas"), gl = probe.getContext("webgl2") || probe.getContext("webgl");
-    if (!gl) throw new Error("no WebGL");
-    // no usable GPU (WebGL drawn in software): start on the plainest setting
-    const dbg = gl.getExtension("WEBGL_debug_renderer_info"), gpu = dbg ? String(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL)) : "";
-    if (/swiftshader|llvmpipe|softpipe|software|basic render/i.test(gpu)) I3.q = 0;
-    const lose = gl.getExtension("WEBGL_lose_context"); if (lose) lose.loseContext();
+    // no separate test context (creating one cost a noticeable pause while the page opened): the scene's own is checked once it exists
+    if (!window.WebGLRenderingContext) throw new Error("no WebGL");
   } catch (err){ i3None(); return; }
   I3.mode = REDUCE ? "still" : "motion";
   if (REDUCE){ sec.classList.add("i3-still"); $("#i3static").classList.remove("sr-only"); }
@@ -2813,7 +2827,14 @@ function startIntro(){
   } else i3Build();
 }
 function i3None(){ I3.mode = "none"; $("#intro").classList.remove("i3-still"); $("#intro").classList.add("i3-none"); $("#i3static").classList.remove("sr-only"); }
-function i3Build(){ needThree().then(i3Make, i3None); }          // (if three.js cannot be fetched: the lists)
+// building the scene holds the page up for a moment (making the WebGL context, sending ~600 shapes to the GPU), so it happens
+// once the page has finished loading, and never mid-scroll; three.js itself is fetched straight away
+let i3Scrolled = 0; addEventListener("scroll", () => { i3Scrolled = performance.now(); }, {passive: true});
+function i3Build(){ const p3 = needThree();
+  const go = () => p3.then(i3Make, i3None);
+  const when = () => { if (performance.now() - i3Scrolled < 350) return setTimeout(when, 200);
+    if ("requestIdleCallback" in window) requestIdleCallback(go, {timeout: 900}); else setTimeout(go, 200); };
+  if (document.readyState === "complete") when(); else addEventListener("load", () => setTimeout(when, 120), {once: true}); }          // (if three.js cannot be fetched: the lists)
 function i3Make(){
   if (I3.sc || I3.mode === "none") return;
   if ($("#home").hidden){ I3.pending = true; return; }          // on a highway page just now: build it when someone comes home
@@ -2825,12 +2846,14 @@ function i3Make(){
     const lab = p => words(p) * (1 - easeIO(clamp01((p - .56) / .06)));                            // labels show during layer reveal (until 0.56)
     I3.sc = makeDiorama(window.THREE, $("#i3canvas"), {look: "dusk", still: I3.mode === "still", labels: $("#dlabels"), avoid: ".lead, .i3-top", onPick: k => sceneFocus(k)});
   } catch (err){ i3None(); return; }
+  { const cv = $("#i3canvas"), gl = cv.getContext("webgl2") || cv.getContext("webgl");      // the scene's own context, already made
+    const dbg = gl && gl.getExtension("WEBGL_debug_renderer_info"), gpu = dbg ? String(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL)) : "";
+    if (/swiftshader|llvmpipe|softpipe|software|basic render/i.test(gpu)){ I3.q = 0; I3.sc.lower(); } }
   $("#i3labels").innerHTML = LAYERS.map(l => `<div class="i3-lab"><b><span class="i3-full">${l.name}</span><span class="i3-short">${l.short}</span></b><span class="i3-sp"><i style="background:${STAGES[l.stage].c}"></i>reads as ${STAGES[l.stage].name.toLowerCase()}</span></div>`).join("");
   $("#i3stages").innerHTML = [1,2,3,4].map(s => `<span data-s="${s}"><i style="background:${STAGES[s].c}"></i>${STAGES[s].name}</span>`).join("");
   // the GPU compiles the shaders while the page gets on with other things; the first picture is drawn a moment later,
   // so starting the scene never holds the page up in one long stretch
-  I3.sc.warm();
-  setTimeout(() => {
+  Promise.resolve(I3.sc.warm()).then(() => setTimeout(() => {
     i3Size();
     I3.p = 0;
     i3Draw(I(), 0); I3.dirty = false;
@@ -2838,11 +2861,11 @@ function i3Make(){
     if (document.fonts) document.fonts.ready.then(i3Measure);        // the labels grow a little once the web font is in
     addEventListener("resize", debounce(() => { if (!I3.sc || $("#home").hidden) return; i3Size(); i3Draw(I(), I3.t); }, 150));
     if (I3.mode === "motion"){
-      if ("IntersectionObserver" in window) new IntersectionObserver(() => { I3.last = 0; i3Run(); }).observe(sec);
+      if ("IntersectionObserver" in window) new IntersectionObserver(es => { I3.vis = es[es.length - 1].isIntersecting; I3.last = 0; i3Run(); }).observe(sec);
       else i3Run();
       document.addEventListener("visibilitychange", () => { I3.last = 0; i3Run(); });
     }
-  }, 60);
+  }, 30));
 }
 startIntro();
 
