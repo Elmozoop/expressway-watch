@@ -1644,22 +1644,31 @@ const P = 4.2, GAP = .16, L = P - GAP, N = Math.round(SPAN / P);
 const embShape = new T.Shape(); embShape.moveTo(-6.2, 0); embShape.lineTo(6.2, 0); embShape.lineTo(5, 1.3); embShape.lineTo(-5, 1.3); embShape.closePath();
 const embGeo = new T.ExtrudeGeometry(embShape, {depth: L, bevelEnabled: false}); embGeo.rotateY(Math.PI / 2); embGeo.translate(-L / 2, 0, 0);
 const boxR = (w, h, d) => { const g = new T.BoxGeometry(w, h, d); g.translate(w / 2, h / 2, 0); return g; };   // grows from its left edge
+// every piece is the same shapes in the same materials, so they are made once and shared: a few dozen buffers and
+// materials for the GPU instead of several hundred (a shorter pause while the scene is built, and less to do each frame)
+const PG = {gsb: boxR(1, .15, 9.9), wmm: boxR(1, .12, 9.6), dbm: boxR(1, .08, 9.35), asph: boxR(1, .05, 9.2),
+            edge: new T.BoxGeometry(L, .03, .16), dash: new T.BoxGeometry(L * .45, .03, .14), median: new T.BoxGeometry(L, .12, .5),
+            pole: new T.CylinderGeometry(.07, .09, 3.2, 10), arm: new T.BoxGeometry(.12, .12, 2.6), glow: new T.BoxGeometry(.5, .14, .3)};
+const PM = {emb: [M(0xffffff, {map: soilTex, r: .95}), M(0xe9ddd0, {map: soilTex, r: .97})],
+            gsb: M(0xf3ead6, {map: gravelTex, r: .96}), wmm: M(0xb4ada1, {map: gravelTex, r: .95}), dbm: M(0xbdbcb8, {map: asphaltTex, r: .85}),
+            asph: M(0xffffff, {map: asphaltTex, r: .74}), paint: M(C.paint), median: M(0x6c8a42, {r: .95}),
+            steel: M(C.steel, {r: .4, m: .8}), glow: new T.MeshBasicMaterial({color: 0xfff1c2})};
 const pieces = Array.from({length: N}, (_, i) => { const g = new T.Group(); scene.add(g);
-  const emb = mesh(embGeo, [M(0xffffff, {map: soilTex, r: .95}), M(0xe9ddd0, {map: soilTex, r: .97})], g);
+  const emb = mesh(embGeo, PM.emb, g);
   // sub-base (GSB: gravel and sand), base (WMM: wet-mix crushed stone), binder course (DBM: thick asphalt), surface course (BC)
-  const gsb = mesh(boxR(1, .15, 9.9), M(0xf3ead6, {map: gravelTex, r: .96}), g); gsb.position.set(-L / 2, 1.3, 0);
-  const wmm = mesh(boxR(1, .12, 9.6), M(0xb4ada1, {map: gravelTex, r: .95}), g); wmm.position.set(-L / 2, 1.45, 0);
-  const dbm = mesh(boxR(1, .08, 9.35), M(0xbdbcb8, {map: asphaltTex, r: .85}), g); dbm.position.set(-L / 2, 1.57, 0);
-  const asph = mesh(boxR(1, .05, 9.2), M(0xffffff, {map: asphaltTex, r: .74}), g); asph.position.set(-L / 2, 1.65, 0);
+  const gsb = mesh(PG.gsb, PM.gsb, g); gsb.position.set(-L / 2, 1.3, 0);
+  const wmm = mesh(PG.wmm, PM.wmm, g); wmm.position.set(-L / 2, 1.45, 0);
+  const dbm = mesh(PG.dbm, PM.dbm, g); dbm.position.set(-L / 2, 1.57, 0);
+  const asph = mesh(PG.asph, PM.asph, g); asph.position.set(-L / 2, 1.65, 0);
   const marks = new T.Group(); marks.position.y = 1.7; g.add(marks);
-  [-4.2, 4.2].forEach(z => mesh(new T.BoxGeometry(L, .03, .16), M(C.paint), marks, false).position.z = z);         // edge lines
-  [-1.6, 1.6].forEach(z => mesh(new T.BoxGeometry(L * .45, .03, .14), M(C.paint), marks, false).position.z = z);   // lane dashes
-  mesh(new T.BoxGeometry(L, .12, .5), M(0x6c8a42, {r: .95}), marks, false).position.y = .02;                                  // median
+  [-4.2, 4.2].forEach(z => mesh(PG.edge, PM.paint, marks, false).position.z = z);         // edge lines
+  [-1.6, 1.6].forEach(z => mesh(PG.dash, PM.paint, marks, false).position.z = z);         // lane dashes
+  mesh(PG.median, PM.median, marks, false).position.y = .02;                               // median
   let lamp = null;
   if (i % 3 === 0){ lamp = new T.Group(); lamp.position.set(0, 1.7, 0); g.add(lamp);
-    mesh(new T.CylinderGeometry(.07, .09, 3.2, 10), M(C.steel, {r: .4, m: .8}), lamp).position.y = 1.6;
-    mesh(new T.BoxGeometry(.12, .12, 2.6), M(C.steel, {r: .4, m: .8}), lamp).position.set(0, 3.2, 0);
-    [-1.3, 1.3].forEach(z => mesh(new T.BoxGeometry(.5, .14, .3), new T.MeshBasicMaterial({color: 0xfff1c2}), lamp, false).position.set(0, 3.12, z)); }
+    mesh(PG.pole, PM.steel, lamp).position.y = 1.6;
+    mesh(PG.arm, PM.steel, lamp).position.set(0, 3.2, 0);
+    [-1.3, 1.3].forEach(z => mesh(PG.glow, PM.glow, lamp, false).position.set(0, 3.12, z)); }
   g.userData = {emb, gsb, wmm, dbm, asph, marks, lamp, x0: i * P}; return g; });
 
 // scenery beside the road: trees, a few village houses, field huts; all ride along and wrap
@@ -1671,14 +1680,17 @@ const mergeGeos = gs => { const qs = gs.map(g => g.index ? g.toNonIndexed() : g)
   qs.forEach((q, k) => { pos.set(q.attributes.position.array, o); nor.set(q.attributes.normal.array, o); o += q.attributes.position.array.length; gs[k].dispose(); });
   const out = new T.BufferGeometry(); out.setAttribute("position", new T.BufferAttribute(pos, 3)); out.setAttribute("normal", new T.BufferAttribute(nor, 3));
   out.computeBoundingSphere(); return out; };
-const tree = () => { const g = new T.Group(), s = .8 + r() * .8, mat = leafMats[(r() * leafMats.length) | 0];
-  const trunk = mesh(new T.CylinderGeometry(.1 * s, .17 * s, 1.3 * s, 7), M(C.trunk, {r: .95}), g); trunk.position.y = .65 * s; trunk.rotation.z = (r() - .5) * .15;
-  const n = 5 + ((r() * 4) | 0), parts = [];
-  // the crown's blobs are merged into one shape: one draw instead of five to eight, for each of 130 trees, twice a frame (shadow and picture)
-  for (let k = 0; k < n; k++){ const geo = new T.IcosahedronGeometry((.42 + r() * .3) * s, 1);
-    const px = (r() - .5) * 1.1 * s, py = (1.45 + r() * .7) * s, pz = (r() - .5) * 1.1 * s, sy = .78 + r() * .2;
+// a crown is five to eight blobs merged into one shape (one draw, not eight). Twelve crowns and one trunk are made;
+// each of the 130 trees is one of them at its own size and turn, so the GPU holds 13 tree shapes instead of 260
+const trunkGeo = new T.CylinderGeometry(.1, .17, 1.3, 7), trunkMat = M(C.trunk, {r: .95});
+const crowns = Array.from({length: 12}, () => { const n = 5 + ((r() * 4) | 0), parts = [];
+  for (let k = 0; k < n; k++){ const geo = new T.IcosahedronGeometry(.42 + r() * .3, 1);
+    const px = (r() - .5) * 1.1, py = 1.45 + r() * .7, pz = (r() - .5) * 1.1, sy = .78 + r() * .2;
     parts.push(geo.applyMatrix4(new T.Matrix4().makeScale(1, sy, 1).setPosition(px, py, pz))); }
-  mesh(mergeGeos(parts), mat, g);
+  return mergeGeos(parts); });
+const tree = () => { const g = new T.Group(), s = .8 + r() * .8, mat = leafMats[(r() * leafMats.length) | 0];
+  const trunk = mesh(trunkGeo, trunkMat, g); trunk.scale.setScalar(s); trunk.position.y = .65 * s; trunk.rotation.z = (r() - .5) * .15;
+  mesh(crowns[(r() * crowns.length) | 0], mat, g).scale.setScalar(s);
   return g; };
 const house = () => { const g = new T.Group(), w = 1.8 + r() * 1.2, d = 1.6 + r();
   mesh(new T.BoxGeometry(w, 1.2, d), M(C.wall, {r: .95}), g).position.y = .6;
@@ -2822,8 +2834,12 @@ function startIntro(){
   $("#i3static").innerHTML = `<h3>The layers, top to bottom</h3><ol>${LAYERS.map(l => `<li><i style="background:${STAGES[l.stage].c}"></i><b>${l.name}</b><p>${nb(l.what + " " + l.space)}</p></li>`).join("")}</ol>
     <h3>What the satellite sees as it is built</h3><ol>${BUILD.map(([, s, t, x]) => `<li><i style="background:${STAGES[s].c}"></i><b>${t}</b><p>${nb(x)}</p></li>`).join("")}</ol>`;
   try {
-    // no separate test context (creating one cost a noticeable pause while the page opened): the scene's own is checked once it exists
-    if (!window.WebGLRenderingContext) throw new Error("no WebGL");
+    const probe = document.createElement("canvas"), gl = probe.getContext("webgl2") || probe.getContext("webgl");
+    if (!gl) throw new Error("no WebGL");
+    // no usable GPU (WebGL drawn in software): start on the plainest setting
+    const dbg = gl.getExtension("WEBGL_debug_renderer_info"), gpu = dbg ? String(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL)) : "";
+    if (/swiftshader|llvmpipe|softpipe|software|basic render/i.test(gpu)) I3.q = 0;
+    const lose = gl.getExtension("WEBGL_lose_context"); if (lose) lose.loseContext();
   } catch (err){ i3None(); return; }
   I3.mode = REDUCE ? "still" : "motion";
   if (REDUCE){ sec.classList.add("i3-still"); $("#i3static").classList.remove("sr-only"); }
@@ -2853,9 +2869,6 @@ function i3Make(){
     const lab = p => words(p) * (1 - easeIO(clamp01((p - .56) / .06)));                            // labels show during layer reveal (until 0.56)
     I3.sc = makeDiorama(window.THREE, $("#i3canvas"), {look: "dusk", still: I3.mode === "still", labels: $("#dlabels"), avoid: ".lead, .i3-top", onPick: k => sceneFocus(k)});
   } catch (err){ i3None(); return; }
-  { const cv = $("#i3canvas"), gl = cv.getContext("webgl2") || cv.getContext("webgl");      // the scene's own context, already made
-    const dbg = gl && gl.getExtension("WEBGL_debug_renderer_info"), gpu = dbg ? String(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL)) : "";
-    if (/swiftshader|llvmpipe|softpipe|software|basic render/i.test(gpu)){ I3.q = 0; I3.sc.lower(); } }
   $("#i3labels").innerHTML = LAYERS.map(l => `<div class="i3-lab"><b><span class="i3-full">${l.name}</span><span class="i3-short">${l.short}</span></b><span class="i3-sp"><i style="background:${STAGES[l.stage].c}"></i>reads as ${STAGES[l.stage].name.toLowerCase()}</span></div>`).join("");
   $("#i3stages").innerHTML = [1,2,3,4].map(s => `<span data-s="${s}"><i style="background:${STAGES[s].c}"></i>${STAGES[s].name}</span>`).join("");
   // the GPU compiles the shaders while the page gets on with other things; the first picture is drawn a moment later,
